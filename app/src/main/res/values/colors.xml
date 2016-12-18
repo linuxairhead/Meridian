@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#10DAC9</color>
+
+    <color name="firstFloor">#FF4081</color>
+    <color name="secondFloor">#9114B3</color>
+    <color name="thirdFloor">#10CAC9</color>
+    <color name="fourthFloor">#F5A623</color>
+    <color name="fifFloor">#FF7D50</color>
+
+    <color name="colorDeposit">#FF4081</color>
+    <color name="colorRent">#9114B3</color>
+    <color name="colorUtility">#10CAC9</color>
+</resources>

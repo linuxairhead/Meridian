@@ -1,0 +1,48 @@
+<resources>
+    <string name="app_name">"Select the Unit for Detail View "</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_profile">Profile</string>
+    <string name="action_settings">Settings</string>
+
+<!--  Tenat  -->
+    <string name="title_activity_tenant">TenantActivity</string>
+    <string name="title_activity_tenant_info">List of All Tenants</string>
+    <string name="title_activity_new_tenant">New Tenant</string>
+    <string name="title_activity_edit_tenant">Edit Tenant Info</string>
+    <string name="title_activity_detail_tenant">Detail Tenant Info</string>
+
+    <!-- Text hint for first name field in the editor [CHAR LIMIT=30] -->
+    <string name="hint_first_name">First Name</string>
+
+    <!-- Text hint for last name field in the editor [CHAR LIMIT=30] -->
+    <string name="hint_last_name">Last Name</string>
+
+    <!-- Toast message in Tenant Edit Activity -->
+    <string name="editor_insert_tenant_failed">Error with inserting Tenant Info</string>
+    <string name="editor_insert_tenant_successful">Successfully inserting Tenant Info</string>
+    <string name="editor_update_tenant_failed">Error with updating Tenant Info</string>
+    <string name="editor_update_tenant_successful">Successfully updating Tenant Info</string>
+
+
+<!--  Transaction  -->
+    <string name="title_activity_transaction_history">List of Transaction</string>
+    <string name="title_activity_new_transaction">New Transaction</string>
+
+    <!-- Title text for the empty view, which describes the empty dog house image [CHAR LIMIT=50] -->
+    <string name="empty_transaction_view_title_text">There is no history of transaction</string>
+
+    <!-- Subtitle text for the empty view that prompts the user to add a pet [CHAR LIMIT=50] -->
+    <string name="empty_transaction_view_subtitle_text">Please add transation</string>
+
+
+
+    <string-array name="finance_transation_menu">
+        <item>Deposit</item>
+        <item>Rent</item>
+        <item>Utility</item>
+    </string-array>
+
+</resources>

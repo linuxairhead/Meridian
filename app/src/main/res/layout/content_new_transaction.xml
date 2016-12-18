@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content_new_transaction"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="30dp"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:orientation="vertical"
+    tools:context="com.lingoville.meridian.TransactionEditActivity"
+    tools:showIn="@layout/activity_new_transaction">
+
+    <!-- Date field -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:orientation="horizontal">
+        <TextView
+            android:text="Date                  :"
+            style="@style/CategoryStyle"  />
+        <EditText
+            android:id="@+id/newTrans_Date"
+            android:inputType="textCapWords"
+            style="@style/EditorFieldStyle" />
+    </LinearLayout>
+
+    <!-- Type field -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:orientation="horizontal">
+        <TextView
+            android:text="Type                  :"
+            style="@style/CategoryStyle"  />
+        <Spinner
+            android:id="@+id/newTrans_Type"
+            android:entries="@array/finance_transation_menu"
+            android:dropDownSelector="@color/colorAccent"
+            android:spinnerMode="dropdown"
+             android:layout_alignParentTop="true"
+            style="@style/EditorFieldStyle" >
+        </Spinner>
+    </LinearLayout>
+
+    <!-- Amount field -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:orientation="horizontal">
+        <TextView
+            android:text="Amount             : $"
+            style="@style/CategoryStyle"  />
+
+        <EditText
+            android:id="@+id/newTrans_Amount"
+            android:inputType="textCapWords"
+            style="@style/EditorFieldStyle" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/SaveTenant"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="Save" />
+
+        <Button
+            android:id="@+id/CancelTenant"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="Cancel"/>
+
+    </LinearLayout>
+
+</LinearLayout>
+
