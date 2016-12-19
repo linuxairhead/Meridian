@@ -1,5 +1,15 @@
 Bug Report
 
+12/19/2016 Bug Reported, 
+		1. From Main Activity create new Tenant by choosing one of the room.
+		2. It will take to TransactionInfoActivity.
+		3. From TransactionInfoActivity, create new Transaction by choosing the '+'
+		4. Input new transaction, will take back to TransactionInfoActivity.
+		5. Bug, it won't display the transaction info for the room.
+		Miss spell the string for putExtra for Intent Object. from RoomNumber to Room_Number
+
+12/18/2016 Transaction Info was update with LoaderManager
+
 12/18/2016 Transaction Info was able to print only for the particular room
 		OnCreateloader where does query occur when the CursorLoader
 

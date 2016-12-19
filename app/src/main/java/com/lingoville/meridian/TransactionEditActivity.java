@@ -96,7 +96,7 @@ public class TransactionEditActivity extends AppCompatActivity implements Loader
 
                 //cancel the activity and go back to main screen.
                 Intent cancelIntent = new Intent(TransactionEditActivity.this, TransactionInfoActivity.class);
-                cancelIntent.putExtra("RoomNumber", currentRoomNumber );
+                cancelIntent.putExtra("Room_Number", currentRoomNumber );
                 finish();
                 startActivity(cancelIntent);
             }
@@ -115,7 +115,7 @@ public class TransactionEditActivity extends AppCompatActivity implements Loader
 
                 // once inserted the Tenant info call go back to main screen
                 Intent saveIntent = new Intent(TransactionEditActivity.this, TransactionInfoActivity.class);
-                saveIntent.putExtra("RoomNumber", currentRoomNumber );
+                saveIntent.putExtra("Room_Number", currentRoomNumber );
                 finish();
                 startActivity(saveIntent);
             }

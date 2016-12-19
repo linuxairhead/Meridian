@@ -33,6 +33,8 @@ public class TenantInfoActivity extends AppCompatActivity implements android.app
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tenant_info);
+
+         /*  Create toolbar */
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
