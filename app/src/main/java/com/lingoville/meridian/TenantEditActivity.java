@@ -54,8 +54,10 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
 
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_new_tenant);
+        // get the room number from main activity
+        currentRoomNumber = getIntent().getIntExtra("Room_Number", 1);
 
+        setContentView(R.layout.activity_new_tenant);
         /*
             Create toolbar
           */
@@ -118,6 +120,7 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
             public void onClick(View v) {
                 //cancel the activity and go back to main screen.
                 Intent cancelIntent = new Intent(TenantEditActivity.this, MainActivity.class);
+                finish();
                 startActivity(cancelIntent);
             }
         });
@@ -131,7 +134,8 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
                     saveTenant();
 
                     // once inserted the Tenant info call go back to main screen
-                    Intent saveIntent = new Intent(TenantEditActivity.this, TenantInfoActivity.class);
+                    Intent saveIntent = new Intent(TenantEditActivity.this, TransactionInfoActivity.class);
+                    saveIntent.putExtra("Room_Number", currentRoomNumber);
                     finish();
                     startActivity(saveIntent);
                 } catch ( IllegalArgumentException e ) {

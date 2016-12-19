@@ -1,10 +1,8 @@
 package com.lingoville.meridian;
 
-import android.content.ContentUris;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -14,7 +12,6 @@ import android.view.View;
 import android.widget.ListView;
 
 import com.lingoville.meridian.Data.TenantsContract;
-import com.lingoville.meridian.Data.TenantsProvider;
 
 
 public class TransactionInfoActivity extends AppCompatActivity implements android.app.LoaderManager.LoaderCallbacks<Cursor>{
@@ -23,7 +20,7 @@ public class TransactionInfoActivity extends AppCompatActivity implements androi
 
     /* This variable will tell which tenant's finance table to use
     *  It will be pass from intent from previous activity */
-    private int currentRoomNumber = 1;
+    private static int currentRoomNumber;
 
     /*The Loader for the Cursor Loader */
     private static final int Transaction_LOADER = 0;
@@ -32,10 +29,14 @@ public class TransactionInfoActivity extends AppCompatActivity implements androi
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(LOG_TAG, "onCreate");
+        Log.d(LOG_TAG, "onCreate rm is " + currentRoomNumber);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_transaction_history);
 
+        // get the room number from main activity
+        currentRoomNumber = getIntent().getIntExtra("Room_Number", 1);
+        setTitle("Transaction for #" + currentRoomNumber);
+
+        setContentView(R.layout.activity_transaction_history);
         /*
          * Toolbar, revert button will take back to mainActivity
          */
@@ -46,6 +47,7 @@ public class TransactionInfoActivity extends AppCompatActivity implements androi
             public void onClick(View v) {
                 Intent tenantIntent = new Intent(TransactionInfoActivity.this, MainActivity.class);
                 tenantIntent.putExtra("Room_Number", currentRoomNumber);
+                finish();
                 startActivity(tenantIntent);
             }
         });
@@ -60,16 +62,13 @@ public class TransactionInfoActivity extends AppCompatActivity implements androi
             public void onClick(View view) {
 
                 Intent tenantIntent = new Intent(TransactionInfoActivity.this, TransactionEditActivity.class);
+                // get the room number from main activity
+                currentRoomNumber = getIntent().getIntExtra("Room_Number", 1);
                 tenantIntent.putExtra("Room_Number", currentRoomNumber );
+                finish();
                 startActivity(tenantIntent);
             }
         });
-
-        /*
-         * initilized the TenantsDBHelper to perform
-         */
-        // get the room number from main activity
-        currentRoomNumber = getIntent().getIntExtra("Room_Number", 1);
 
         // Find the ListView which will be populated with the pet data
         ListView petListView = (ListView) findViewById(R.id.list_transaction_history);
@@ -88,6 +87,7 @@ public class TransactionInfoActivity extends AppCompatActivity implements androi
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Log.d(LOG_TAG, "onCreateLoader rm is " + currentRoomNumber);
          /*
          * Define a projection that specifies the columns from the table care about.
          */
@@ -98,22 +98,28 @@ public class TransactionInfoActivity extends AppCompatActivity implements androi
                 TenantsContract.TenantEntry.COLUMN_TRANSATION_TYPE,
                 TenantsContract.TenantEntry.COLUMN_AMOUNT
         };
-
-        String whereClause = TenantsContract.TenantEntry.COLUMN_ROOMNUMBER+"=?";
-        String [] whereArgs = { Integer.toString(currentRoomNumber)};
+        /*
+         * To display Transaction info          *
+         *  query(SELECT * FROM financeTable WHERE Room_Number = "currentRoomNumber")
+         *  selection will set as "Room_Number = ?"
+         *  selectionArgs will set as currentRoomnumber
+         */
+        String selection = TenantsContract.TenantEntry.COLUMN_ROOMNUMBER + " = ?";
+        String [] selectionArgs = new String[] { Integer.toString(currentRoomNumber)};
         /*
          * This loader will execute the ContentProvider's query method on a background thread
          */
-        return new android.content.CursorLoader(this,             // Finance activity context
-                TenantsContract.TenantEntry.FINANCE_CONTENT_URI,   // Provider content URI to query
-                projection,                                                                 // Columns to include in the resulting Cursor
-                null,                                                                          // No selection clause
-                null,                                                                          // No selection arguments
-                null );                                                                        // Default sort order
+    return new android.content.CursorLoader(this,                                   // Finance activity context
+            TenantsContract.TenantEntry.FINANCE_CONTENT_URI,       // Provider content URI to query
+            projection,                                                                                       // Columns to include in the resulting Cursor
+            selection,                                                                                        // No selection clause
+            selectionArgs,                                                                                 // No selection arguments
+            null );                                                                                              // Default sort order
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        Log.d(LOG_TAG, "onLoadFinished");
          /*
          * Update TransactionCursorAdapter with this new cursor containing updated tenant data
          */
@@ -122,6 +128,7 @@ public class TransactionInfoActivity extends AppCompatActivity implements androi
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+        Log.d(LOG_TAG, "onLoaderReset");
         /*
          *   Callback called when the data needs to be deleted
          */

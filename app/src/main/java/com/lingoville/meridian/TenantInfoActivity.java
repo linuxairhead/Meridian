@@ -44,6 +44,11 @@ public class TenantInfoActivity extends AppCompatActivity implements android.app
         final ListView tenantList = (ListView) findViewById(R.id.list_tenant_info);
         tenantList.setClickable(true);
         tenantList.setLongClickable(true);
+
+        // Find and set empty view on the ListView, so that it only shows when the list has 0 items.
+        View emptyView = findViewById(R.id.empty_tenant_view);
+        tenantList.setEmptyView(emptyView);
+
         tenantList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {

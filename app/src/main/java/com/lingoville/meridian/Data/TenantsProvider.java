@@ -29,39 +29,18 @@ public class TenantsProvider extends ContentProvider {
     private TenantsDbHelper mDbHelper;
     private static final int Tenants = 100;
     private static final int Tenants_ID = 101;
-    private static final int Tenants_RoomNum = 102;
-    private static final int Tenants_FirstName = 103;
-    private static final int Tenants_LastName = 104;
-    private static final int Tenants_PhoneNum = 105;
-    private static final int Tenants_Email = 106;
-    private static final int Tenants_MoveInDate = 107;
-    private static final int Tenants_MoveOutDate = 108;
 
     private static final int Finance = 200;
     private static final int Finance_ID = 201;
-    private static final int Finance_RoomNum = 202;
-    private static final int Finance_Date = 203;
-    private static final int Finance_Type = 204;
-    private static final int Finance_Amount = 205;
 
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
         sUriMatcher.addURI(TenantsContract.CONTENT_AUTHORITY, TenantsContract.PATH_Tenant, Tenants );
         sUriMatcher.addURI(TenantsContract.CONTENT_AUTHORITY, TenantsContract.PATH_Tenant+"/#", Tenants_ID );
-        sUriMatcher.addURI(TenantsContract.CONTENT_AUTHORITY, TenantsContract.PATH_Tenant+"/#", Tenants_RoomNum );
-        sUriMatcher.addURI(TenantsContract.CONTENT_AUTHORITY, TenantsContract.PATH_Tenant+"/#", Tenants_FirstName );
-        sUriMatcher.addURI(TenantsContract.CONTENT_AUTHORITY, TenantsContract.PATH_Tenant+"/#", Tenants_LastName );
-        sUriMatcher.addURI(TenantsContract.CONTENT_AUTHORITY, TenantsContract.PATH_Tenant+"/#", Tenants_PhoneNum );
-        sUriMatcher.addURI(TenantsContract.CONTENT_AUTHORITY, TenantsContract.PATH_Tenant+"/#", Tenants_Email );
-        sUriMatcher.addURI(TenantsContract.CONTENT_AUTHORITY, TenantsContract.PATH_Tenant+"/#", Tenants_MoveInDate );
-        sUriMatcher.addURI(TenantsContract.CONTENT_AUTHORITY, TenantsContract.PATH_Tenant+"/#", Tenants_MoveOutDate );
+
         sUriMatcher.addURI(TenantsContract.CONTENT_AUTHORITY, TenantsContract.PATH_Finance, Finance );
         sUriMatcher.addURI(TenantsContract.CONTENT_AUTHORITY, TenantsContract.PATH_Finance+"/#", Finance_ID );
-        sUriMatcher.addURI(TenantsContract.CONTENT_AUTHORITY, TenantsContract.PATH_Finance+"/#", Finance_RoomNum );
-        sUriMatcher.addURI(TenantsContract.CONTENT_AUTHORITY, TenantsContract.PATH_Finance+"/#", Finance_Date );
-        sUriMatcher.addURI(TenantsContract.CONTENT_AUTHORITY, TenantsContract.PATH_Finance+"/#", Finance_Type );
-        sUriMatcher.addURI(TenantsContract.CONTENT_AUTHORITY, TenantsContract.PATH_Finance+"/#", Finance_Amount );
     }
     /**
      * Initialize the provider and the database helper object.
@@ -107,37 +86,16 @@ public class TenantsProvider extends ContentProvider {
                         null, null, sortOrder);
                 break;
             case Finance:
-
                 cursor = db.query(TenantsContract.TenantEntry.Finance_TABLE_NAME, projection, selection, selectionArgs,
                         null,   null,   sortOrder);
                 break;
             case Finance_ID:
                 selection = TenantsContract.TenantEntry._ID + "=?";
                 selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri))};
-                cursor = db.query(TenantsContract.TenantEntry.Finance_TABLE_NAME, projection, selection, selectionArgs,
-                        null, null, sortOrder);
-                break;
-            case Finance_RoomNum:
-                selection = TenantsContract.TenantEntry.COLUMN_ROOMNUMBER + "=?";
-                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri))};
-                cursor = db.query(TenantsContract.TenantEntry.Finance_TABLE_NAME, projection, selection, selectionArgs,
-                        null, null, sortOrder);
-                break;
-            case Finance_Date:
-                selection = TenantsContract.TenantEntry.COLUMN_DATE + "=?";
-                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri))};
-                cursor = db.query(TenantsContract.TenantEntry.Finance_TABLE_NAME, projection, selection, selectionArgs,
-                        null, null, sortOrder);
-                break;
-            case Finance_Type:
-                selection = TenantsContract.TenantEntry.COLUMN_TRANSATION_TYPE + "=?";
-                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri))};
-                cursor = db.query(TenantsContract.TenantEntry.Finance_TABLE_NAME, projection, selection, selectionArgs,
-                        null, null, sortOrder);
-                break;
-            case Finance_Amount:
-                selection = TenantsContract.TenantEntry.COLUMN_AMOUNT + "=?";
-                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri))};
+
+                /*
+                 * This will perform a query on the Finance table where the _id equals
+                 */
                 cursor = db.query(TenantsContract.TenantEntry.Finance_TABLE_NAME, projection, selection, selectionArgs,
                         null, null, sortOrder);
                 break;

@@ -25,14 +25,21 @@ public class TransactionEditActivity extends AppCompatActivity {
 
     public static final String LOG_TAG = TransactionEditActivity.class.getSimpleName();
 
-    private int currentRoomNumber = 1;
+    private static int currentRoomNumber ;
     private String today;
     private String type;
     Integer amountText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(LOG_TAG, "onCreate rm is " + currentRoomNumber);
         super.onCreate(savedInstanceState);
+
+
+        // get the room number from main activity
+        currentRoomNumber = getIntent().getIntExtra("Room_Number", 1);
+        setTitle("New Transaction for #" + currentRoomNumber);
+
         setContentView(R.layout.activity_new_transaction);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -52,6 +59,7 @@ public class TransactionEditActivity extends AppCompatActivity {
                 //cancel the activity and go back to main screen.
                 Intent cancelIntent = new Intent(TransactionEditActivity.this, TransactionInfoActivity.class);
                 cancelIntent.putExtra("RoomNumber", currentRoomNumber );
+                finish();
                 startActivity(cancelIntent);
             }
         });
@@ -60,30 +68,24 @@ public class TransactionEditActivity extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Log.d(LOG_TAG, "SaveTenant rm is " + currentRoomNumber);
                 // insert the Tenant information.
                 insertTenant();
 
                 // once inserted the Tenant info call go back to main screen
                 Intent saveIntent = new Intent(TransactionEditActivity.this, TransactionInfoActivity.class);
                 saveIntent.putExtra("RoomNumber", currentRoomNumber );
+                finish();
                 startActivity(saveIntent);
             }
         });
-    }
-
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        currentRoomNumber = getIntent().getIntExtra("RoomNumber", 1);
     }
 
     /*
  * Get the user input from editor and save new tenant into database.
  */
     private void insertTenant() {
+        Log.d(LOG_TAG, "insertTenant rm is " + currentRoomNumber);
 
         // Create the content value class by reading from user input editor
         ContentValues values = new ContentValues();
@@ -92,6 +94,9 @@ public class TransactionEditActivity extends AppCompatActivity {
 
             type = ((Spinner) findViewById(R.id.newTrans_Type)).getSelectedItem().toString().trim();
             amountText = Integer.parseInt (((EditText) findViewById(R.id.newTrans_Amount)).getText().toString().trim());
+            // get the room number from main activity
+            currentRoomNumber = getIntent().getIntExtra("Room_Number", 1);
+
         } catch ( Exception e) {
             Log.e("NewTransactionActivity", "Can not parse zero string");
             Toast.makeText(this, "Error with saving New Transaction.\n Must Enter Amount", Toast.LENGTH_SHORT).show();

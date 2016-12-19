@@ -27,7 +27,6 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".TransactionInfoActivity"
-            android:label="@string/title_activity_transaction_history"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".TenantInfoActivity"
@@ -35,7 +34,6 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".TransactionEditActivity"
-            android:label="@string/title_activity_new_transaction"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <provider
             android:name=".Data.TenantsProvider"

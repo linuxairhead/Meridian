@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">"Select the Unit for Detail View "</string>
+    <string name="app_name">"Select the Unit for Detail"</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -26,14 +26,19 @@
     <string name="editor_update_tenant_failed">Error with updating Tenant Info</string>
     <string name="editor_update_tenant_successful">Successfully updating Tenant Info</string>
 
+    <!-- Empty Tenant -->
+    <!-- Title text for the empty view, which describes the empty dog house image [CHAR LIMIT=50] -->
+    <string name="empty_tenant_view_title_text">The List of Tenant is Empty</string>
+    <!-- Subtitle text for the empty view that prompts the user to add a pet [CHAR LIMIT=50] -->
+    <string name="empty_tenant_view_subtitle_text">Please add tenant</string>
 
 <!--  Transaction  -->
     <string name="title_activity_transaction_history">List of Transaction</string>
     <string name="title_activity_new_transaction">New Transaction</string>
 
+    <!-- Empty Transaction -->
     <!-- Title text for the empty view, which describes the empty dog house image [CHAR LIMIT=50] -->
     <string name="empty_transaction_view_title_text">There is no history of transaction</string>
-
     <!-- Subtitle text for the empty view that prompts the user to add a pet [CHAR LIMIT=50] -->
     <string name="empty_transaction_view_subtitle_text">Please add transation</string>
 
