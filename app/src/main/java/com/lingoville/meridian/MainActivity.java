@@ -77,8 +77,11 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_unpaidRent) {
             return true;
+        } else if (id == R.id.action_vacancy) {
+            Intent tenantIntent = new Intent(MainActivity.this, TenantActivity.class);
+            startActivity(tenantIntent);
         }
 
         return super.onOptionsItemSelected(item);

@@ -33,8 +33,6 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
     /* Tenant Data Loader */
     private static final int CURRENT_TENANT_LOADER = 0;
 
-    TenantCursorAdapter mCursorAdapter;
-
     /* Tenant Uri to access Tenant Provider */
     private Uri mCurrentTenantUri;
 
@@ -75,14 +73,13 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
         Intent intent = getIntent();
         mCurrentTenantUri = intent.getData();
         /*
-         * if intent contain uri, current tenant has uri so initialize cursor loader.
+         * if intent contain uri, current tenant has been already initialized
+          * so initialize cursor loader for load save tenant info
          */
         if(mCurrentTenantUri != null) {
             setTitle(R.string.title_activity_edit_tenant);
             getLoaderManager().initLoader(CURRENT_TENANT_LOADER, null, this);
         } else {
-
-            currentRoomNumber = getIntent().getIntExtra("Room_Number", 1);
             /*
              * check for whether the current room has occupied or not.
              * if occupied, call transactionInfoActivity to view transaction history
@@ -114,6 +111,9 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
             setDatePickerAsToday();
         }
 
+        /*
+         *   Handle Button for Cancel Tenant
+         */
         Button cancelButton = (Button) findViewById(R.id.CancelTenant);
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,6 +125,9 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
             }
         });
 
+        /*
+         *   Handle Button for Save Tenant
+         */
         Button saveButton = (Button) findViewById(R.id.SaveTenant);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -303,7 +306,7 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
         // (This should be the only row in the cursor)
         if (cursor.moveToFirst()) {
             // Find the columns of tenant attributes that we're interested in
-            int roomNumColumnIndex = cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_ROOMNUMBER);
+            //int roomNumColumnIndex = cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_ROOMNUMBER);
             int fNameColumnIndex = cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_FIRSTNAME);
             int lNameColumnIndex = cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_LASTNAME);
             int phoneNumColumnIndex = cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_PHONENUMBER);
@@ -312,7 +315,7 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
             int outDateColumnIndex = cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_MOVEOUT);
 
             // Extract out the value from the Cursor for the given column index
-            String roomNum = cursor.getString(roomNumColumnIndex);
+            //String roomNum = cursor.getString(roomNumColumnIndex);
             String fName = cursor.getString(fNameColumnIndex);
             String lName = cursor.getString(lNameColumnIndex);
             String phoneNum = cursor.getString(phoneNumColumnIndex);
@@ -321,13 +324,13 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
             String outDate = cursor.getString(outDateColumnIndex);
 
             // Update the views on the screen with the values from the database
-            mRoomNumber.setText(roomNum);
-            mFirstName.setText(fName);
-            mLastName.setText(lName);
-            mPhoneNumber.setText(phoneNum);
-            mEmail.setText(email);
-            mMoveInDate.setText(inDate);
-            mMoveOutDate.setText(outDate);
+            //mRoomNumber.setText(currentRoomNumber);
+            //mFirstName.setText(fName);
+            //mLastName.setText(lName);
+            //mPhoneNumber.setText(phoneNum);
+            //mEmail.setText(email);
+            //mMoveInDate.setText(inDate);
+            //mMoveOutDate.setText(outDate);
         }
     }
 

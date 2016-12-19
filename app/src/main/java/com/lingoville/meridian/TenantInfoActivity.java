@@ -6,11 +6,15 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.lingoville.meridian.Data.TenantsContract;
 
@@ -58,9 +62,10 @@ public class TenantInfoActivity extends AppCompatActivity implements android.app
                 Uri currentTenantUri = ContentUris.withAppendedId(TenantsContract.TenantEntry.TENANT_CONTENT_URI, id);
                 intent.setData(currentTenantUri);
                 startActivity(intent);
-                /*
+
+                LinearLayout tenantListItem = (LinearLayout)findViewById(R.id.list_tenant_info_items) ;
                 //Creating the instance of PopupMenu
-                PopupMenu popupMenu = new PopupMenu(TenantInfoActivity.this, tenantList );
+                PopupMenu popupMenu = new PopupMenu(TenantInfoActivity.this, tenantListItem );
                 //Inflating the Popup using xml file
                 popupMenu.getMenuInflater().inflate(R.menu.tenants_popup, popupMenu.getMenu());
                 //registering popup with OnMenuItemClickListener

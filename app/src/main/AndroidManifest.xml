@@ -20,7 +20,6 @@
         </activity>
         <activity
             android:name=".TenantActivity"
-            android:label="@string/title_activity_tenant"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".TenantEditActivity"

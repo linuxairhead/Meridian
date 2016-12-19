@@ -3,12 +3,14 @@ package com.lingoville.meridian;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.lingoville.meridian.Data.TenantsContract;
@@ -17,7 +19,20 @@ import com.lingoville.meridian.Data.TenantsDbHelper;
 // This activity is unused.
 public class TenantActivity extends AppCompatActivity {
 
-    private TenantsDbHelper mTDbHelper;
+    /** Log Tag for debug */
+    public static final String LOG_TAG = TenantActivity.class.getSimpleName();
+
+    /* Tenant Data Loader */
+    private static final int List_TENANT_LOADER = 0;
+
+    /* Tenant Uri to access Tenant Provider */
+    private Uri mListTenantUri;
+
+    private TextView mRoomNumber;
+    private EditText mFirstName;
+    private EditText mLastName;
+    private TextView mMoveInDate;
+    private TextView mMoveOutDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,26 +49,13 @@ public class TenantActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-
-
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        createTenants();
-        displayTenantInfo(getIntent().getIntExtra("Tenant Position", 1));
-    }
-
-   private void createTenants() {
-       mTDbHelper = new TenantsDbHelper(this);
-   }
     /**
      * Temporary helper method to display information in the onscreen TextView about the state of
      * the pets database.
      */
     private void displayTenantInfo( int roomnumber ){
-        SQLiteDatabase db = mTDbHelper.getReadableDatabase();
 
          String[] projection = {
                 TenantsContract.TenantEntry._ID,
@@ -97,4 +99,13 @@ public class TenantActivity extends AppCompatActivity {
             cursor.close();
         }
     }*/
-}}
+
+}
+    private int[] roomNumber = {
+            101, 102, 103, 104, 105,
+            201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211,
+            301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311,
+            401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411,
+            501, 502, 503
+    };
+}

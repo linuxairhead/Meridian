@@ -23,7 +23,7 @@ public class TransactionInfoActivity extends AppCompatActivity implements androi
     private static int currentRoomNumber;
 
     /*The Loader for the Cursor Loader */
-    private static final int Transaction_LOADER = 0;
+    private static final int TRANSACTION_INFO_LOADER = 3;
 
     TransactionCursorAdapter mCursorAdapter;
 
@@ -82,11 +82,13 @@ public class TransactionInfoActivity extends AppCompatActivity implements androi
         // Attach cursor adapter to the ListView
         petListView.setAdapter(mCursorAdapter);
         // Kick off the loader
-        getLoaderManager().initLoader(Transaction_LOADER, null, this);
+        getLoaderManager().initLoader(TRANSACTION_INFO_LOADER, null, this);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        currentRoomNumber = this.getCurrentRoomNumber();
+
         Log.d(LOG_TAG, "onCreateLoader rm is " + currentRoomNumber);
          /*
          * Define a projection that specifies the columns from the table care about.
@@ -98,6 +100,7 @@ public class TransactionInfoActivity extends AppCompatActivity implements androi
                 TenantsContract.TenantEntry.COLUMN_TRANSATION_TYPE,
                 TenantsContract.TenantEntry.COLUMN_AMOUNT
         };
+
         /*
          * To display Transaction info          *
          *  query(SELECT * FROM financeTable WHERE Room_Number = "currentRoomNumber")
@@ -134,4 +137,9 @@ public class TransactionInfoActivity extends AppCompatActivity implements androi
          */
         mCursorAdapter.swapCursor(null);
     }
+
+    private int getCurrentRoomNumber(){
+        return currentRoomNumber;
+    }
+
 }

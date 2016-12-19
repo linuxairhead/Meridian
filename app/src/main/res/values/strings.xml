@@ -4,8 +4,16 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+<!-- Nevigation Item -->
+    <string name="action_tenantsList">Tenants List</string>
+    <string name="action_calendar">Calendar</string>
     <string name="action_profile">Profile</string>
     <string name="action_settings">Settings</string>
+
+<!-- Option Item -->
+    <string name="action_unpaidRent">Unpaid Rent List</string>
+    <string name="action_vacancy">Vacant Room List</string>
+
 
 <!--  Tenat  -->
     <string name="title_activity_tenant">TenantActivity</string>
@@ -35,6 +43,13 @@
 <!--  Transaction  -->
     <string name="title_activity_transaction_history">List of Transaction</string>
     <string name="title_activity_new_transaction">New Transaction</string>
+    <string name="title_activity_edit_transaction">Edit Transaction</string>
+
+    <!-- Toast message in Transaction Edit Activity -->
+    <string name="editor_insert_transaction_failed">Error with inserting Transaction Info</string>
+    <string name="editor_insert_transaction_successful">Successfully inserting Transaction Info</string>
+    <string name="editor_update_transaction_failed">Error with updating Transaction Info</string>
+    <string name="editor_update_transaction_successful">Successfully updating Transaction Info</string>
 
     <!-- Empty Transaction -->
     <!-- Title text for the empty view, which describes the empty dog house image [CHAR LIMIT=50] -->
@@ -42,12 +57,11 @@
     <!-- Subtitle text for the empty view that prompts the user to add a pet [CHAR LIMIT=50] -->
     <string name="empty_transaction_view_subtitle_text">Please add transation</string>
 
-
-
+    <!-- Drop Down Menu for Transaction -->
     <string-array name="finance_transation_menu">
-        <item>Deposit</item>
         <item>Rent</item>
         <item>Utility</item>
+        <item>Deposit</item>
     </string-array>
 
 </resources>
