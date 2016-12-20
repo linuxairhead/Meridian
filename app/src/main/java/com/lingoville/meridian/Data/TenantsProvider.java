@@ -70,7 +70,7 @@ public class TenantsProvider extends ContentProvider {
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
         int match = sUriMatcher.match(uri);
 
-        Log.d(LOG_TAG, " query :" + uri +"match is" + match);
+        Log.d(LOG_TAG, " query :" + uri +" match is " + match);
 
         switch (match) {
             /*

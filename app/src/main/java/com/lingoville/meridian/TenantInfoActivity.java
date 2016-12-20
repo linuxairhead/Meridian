@@ -77,11 +77,7 @@ public class TenantInfoActivity extends AppCompatActivity implements android.app
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d(LOG_TAG, "Long Click");
-
-                Intent intent = new Intent(TenantInfoActivity.this, TenantEditActivity.class);
-                Uri currentTenantUri = ContentUris.withAppendedId(TenantsContract.TenantEntry.TENANT_CONTENT_URI, id);
-                intent.setData(currentTenantUri);
-                startActivity(intent);
+                final Uri currentTenantUri = ContentUris.withAppendedId(TenantsContract.TenantEntry.TENANT_CONTENT_URI, id);
 
                 LinearLayout tenantListItem = (LinearLayout)findViewById(R.id.list_tenant_info_items) ;
                 //Creating the instance of PopupMenu
@@ -89,18 +85,28 @@ public class TenantInfoActivity extends AppCompatActivity implements android.app
                 //Inflating the Popup using xml file
                 popupMenu.getMenuInflater().inflate(R.menu.tenants_popup, popupMenu.getMenu());
                 //registering popup with OnMenuItemClickListener
+
                 popupMenu.setOnMenuItemClickListener( new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         Log.d(LOG_TAG, "Menu Item Click");
-                        Toast.makeText(TenantInfoActivity.this, "MenuItemClick", Toast.LENGTH_SHORT).show();
+
                         switch (item.getItemId()) {
                             case R.id.item_edit:
-                                Toast.makeText(TenantInfoActivity.this, "edit Clicked", Toast.LENGTH_SHORT).show();
+                                Log.d(LOG_TAG, "Menu Item Click: Edit");
+                                Toast.makeText(TenantInfoActivity.this, "Edit Clicked", Toast.LENGTH_SHORT).show();
+
+                                Intent tenantIntent = new Intent(TenantInfoActivity.this, TenantEditActivity.class);
+                                tenantIntent.setData(currentTenantUri);
+                                startActivity(tenantIntent);
+
                                 return true;
+
                             case R.id.item_delete:
-                                Toast.makeText(TenantInfoActivity.this, "delete Clicked", Toast.LENGTH_SHORT).show();
+                                Log.d(LOG_TAG, "Menu Item Click: Delete");
+                                Toast.makeText(TenantInfoActivity.this, "Delete Clicked", Toast.LENGTH_SHORT).show();
                                 return true;
+
                         }
                         return false;
                     }
@@ -145,7 +151,6 @@ public class TenantInfoActivity extends AppCompatActivity implements android.app
             //    setTitle(R.string.action_unpaidRent);
               //  break;
             default: // Tenant_Info_List
-
                 /*
                  * This loader will execute the ContentProvider's query method on a background thread
                  */

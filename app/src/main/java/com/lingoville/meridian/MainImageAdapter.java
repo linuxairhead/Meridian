@@ -9,10 +9,6 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
-/**
- * Created by m88to on 12/12/2016.
- */
-
 public class MainImageAdapter extends BaseAdapter {
 
     private Context mContext;
@@ -51,7 +47,6 @@ public class MainImageAdapter extends BaseAdapter {
         imageView.setImageDrawable(drawable.build(""+getRoomNumber(position), mContext.getResources().getColor(mFloorColor[position])));
 
         return imageView;
-
     }
 
     // references to our images

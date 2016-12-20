@@ -56,9 +56,6 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
 
         super.onCreate(savedInstanceState);
 
-        // get the room number from main activity
-        currentRoomNumber = getIntent().getIntExtra("Room_Number", 1);
-
         setContentView(R.layout.activity_new_tenant);
         /*
             Create toolbar
@@ -73,9 +70,9 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
             }
         });
 
-        // Examine the intent for the proper toolbar title
-        Intent intent = getIntent();
-        mCurrentTenantUri = intent.getData();
+        /* to improve code readability initialized all the local variable with private method */
+        initializeLocalVariable();
+
         /*
          * if intent contain uri, current tenant has been already initialized
           * so initialize cursor loader for load save tenant info
@@ -98,24 +95,10 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
             } else
                 setTitle(R.string.title_activity_new_tenant);
 
-            /*
-             *  initialized all the local variable for the Tenant Edit Activity by setting View
-             */
-            mRoomNumber = (TextView) findViewById(R.id.newTenant_RoomNumber);
-            mRoomNumber.setText("" + currentRoomNumber);
-            mFirstName = (EditText) findViewById(R.id.newTenant_firstName);
-            mLastName = (EditText) findViewById(R.id.newTenant_lastName);
-            mPhoneNumber = (EditText) findViewById(R.id.newTenant_PhoneNumber);
-            mEmail = (EditText) findViewById(R.id.newTenant_Email);
-            mMoveInDate = (TextView) findViewById(R.id.newTenant_MoveInDate);
-            mMoveOutDate = (TextView) findViewById(R.id.newTenant_MoveOutDate);
-
-            numberOfRoom = roomNumber.length;
+            /* initRoom will only initilized once */
             if(!isRoomInit) initRoom();
 
-            /*
-             * set today''s date as Date
-             */
+            /* set today''s date as Date */
             setDatePickerAsToday();
         }
 
@@ -155,39 +138,10 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
     }
 
     /*
-     *  When setDatePicker initizlized, set as today's date
-     */
-    private void setDatePickerAsToday(){
-        Date curDate = (Date) java.util.Calendar.getInstance().getTime();
-        DateFormat formatter = new SimpleDateFormat("yyy / MM / dd");
-        String today = formatter.format(curDate);
-
-        mMoveInDate.setText(today);
-        mMoveInDate.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                DialogFragment dialogfragment = new DatePickerDialogClass(R.id.newTenant_MoveInDate);
-                dialogfragment.show(getFragmentManager(), "Date Picker Dialog");
-            }
-        });
-
-        mMoveOutDate.setText(today);
-        mMoveOutDate.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                DialogFragment dialogfragment = new DatePickerDialogClass(R.id.newTenant_MoveOutDate);
-                dialogfragment.show(getFragmentManager(), "Date Picker Dialog");
-            }
-        });
-    }
-
-    /*
      * Get the user input from editor and save new tenant into database.
      */
     private void saveTenant() {
-        Log.d(LOG_TAG, " insertTenant ");
+        Log.d(LOG_TAG, " saveTenant ");
 
         // Create the content value class by reading from user input editor
         ContentValues values = new ContentValues();
@@ -250,6 +204,8 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
      */
     private void initRoom() {
 
+        Log.d(LOG_TAG, "initRoom");
+
         String selection = TenantsContract.TenantEntry.COLUMN_ROOMNUMBER + " = ?";
         String [] selectionArgs = new String[] { Integer.toString(roomNumber[0])};
         Cursor cursor = getContentResolver().query(TenantsContract.TenantEntry.ROOM_CONTENT_URI,
@@ -298,6 +254,7 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
      */
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Log.d(LOG_TAG, "onCreateLoader");
 
         /*
          * This loader will execute the ContentProvider's query method on a background thread
@@ -312,6 +269,7 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        Log.d(LOG_TAG, "onLoadFinished");
         // Bail early if the cursor is null or there is less than 1 row in the cursor
         if (cursor == null || cursor.getCount() < 1) {
             return;
@@ -321,7 +279,7 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
         // (This should be the only row in the cursor)
         if (cursor.moveToFirst()) {
             // Find the columns of tenant attributes that we're interested in
-            //int roomNumColumnIndex = cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_ROOMNUMBER);
+            int roomNumColumnIndex = cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_ROOMNUMBER);
             int fNameColumnIndex = cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_FIRSTNAME);
             int lNameColumnIndex = cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_LASTNAME);
             int phoneNumColumnIndex = cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_PHONENUMBER);
@@ -330,7 +288,7 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
             int outDateColumnIndex = cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_MOVEOUT);
 
             // Extract out the value from the Cursor for the given column index
-            //String roomNum = cursor.getString(roomNumColumnIndex);
+            String roomNum = cursor.getString(roomNumColumnIndex);
             String fName = cursor.getString(fNameColumnIndex);
             String lName = cursor.getString(lNameColumnIndex);
             String phoneNum = cursor.getString(phoneNumColumnIndex);
@@ -339,13 +297,13 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
             String outDate = cursor.getString(outDateColumnIndex);
 
             // Update the views on the screen with the values from the database
-            //mRoomNumber.setText(currentRoomNumber);
-            //mFirstName.setText(fName);
-            //mLastName.setText(lName);
-            //mPhoneNumber.setText(phoneNum);
-            //mEmail.setText(email);
-            //mMoveInDate.setText(inDate);
-            //mMoveOutDate.setText(outDate);
+            mRoomNumber.setText(roomNum);
+            mFirstName.setText(fName);
+            mLastName.setText(lName);
+            mPhoneNumber.setText(phoneNum);
+            mEmail.setText(email);
+            mMoveInDate.setText(inDate);
+            mMoveOutDate.setText(outDate);
         }
     }
 
@@ -354,13 +312,69 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
      */
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+        Log.d(LOG_TAG, "onLoaderReset");
 
-        //mRoomNumber = (TextView) findViewById(R.id.newTenant_RoomNumber);
+        mRoomNumber.setText(""+currentRoomNumber);
         mFirstName.setText("");
         mLastName.setText("");
         mPhoneNumber.setText("");
         mEmail.setText("");
         setDatePickerAsToday();
+    }
+
+    /*
+    *  initialized all the local variable for the Tenant Edit Activity by setting View
+    */
+    private void initializeLocalVariable(){
+        // get the room number from main activity
+        currentRoomNumber = getIntent().getIntExtra("Room_Number", 1);
+
+        mRoomNumber = (TextView) findViewById(R.id.newTenant_RoomNumber);
+        mRoomNumber.setText("" + currentRoomNumber);
+        mFirstName = (EditText) findViewById(R.id.newTenant_firstName);
+        mLastName = (EditText) findViewById(R.id.newTenant_lastName);
+        mPhoneNumber = (EditText) findViewById(R.id.newTenant_PhoneNumber);
+        mEmail = (EditText) findViewById(R.id.newTenant_Email);
+        mMoveInDate = (TextView) findViewById(R.id.newTenant_MoveInDate);
+        mMoveOutDate = (TextView) findViewById(R.id.newTenant_MoveOutDate);
+
+        // Examine the intent for the proper toolbar title
+        Intent intent = getIntent();
+        mCurrentTenantUri = intent.getData();
+
+        numberOfRoom = roomNumber.length;
+    }
+
+    /*
+     *  When setDatePicker initizlized, set as today's date
+     */
+    private void setDatePickerAsToday(){
+
+        Log.d(LOG_TAG, "setDatePickerAsToday");
+
+        Date curDate = (Date) java.util.Calendar.getInstance().getTime();
+        DateFormat formatter = new SimpleDateFormat("yyy / MM / dd");
+        String today = formatter.format(curDate);
+
+        mMoveInDate.setText(today);
+        mMoveInDate.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                DialogFragment dialogfragment = new DatePickerDialogClass(R.id.newTenant_MoveInDate);
+                dialogfragment.show(getFragmentManager(), "Date Picker Dialog");
+            }
+        });
+
+        mMoveOutDate.setText(today);
+        mMoveOutDate.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                DialogFragment dialogfragment = new DatePickerDialogClass(R.id.newTenant_MoveOutDate);
+                dialogfragment.show(getFragmentManager(), "Date Picker Dialog");
+            }
+        });
     }
 
     private int[] roomNumber = {
