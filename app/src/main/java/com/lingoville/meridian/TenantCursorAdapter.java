@@ -57,7 +57,14 @@ public class TenantCursorAdapter  extends CursorAdapter {
         TextDrawable.IBuilder drawable = TextDrawable.builder().beginConfig().withBorder(8).endConfig().roundRect(20);
         tenantRoomNumber.setImageDrawable(drawable.build(roomNum, mContext.getResources().getColor(R.color.colorDeposit)));
 
-        tenantLastName.setText(c.getString(c.getColumnIndexOrThrow(TenantsContract.TenantEntry.COLUMN_LASTNAME)));
-        tenantFirstName.setText(c.getString(c.getColumnIndexOrThrow(TenantsContract.TenantEntry.COLUMN_FIRSTNAME)));
+        try {
+            String lastName = c.getString(c.getColumnIndexOrThrow(TenantsContract.TenantEntry.COLUMN_LASTNAME));
+            String firstName = c.getString(c.getColumnIndexOrThrow(TenantsContract.TenantEntry.COLUMN_FIRSTNAME));
+
+            tenantLastName.setText(lastName);
+            tenantFirstName.setText(firstName);
+        } catch (Exception e) {
+
+        }
     }
 }

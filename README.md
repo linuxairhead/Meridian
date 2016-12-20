@@ -1,6 +1,9 @@
 Bug Report
 
-12/19/2016 Bug Reported, 
+12/20/2016 Created RoomVacant Table to keep track of the Vacancy room
+		And By choosing "List of Vacant room", it view the vacant room from TenantInfoActivity
+ 
+12/19/2016 Bug Fixed, 4877ee380fff6de6b073b7b7ee2561dfe34d00a2
 		1. From Main Activity create new Tenant by choosing one of the room.
 		2. It will take to TransactionInfoActivity.
 		3. From TransactionInfoActivity, create new Transaction by choosing the '+'

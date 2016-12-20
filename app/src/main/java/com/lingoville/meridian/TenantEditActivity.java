@@ -37,6 +37,10 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
     private Uri mCurrentTenantUri;
 
     private int currentRoomNumber;
+
+    private int numberOfRoom;
+    private static boolean isRoomInit = false;
+
     private TextView mRoomNumber;
     private EditText mFirstName;
     private EditText mLastName;
@@ -85,7 +89,8 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
              * if occupied, call transactionInfoActivity to view transaction history
              * if not occupied, continue edit activity with new tenant title
              */
-            if (occupiedRoom()) {
+
+            if (isRoomInit && occupiedRoom() == 1) {
                 Intent transactionIntent = new Intent(TenantEditActivity.this, TransactionInfoActivity.class);
                 transactionIntent.putExtra("Room_Number", currentRoomNumber);
                 finish();
@@ -105,6 +110,9 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
             mMoveInDate = (TextView) findViewById(R.id.newTenant_MoveInDate);
             mMoveOutDate = (TextView) findViewById(R.id.newTenant_MoveOutDate);
 
+            numberOfRoom = roomNumber.length;
+            if(!isRoomInit) initRoom();
+
             /*
              * set today''s date as Date
              */
@@ -120,7 +128,6 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
             public void onClick(View v) {
                 //cancel the activity and go back to main screen.
                 Intent cancelIntent = new Intent(TenantEditActivity.this, MainActivity.class);
-                finish();
                 startActivity(cancelIntent);
             }
         });
@@ -139,13 +146,9 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
                     // once inserted the Tenant info call go back to main screen
                     Intent saveIntent = new Intent(TenantEditActivity.this, TransactionInfoActivity.class);
                     saveIntent.putExtra("Room_Number", currentRoomNumber);
-                    finish();
                     startActivity(saveIntent);
                 } catch ( IllegalArgumentException e ) {
                     Log.d(LOG_TAG, "onCreate : handling illegal argument exception");
-
-                    finish();
-                    startActivity(getIntent());
                 }
             }
         });
@@ -217,6 +220,21 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
             } else {
                 // Otherwise, the insertion was successful and we can display a toast.
                 Toast.makeText(this, getString(R.string.editor_insert_tenant_successful), Toast.LENGTH_SHORT).show();
+
+                /*
+                * Since room is occupied mark as occupied
+                */
+                String[] projection = {
+                        TenantsContract.TenantEntry._ID,
+                        TenantsContract.TenantEntry.COLUMN_ROOMNUMBER,
+                        TenantsContract.TenantEntry.COLUMN_Vancant
+                };
+                ContentValues trueValues = new ContentValues();
+                trueValues.put(TenantsContract.TenantEntry.COLUMN_Vancant, true);
+                String selection = TenantsContract.TenantEntry.COLUMN_ROOMNUMBER + " = ?";
+                String[] selectionArgs = new String[]{Integer.toString(currentRoomNumber)};
+                getContentResolver().update(TenantsContract.TenantEntry.ROOM_CONTENT_URI,trueValues, selection, selectionArgs);
+
             }
         } else {
             // update the tenant
@@ -233,36 +251,65 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
                 Toast.makeText(this, getString(R.string.editor_update_tenant_successful), Toast.LENGTH_SHORT).show();
             }
         }
-
-
     }
-    private boolean occupiedRoom() {
+
+    /*
+     *  This should be initialized only once for entire program, even if the program restarted
+     */
+    private void initRoom() {
+
+        /*
+         * double check the db whether the list of room has been already initialized
+         * If it did initialized, then set the static variable isRoomInit as true.
+         */
+        String[] projection = {
+                TenantsContract.TenantEntry._ID,
+                TenantsContract.TenantEntry.COLUMN_ROOMNUMBER,
+                TenantsContract.TenantEntry.COLUMN_Vancant
+        };
+        String selection = TenantsContract.TenantEntry.COLUMN_ROOMNUMBER + " = ?";
+        String [] selectionArgs = new String[] { Integer.toString(roomNumber[0])};
+        Cursor cursor = getContentResolver().query(TenantsContract.TenantEntry.ROOM_CONTENT_URI,
+                                projection, selection, selectionArgs, null );
+        if(cursor.getCount() != 0)
+            isRoomInit = true;
+
+        /*
+         * If this program is using for the first time and db doesn't contain RoomTable,
+         * following will be initialied all the room with false as COLUMN_Vancant
+         */
+        if( !isRoomInit ) {
+            // Create the content value class by reading from user input editor
+            ContentValues values = new ContentValues();
+
+            for (int counter = 0; counter < numberOfRoom; counter++) {
+
+                values.put(TenantsContract.TenantEntry.COLUMN_ROOMNUMBER, roomNumber[counter]);
+                values.put(TenantsContract.TenantEntry.COLUMN_Vancant, "false");
+
+                Uri newUri = getContentResolver().insert(TenantsContract.TenantEntry.ROOM_CONTENT_URI, values);
+            }
+            isRoomInit = true;
+        }
+    }
+
+    private int occupiedRoom() {
 
         Log.d(LOG_TAG, "occupiedRoom");
-        boolean returnValue = false;
 
         String[] projection = {
                 TenantsContract.TenantEntry._ID,
                 TenantsContract.TenantEntry.COLUMN_ROOMNUMBER,
-                TenantsContract.TenantEntry.COLUMN_FIRSTNAME,
-                TenantsContract.TenantEntry.COLUMN_LASTNAME,
-                TenantsContract.TenantEntry.COLUMN_PHONENUMBER,
-                TenantsContract.TenantEntry.COLUMN_EMAIL,
-                TenantsContract.TenantEntry.COLUMN_MOVEIN,
-                TenantsContract.TenantEntry.COLUMN_MOVEOUT,
+                TenantsContract.TenantEntry.COLUMN_Vancant
         };
+        String selection = TenantsContract.TenantEntry.COLUMN_ROOMNUMBER + " = ?";
+        String [] selectionArgs = new String[] { Integer.toString(currentRoomNumber)};
 
-        Cursor cursor = getContentResolver().query(TenantsContract.TenantEntry.TENANT_CONTENT_URI, projection, null, null, null );
-        while (cursor.moveToNext()) {
-            // Get the tenant entry and check whether the room is occupied or not.
-            int roomNumber = cursor.getInt(cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_ROOMNUMBER));
-            if (currentRoomNumber == roomNumber) {
-                returnValue = true;
-                break;
-            }
-        }
-        Log.d(LOG_TAG, "occupiedRoom " + returnValue);
-        return returnValue;
+        Cursor cursor = getContentResolver().query(TenantsContract.TenantEntry.ROOM_CONTENT_URI, projection, selection, selectionArgs, null );
+        cursor.moveToNext();
+        // Get the tenant entry and check whether the room is occupied or not.
+        return cursor.getInt(cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_Vancant));
+
     }
 
     /*

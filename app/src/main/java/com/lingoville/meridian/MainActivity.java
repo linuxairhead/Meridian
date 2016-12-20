@@ -4,6 +4,7 @@ import android.content.ContentUris;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -22,9 +23,14 @@ import com.lingoville.meridian.Data.TenantsContract;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    public static final String LOG_TAG = MainActivity.class.getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Log.d(LOG_TAG, "onCreate");
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -54,6 +60,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
+
+        Log.d(LOG_TAG, "onBackPressed");
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -64,6 +73,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        Log.d(LOG_TAG, "onCreateOptionsMenu");
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
@@ -71,6 +81,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Log.d(LOG_TAG, "onOptionsItemSelected");
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
@@ -78,10 +89,15 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_unpaidRent) {
+            Intent tenantIntent = new Intent(MainActivity.this, TenantInfoActivity.class);
+            tenantIntent.putExtra("Tenant_Info", "Tenant_Unpaied_List");
+            startActivity(tenantIntent);
             return true;
         } else if (id == R.id.action_vacancy) {
-            Intent tenantIntent = new Intent(MainActivity.this, TenantActivity.class);
+            Intent tenantIntent = new Intent(MainActivity.this, TenantInfoActivity.class);
+            tenantIntent.putExtra("Tenant_Info", "Tenant_Vacant_List");
             startActivity(tenantIntent);
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -90,11 +106,13 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+        Log.d(LOG_TAG, "onNavigationItemSelected");
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
         if (id == R.id.nav_tenant) {
             Intent tenantIntent = new Intent(MainActivity.this, TenantInfoActivity.class);
+            tenantIntent.putExtra("Tenant_Info", "Tenant_Info_List");
             startActivity(tenantIntent);
             // Handle the camera action
         } else if (id == R.id.nav_slideshow) {

@@ -28,29 +28,41 @@ public final class TenantsContract {
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
     /**
      * Possible path (appended to base content URI for possible URI's)
-     * For instance, content://com.example.android.pets/pets/ is a valid path for
-     * looking at pet data. content://com.example.android.pets/staff/ will fail,
-     * as the ContentProvider hasn't been given any information on what to do with "staff".
+     * as the ContentProvider hasn't been given any information on what to do with "staff".     *
      */
+    public static final String PATH_RoomInfo = "RoomInfo";
+
     public static final String PATH_Tenant = "Tenants";
 
     public static final String PATH_Finance = "Finance";
+
     /**
      * Inner class that defines constant values for the tenants database table.
      * Each entry in the table contain tenant infomation.
      */
     public static final class TenantEntry implements BaseColumns{
 
+        public static final Uri  ROOM_CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_RoomInfo);
+
         public static final Uri  TENANT_CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_Tenant);
 
         public static final Uri  FINANCE_CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_Finance);
 
+        /** Name of database table for room information */
+        public final static String ROOM_TABLE_NAME = "RoomTable";
 
         /** Name of database table for tenants */
         public final static String Tenants_TABLE_NAME = "TenantsTable";
 
         /** Name of database table for finance statement */
         public final static String Finance_TABLE_NAME = "FinanceTable";
+        /*
+          For Room Info Table
+         */
+                /*
+                * Room Vancancy
+                */
+                public final static String COLUMN_Vancant = "Room_Vancancy";
 
         /*
           For Tenant Table

@@ -33,6 +33,9 @@ public class TenantsProvider extends ContentProvider {
     private static final int Finance = 200;
     private static final int Finance_ID = 201;
 
+    private static final int RoomInfo = 300;
+    private static final int RoomInfo_Vacant = 301;
+
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
@@ -41,13 +44,20 @@ public class TenantsProvider extends ContentProvider {
 
         sUriMatcher.addURI(TenantsContract.CONTENT_AUTHORITY, TenantsContract.PATH_Finance, Finance );
         sUriMatcher.addURI(TenantsContract.CONTENT_AUTHORITY, TenantsContract.PATH_Finance+"/#", Finance_ID );
+
+        sUriMatcher.addURI(TenantsContract.CONTENT_AUTHORITY, TenantsContract.PATH_RoomInfo, RoomInfo );
+        sUriMatcher.addURI(TenantsContract.CONTENT_AUTHORITY, TenantsContract.PATH_RoomInfo+"/#", RoomInfo_Vacant );
     }
     /**
      * Initialize the provider and the database helper object.
      */
     @Override
     public boolean onCreate() {
+
+        Log.d(LOG_TAG, "onCreate");
+
         mDbHelper = new TenantsDbHelper(getContext());
+
         return true;
     }
 
@@ -57,7 +67,9 @@ public class TenantsProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
                         String sortOrder) {
+
         Log.d(LOG_TAG, " query >" + uri+"<");
+
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
 
         Cursor cursor;
@@ -99,7 +111,16 @@ public class TenantsProvider extends ContentProvider {
                 cursor = db.query(TenantsContract.TenantEntry.Finance_TABLE_NAME, projection, selection, selectionArgs,
                         null, null, sortOrder);
                 break;
-
+            case RoomInfo:
+                cursor = db.query(TenantsContract.TenantEntry.ROOM_TABLE_NAME, projection, selection, selectionArgs,
+                        null,   null,   sortOrder);
+                break;
+            case RoomInfo_Vacant:
+                selection = TenantsContract.TenantEntry.COLUMN_Vancant + "=?";
+                selectionArgs = new String[] { "false" };
+                cursor = db.query(TenantsContract.TenantEntry.ROOM_TABLE_NAME, projection, selection, selectionArgs,
+                        null,   null,   sortOrder);
+                break;
             default:
                 throw new IllegalArgumentException("Cannot query unknown URI " + uri);
 
@@ -126,15 +147,47 @@ public class TenantsProvider extends ContentProvider {
                 return insertTenant(uri, contentValues);
             case Finance:
                 return insertFinance(uri, contentValues);
+            case RoomInfo:
+                return insertRoom(uri, contentValues);
             default:
                 throw new IllegalArgumentException("Insertion is not supported for " + uri);
         }
+    }
 
+    public Uri insertRoom(Uri uri, ContentValues values){
+
+        Log.d(LOG_TAG, " roomTableInit");
+
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+        int roomNum = values.getAsInteger(TenantsContract.TenantEntry.COLUMN_ROOMNUMBER);
+        if(roomNum == 0) {
+            throw new IllegalArgumentException("Room need proper room number");
+        }
+
+        boolean vacancy = values.getAsBoolean(TenantsContract.TenantEntry.COLUMN_Vancant);
+
+        // insert the content value to the database
+       long id = db.insert(TenantsContract.TenantEntry.ROOM_TABLE_NAME, null, values);
+        // If the ID is -1, then the insertion failed. Log an error and return null.
+        if (id == -1) {
+            Log.e(LOG_TAG, "Failed to insert row for " + uri);
+            return null;
+        }
+
+         /*
+         *  Notify all listener that the data has changed for the pet content URI
+         */
+            getContext().getContentResolver().notifyChange(uri, null);
+
+        // Return the new URI with the ID (of the newly inserted row) appended at the end
+        return ContentUris.withAppendedId(uri, id);
     }
 
     private Uri insertTenant(Uri uri, ContentValues values)
     {
         Log.d(LOG_TAG, " insertTenant >" + uri+"<");
+
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         String roomNum = values.getAsString(TenantsContract.TenantEntry.COLUMN_ROOMNUMBER);
@@ -191,6 +244,8 @@ public class TenantsProvider extends ContentProvider {
 
     private Uri insertFinance(Uri uri, ContentValues values)
     {
+        Log.d(LOG_TAG, " insertFinance >" + uri+"<");
+
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
 
         String roomNum = values.getAsString(TenantsContract.TenantEntry.COLUMN_ROOMNUMBER);
@@ -234,8 +289,12 @@ public class TenantsProvider extends ContentProvider {
     @Override
     public int update(Uri uri, ContentValues contentValues, String selection, String[] selectionArgs) {
 
+        Log.d(LOG_TAG, " update :" + uri);
+
         final int match = sUriMatcher.match(uri);
         switch (match) {
+            case RoomInfo:
+                return updateRoom(uri, contentValues, selection, selectionArgs);
             case Tenants:
                 return updateTenant(uri, contentValues, selection, selectionArgs);
             case Tenants_ID:
@@ -246,76 +305,111 @@ public class TenantsProvider extends ContentProvider {
                 throw new IllegalArgumentException("Update is not supported for " + uri);
         }
     }
+            /*
+             *  private method for update room information
+             */
+            private int updateRoom(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+                Log.d(LOG_TAG, " updateRoom :" + uri);
 
-    private int updateTenant(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+                if (values.containsKey(TenantsContract.TenantEntry.COLUMN_Vancant)) {
+                    String roomNum = values.getAsString(TenantsContract.TenantEntry.COLUMN_Vancant);
+                    if (roomNum == null) {
+                        throw new IllegalArgumentException("Tenant requires a room number");
+                    }
+                }
+                // If there are no values to update, then don't try to update the database
+                if (values.size() == 0) {
+                    return 0;
+                }
 
-        if (values.containsKey(TenantsContract.TenantEntry.COLUMN_ROOMNUMBER)) {
-            String roomNum = values.getAsString(TenantsContract.TenantEntry.COLUMN_ROOMNUMBER);
-            if (roomNum == null) {
-                throw new IllegalArgumentException("Tenant requires a room number");
+                // Otherwise, get writeable database to update the data
+                SQLiteDatabase database = mDbHelper.getWritableDatabase();
+
+                // Returns the number of database rows affected by the update statement
+                int returnVal =  database.update(TenantsContract.TenantEntry.ROOM_TABLE_NAME, values, selection, selectionArgs);
+                 /*
+                 *  Notify all listener that the data has changed for the room info content URI
+                 */
+                getContext().getContentResolver().notifyChange(uri, null);
+
+                return returnVal;
+
             }
-        }
 
-         if (values.containsKey(TenantsContract.TenantEntry.COLUMN_FIRSTNAME)) {
-             String name = values.getAsString(TenantsContract.TenantEntry.COLUMN_FIRSTNAME);
-             if (name == null) {
-                 throw new IllegalArgumentException("Tenant requires a first name");
-             }
-         }
 
-        if (values.containsKey(TenantsContract.TenantEntry.COLUMN_LASTNAME)) {
-            String name = values.getAsString(TenantsContract.TenantEntry.COLUMN_LASTNAME);
-            if (name == null) {
-                throw new IllegalArgumentException("Tenant requires a last name");
+            /*
+             *  private method for update tenant infomation
+             */
+            private int updateTenant(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+
+                Log.d(LOG_TAG, " updateTenant :" + uri);
+
+                if (values.containsKey(TenantsContract.TenantEntry.COLUMN_ROOMNUMBER)) {
+                    String roomNum = values.getAsString(TenantsContract.TenantEntry.COLUMN_ROOMNUMBER);
+                    if (roomNum == null) {
+                        throw new IllegalArgumentException("Tenant requires a room number");
+                    }
+                }
+
+                 if (values.containsKey(TenantsContract.TenantEntry.COLUMN_FIRSTNAME)) {
+                     String name = values.getAsString(TenantsContract.TenantEntry.COLUMN_FIRSTNAME);
+                     if (name == null) {
+                         throw new IllegalArgumentException("Tenant requires a first name");
+                     }
+                 }
+
+                if (values.containsKey(TenantsContract.TenantEntry.COLUMN_LASTNAME)) {
+                    String name = values.getAsString(TenantsContract.TenantEntry.COLUMN_LASTNAME);
+                    if (name == null) {
+                        throw new IllegalArgumentException("Tenant requires a last name");
+                    }
+                }
+
+                // Check that the phone value is valid pattern or not
+                if (values.containsKey(TenantsContract.TenantEntry.COLUMN_PHONENUMBER)) {
+                     String phone = values.getAsString(TenantsContract.TenantEntry.COLUMN_PHONENUMBER);
+                     if (phone == null && !Patterns.PHONE.matcher(phone).matches()) {
+                        throw new IllegalArgumentException("Tenant requires valid phone number");
+                     }
+                }
+
+                // Check that the email value is valid pattern or not
+                if (values.containsKey(TenantsContract.TenantEntry.COLUMN_EMAIL)) {
+                     String email = values.getAsString(TenantsContract.TenantEntry.COLUMN_EMAIL);
+                    if (email != null && !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                        throw new IllegalArgumentException("Tenant requires valid email address");
+                    }
+                }
+
+                if (values.containsKey(TenantsContract.TenantEntry.COLUMN_MOVEIN) &&
+                    values.containsKey(TenantsContract.TenantEntry.COLUMN_MOVEOUT)) {
+
+                    double movein = values.getAsDouble(TenantsContract.TenantEntry.COLUMN_MOVEIN);
+                    double moveout = values.getAsDouble(TenantsContract.TenantEntry.COLUMN_MOVEOUT);
+
+                    if( (movein != 0 || moveout != 0) && (movein > moveout) ) {
+                        throw new IllegalArgumentException("Tenant requires valied move in and out date");
+                    }
+                }
+
+                // If there are no values to update, then don't try to update the database
+                if (values.size() == 0) {
+                    return 0;
+                }
+
+                // Otherwise, get writeable database to update the data
+                SQLiteDatabase database = mDbHelper.getWritableDatabase();
+
+                // Returns the number of database rows affected by the update statement
+                 int returnVal =  database.update(TenantsContract.TenantEntry.Tenants_TABLE_NAME, values, selection, selectionArgs);
+
+                 /*
+                 *  Notify all listener that the data has changed for the tenant content URI
+                 */
+                getContext().getContentResolver().notifyChange(uri, null);
+
+                return returnVal;
             }
-        }
-
-        // Check that the phone value is valid pattern or not
-        if (values.containsKey(TenantsContract.TenantEntry.COLUMN_PHONENUMBER)) {
-             String phone = values.getAsString(TenantsContract.TenantEntry.COLUMN_PHONENUMBER);
-             if (phone == null && !Patterns.PHONE.matcher(phone).matches()) {
-                throw new IllegalArgumentException("Tenant requires valid phone number");
-             }
-        }
-
-        // Check that the email value is valid pattern or not
-        if (values.containsKey(TenantsContract.TenantEntry.COLUMN_EMAIL)) {
-             String email = values.getAsString(TenantsContract.TenantEntry.COLUMN_EMAIL);
-            if (email != null && !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                throw new IllegalArgumentException("Tenant requires valid email address");
-            }
-        }
-
-        if (values.containsKey(TenantsContract.TenantEntry.COLUMN_MOVEIN) &&
-            values.containsKey(TenantsContract.TenantEntry.COLUMN_MOVEOUT)) {
-
-            double movein = values.getAsDouble(TenantsContract.TenantEntry.COLUMN_MOVEIN);
-            double moveout = values.getAsDouble(TenantsContract.TenantEntry.COLUMN_MOVEOUT);
-
-            if( (movein != 0 || moveout != 0) && (movein > moveout) ) {
-                throw new IllegalArgumentException("Tenant requires valied move in and out date");
-            }
-        }
-
-        // If there are no values to update, then don't try to update the database
-        if (values.size() == 0) {
-            return 0;
-        }
-
-        // Otherwise, get writeable database to update the data
-        SQLiteDatabase database = mDbHelper.getWritableDatabase();
-
-
-        // Returns the number of database rows affected by the update statement
-         int returnVal =  database.update(TenantsContract.TenantEntry.Tenants_TABLE_NAME, values, selection, selectionArgs);
-
-         /*
-         *  Notify all listener that the data has changed for the pet content URI
-         */
-        getContext().getContentResolver().notifyChange(uri, null);
-
-        return returnVal;
-    }
 
 
     /**
@@ -323,6 +417,9 @@ public class TenantsProvider extends ContentProvider {
      */
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
+
+        Log.d(LOG_TAG, " delete >" + uri+"<");
+
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         final int match = sUriMatcher.match(uri);
@@ -350,8 +447,6 @@ public class TenantsProvider extends ContentProvider {
 
         return returnVal;
     }
-
-
 
     /**
      * Returns the MIME type of data for the content URI.

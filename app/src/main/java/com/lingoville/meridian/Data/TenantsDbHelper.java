@@ -3,6 +3,7 @@ package com.lingoville.meridian.Data;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 /**
  * Database helper for Tenant DB. Manages database creation and version management.
@@ -36,6 +37,9 @@ public class TenantsDbHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
+
+        Log.d(LOG_TAG, "onCreate");
+
         // Create a String that contains the SQL statement to create the tenants table
         String SQL_CREATE_TENANT_TABLE =
                 "CREATE TABLE " + TenantsContract.TenantEntry.Tenants_TABLE_NAME + " ("
@@ -62,6 +66,16 @@ public class TenantsDbHelper extends SQLiteOpenHelper {
 
         // Execute the SQL statement
         db.execSQL(SQL_CREATE_FINANCE_TABLE);
+
+        // Create a String that contains the SQL statement to create the Finance table
+        String SQL_CREATE_ROOM_INFO_TABLE =
+                "CREATE TABLE " + TenantsContract.TenantEntry.ROOM_TABLE_NAME + " ("
+                        + TenantsContract.TenantEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                        + TenantsContract.TenantEntry.COLUMN_ROOMNUMBER + " INTEGER NOT NULL, "
+                        + TenantsContract.TenantEntry.COLUMN_Vancant +" BOOLEAN NOT NULL );";
+
+        // Execute the SQL statement
+        db.execSQL(SQL_CREATE_ROOM_INFO_TABLE);
     }
 
     /**
@@ -69,6 +83,9 @@ public class TenantsDbHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+        Log.d(LOG_TAG, "onUpgrade");
+
         // The database is still at version 1, so there's nothing to do be done here.
     }
 }

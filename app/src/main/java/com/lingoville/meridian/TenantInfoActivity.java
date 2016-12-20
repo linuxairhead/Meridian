@@ -27,13 +27,31 @@ public class TenantInfoActivity extends AppCompatActivity implements android.app
     */
     private static final int TENANT_LOADER = 0;
 
-    TenantCursorAdapter mCursorAdapter;
+    private TenantCursorAdapter mCursorAdapter;
+
+    private String mTenantInfoAction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tenant_info);
 
+        /* Tenant List will view among three
+        * Va
+        */
+        mTenantInfoAction = getIntent().getStringExtra("Tenant_Info");
+
+        switch (mTenantInfoAction) {
+            case "Tenant_Vacant_List":
+                setTitle(R.string.action_vacancy);
+                break;
+            case "Tenant_Unpaied_List":
+                setTitle(R.string.action_unpaidRent);
+                break;
+            default: // Tenant_Info_List
+                setTitle(R.string.action_tenantsList);
+                break;
+        }
          /*  Create toolbar */
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -103,6 +121,7 @@ public class TenantInfoActivity extends AppCompatActivity implements android.app
 
     @Override
     public android.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Log.d(LOG_TAG, "Loader");
          /*
          * Define a projection that specifies the columns from the table care about.
          */
@@ -115,30 +134,88 @@ public class TenantInfoActivity extends AppCompatActivity implements android.app
                 TenantsContract.TenantEntry.COLUMN_PHONENUMBER,
                 TenantsContract.TenantEntry.COLUMN_MOVEIN,
                 TenantsContract.TenantEntry.COLUMN_MOVEOUT };
-        /*
-         * This loader will execute the ContentProvider's query method on a background thread
-         */
-        return new android.content.CursorLoader(this,                                       // Parent activity context
-                TenantsContract.TenantEntry.TENANT_CONTENT_URI,    // Provider content URI to query
-                projection,                                                                 // Columns to include in the resulting Cursor
-                null,                                                                          // No selection clause
-                null,                                                                          // No selection arguments
-                null );                                                                        // Default sort order
+        String[] projection2 = {
+                TenantsContract.TenantEntry._ID,
+                TenantsContract.TenantEntry.COLUMN_ROOMNUMBER,
+                TenantsContract.TenantEntry.COLUMN_Vancant
+        };
+        switch (mTenantInfoAction) {
+            case "Tenant_Vacant_List":
+                                /*
+                 * This loader will execute the ContentProvider's query method on a background thread
+                 */
+                String selection = TenantsContract.TenantEntry.COLUMN_Vancant + "=?";
+                String[] selectionArgs = new String[] { "false" };
+                return new android.content.CursorLoader(this,                                       // Parent activity context
+                        TenantsContract.TenantEntry.ROOM_CONTENT_URI,    // Provider content URI to query
+                        projection2,                                                                 // Columns to include in the resulting Cursor
+                        selection,                                                                          // No selection clause
+                        selectionArgs,                                                                          // No selection arguments
+                        null);                                                                        // Default sort order
+
+
+            //case "Tenant_Unpaied_List":
+            //    setTitle(R.string.action_unpaidRent);
+              //  break;
+            default: // Tenant_Info_List
+
+                /*
+                 * This loader will execute the ContentProvider's query method on a background thread
+                 */
+                    return new android.content.CursorLoader(this,                                       // Parent activity context
+                            TenantsContract.TenantEntry.TENANT_CONTENT_URI,    // Provider content URI to query
+                            projection,                                                                 // Columns to include in the resulting Cursor
+                            null,                                                                          // No selection clause
+                            null,                                                                          // No selection arguments
+                            null);                                                                        // Default sort order
+        }
     }
+
 
     @Override
     public void onLoadFinished(android.content.Loader<Cursor> loader, Cursor data) {
-         /*
-         * Update TenantCursorAdapter with this new cursor containing updated tenant data
-         */
-        mCursorAdapter.swapCursor(data);
+        Log.d(LOG_TAG, "onLoadFinished");
+        switch (mTenantInfoAction) {
+
+            case "Tenant_Vacant_List":
+                int counter = data.getCount();
+
+                 /*
+                 * Update TenantCursorAdapter with this new cursor containing updated tenant data
+                 */
+                mCursorAdapter.swapCursor(data);
+                break;
+
+            case "Tenant_Unpaied_List":
+                                 /*
+                 * Update TenantCursorAdapter with this new cursor containing updated tenant data
+                 */
+                mCursorAdapter.swapCursor(data);
+                break;
+
+            default:
+                 /*
+                 * Update TenantCursorAdapter with this new cursor containing updated tenant data
+                 */
+                mCursorAdapter.swapCursor(data);
+        }
     }
 
     @Override
     public void onLoaderReset(android.content.Loader<Cursor> loader) {
+        Log.d(LOG_TAG, "onLoaderReset");
         /*
          *   Callback called when the data needs to be deleted
          */
         mCursorAdapter.swapCursor(null);
     }
+
+    private int[] listOfRoom = {
+            101, 102, 103, 104, 105,
+            201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211,
+            301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311,
+            401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411,
+            501, 502, 503
+    };
 }
+

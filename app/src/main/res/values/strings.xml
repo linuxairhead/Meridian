@@ -11,8 +11,8 @@
     <string name="action_settings">Settings</string>
 
 <!-- Option Item -->
-    <string name="action_unpaidRent">Unpaid Rent List</string>
-    <string name="action_vacancy">Vacant Room List</string>
+    <string name="action_unpaidRent">List of Unpaid Rent</string>
+    <string name="action_vacancy">List of Vacant Room </string>
 
 
 <!--  Tenat  -->
