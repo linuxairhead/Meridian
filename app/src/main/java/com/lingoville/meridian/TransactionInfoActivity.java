@@ -90,16 +90,7 @@ public class TransactionInfoActivity extends AppCompatActivity implements androi
         currentRoomNumber = this.getCurrentRoomNumber();
 
         Log.d(LOG_TAG, "onCreateLoader rm is " + currentRoomNumber);
-         /*
-         * Define a projection that specifies the columns from the table care about.
-         */
-        String[] projection = {
-                TenantsContract.TenantEntry._ID,
-                TenantsContract.TenantEntry.COLUMN_ROOMNUMBER,
-                TenantsContract.TenantEntry.COLUMN_DATE,
-                TenantsContract.TenantEntry.COLUMN_TRANSATION_TYPE,
-                TenantsContract.TenantEntry.COLUMN_AMOUNT
-        };
+
 
         /*
          * To display Transaction info          *
@@ -114,7 +105,7 @@ public class TransactionInfoActivity extends AppCompatActivity implements androi
          */
     return new android.content.CursorLoader(this,                                   // Finance activity context
             TenantsContract.TenantEntry.FINANCE_CONTENT_URI,       // Provider content URI to query
-            projection,                                                                                       // Columns to include in the resulting Cursor
+            TenantsContract.TenantEntry.TransactionTableProjection,    // Columns to include in the resulting Cursor
             selection,                                                                                        // No selection clause
             selectionArgs,                                                                                 // No selection arguments
             null );                                                                                              // Default sort order

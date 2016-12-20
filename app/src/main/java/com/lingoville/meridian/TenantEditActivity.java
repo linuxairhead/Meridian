@@ -221,14 +221,6 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
                 // Otherwise, the insertion was successful and we can display a toast.
                 Toast.makeText(this, getString(R.string.editor_insert_tenant_successful), Toast.LENGTH_SHORT).show();
 
-                /*
-                * Since room is occupied mark as occupied
-                */
-                String[] projection = {
-                        TenantsContract.TenantEntry._ID,
-                        TenantsContract.TenantEntry.COLUMN_ROOMNUMBER,
-                        TenantsContract.TenantEntry.COLUMN_Vancant
-                };
                 ContentValues trueValues = new ContentValues();
                 trueValues.put(TenantsContract.TenantEntry.COLUMN_Vancant, true);
                 String selection = TenantsContract.TenantEntry.COLUMN_ROOMNUMBER + " = ?";
@@ -258,19 +250,10 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
      */
     private void initRoom() {
 
-        /*
-         * double check the db whether the list of room has been already initialized
-         * If it did initialized, then set the static variable isRoomInit as true.
-         */
-        String[] projection = {
-                TenantsContract.TenantEntry._ID,
-                TenantsContract.TenantEntry.COLUMN_ROOMNUMBER,
-                TenantsContract.TenantEntry.COLUMN_Vancant
-        };
         String selection = TenantsContract.TenantEntry.COLUMN_ROOMNUMBER + " = ?";
         String [] selectionArgs = new String[] { Integer.toString(roomNumber[0])};
         Cursor cursor = getContentResolver().query(TenantsContract.TenantEntry.ROOM_CONTENT_URI,
-                                projection, selection, selectionArgs, null );
+                TenantsContract.TenantEntry.RoomTableProjection, selection, selectionArgs, null );
         if(cursor.getCount() != 0)
             isRoomInit = true;
 
@@ -297,16 +280,13 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
 
         Log.d(LOG_TAG, "occupiedRoom");
 
-        String[] projection = {
-                TenantsContract.TenantEntry._ID,
-                TenantsContract.TenantEntry.COLUMN_ROOMNUMBER,
-                TenantsContract.TenantEntry.COLUMN_Vancant
-        };
         String selection = TenantsContract.TenantEntry.COLUMN_ROOMNUMBER + " = ?";
+
         String [] selectionArgs = new String[] { Integer.toString(currentRoomNumber)};
 
-        Cursor cursor = getContentResolver().query(TenantsContract.TenantEntry.ROOM_CONTENT_URI, projection, selection, selectionArgs, null );
-        cursor.moveToNext();
+        Cursor cursor = getContentResolver().query(TenantsContract.TenantEntry.ROOM_CONTENT_URI,
+                TenantsContract.TenantEntry.RoomTableProjection, selection, selectionArgs, null );
+        cursor.moveToLast();
         // Get the tenant entry and check whether the room is occupied or not.
         return cursor.getInt(cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_Vancant));
 
@@ -318,25 +298,13 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
      */
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-            /*
-             * Define a projection that specifies the columns from the table care about.
-             */
-         String[] projection = {
-                TenantsContract.TenantEntry._ID,
-                TenantsContract.TenantEntry.COLUMN_ROOMNUMBER,
-                TenantsContract.TenantEntry.COLUMN_FIRSTNAME,
-                TenantsContract.TenantEntry.COLUMN_LASTNAME,
-                TenantsContract.TenantEntry.COLUMN_EMAIL,
-                TenantsContract.TenantEntry.COLUMN_PHONENUMBER,
-                TenantsContract.TenantEntry.COLUMN_MOVEIN,
-                TenantsContract.TenantEntry.COLUMN_MOVEOUT };
 
         /*
          * This loader will execute the ContentProvider's query method on a background thread
          */
         return new android.content.CursorLoader(this,              // Parent activity context
             mCurrentTenantUri,                                                  // Provider content URI to query
-                projection,                                                                 // Columns to include in the resulting Cursor
+                TenantsContract.TenantEntry.TenantTableProjection,  // Columns to include in the resulting Cursor
                 null,                                                                          // No selection clause
                 null,                                                                          // No selection arguments
                 null );                                                                        // Default sort order
@@ -400,7 +368,7 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
             201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211,
             301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311,
             401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411,
-            501, 502, 503
+            501, 502, 503, 504
     };
 }
 

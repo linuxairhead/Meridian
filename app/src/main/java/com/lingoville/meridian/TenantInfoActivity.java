@@ -125,20 +125,7 @@ public class TenantInfoActivity extends AppCompatActivity implements android.app
          /*
          * Define a projection that specifies the columns from the table care about.
          */
-        String[] projection = {
-                TenantsContract.TenantEntry._ID,
-                TenantsContract.TenantEntry.COLUMN_ROOMNUMBER,
-                TenantsContract.TenantEntry.COLUMN_FIRSTNAME,
-                TenantsContract.TenantEntry.COLUMN_LASTNAME,
-                TenantsContract.TenantEntry.COLUMN_EMAIL,
-                TenantsContract.TenantEntry.COLUMN_PHONENUMBER,
-                TenantsContract.TenantEntry.COLUMN_MOVEIN,
-                TenantsContract.TenantEntry.COLUMN_MOVEOUT };
-        String[] projection2 = {
-                TenantsContract.TenantEntry._ID,
-                TenantsContract.TenantEntry.COLUMN_ROOMNUMBER,
-                TenantsContract.TenantEntry.COLUMN_Vancant
-        };
+
         switch (mTenantInfoAction) {
             case "Tenant_Vacant_List":
                                 /*
@@ -146,12 +133,12 @@ public class TenantInfoActivity extends AppCompatActivity implements android.app
                  */
                 String selection = TenantsContract.TenantEntry.COLUMN_Vancant + "=?";
                 String[] selectionArgs = new String[] { "false" };
-                return new android.content.CursorLoader(this,                                       // Parent activity context
-                        TenantsContract.TenantEntry.ROOM_CONTENT_URI,    // Provider content URI to query
-                        projection2,                                                                 // Columns to include in the resulting Cursor
-                        selection,                                                                          // No selection clause
-                        selectionArgs,                                                                          // No selection arguments
-                        null);                                                                        // Default sort order
+                return new android.content.CursorLoader(this,                           // Parent activity context
+                        TenantsContract.TenantEntry.ROOM_CONTENT_URI,   // Provider content URI to query
+                        TenantsContract.TenantEntry.RoomTableProjection,       // Columns to include in the resulting Cursor
+                        selection,                                                                                // No selection clause
+                        selectionArgs,                                                                         // No selection arguments
+                        null);                                                                                       // Default sort order
 
 
             //case "Tenant_Unpaied_List":
@@ -164,7 +151,7 @@ public class TenantInfoActivity extends AppCompatActivity implements android.app
                  */
                     return new android.content.CursorLoader(this,                                       // Parent activity context
                             TenantsContract.TenantEntry.TENANT_CONTENT_URI,    // Provider content URI to query
-                            projection,                                                                 // Columns to include in the resulting Cursor
+                            TenantsContract.TenantEntry.TenantTableProjection,                                                                 // Columns to include in the resulting Cursor
                             null,                                                                          // No selection clause
                             null,                                                                          // No selection arguments
                             null);                                                                        // Default sort order

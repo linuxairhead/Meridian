@@ -38,7 +38,7 @@ public class TenantsDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        Log.d(LOG_TAG, "onCreate");
+        Log.d(LOG_TAG, "onCreate - create all the table for Meridian ");
 
         // Create a String that contains the SQL statement to create the tenants table
         String SQL_CREATE_TENANT_TABLE =
@@ -61,7 +61,7 @@ public class TenantsDbHelper extends SQLiteOpenHelper {
                         + TenantsContract.TenantEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                         + TenantsContract.TenantEntry.COLUMN_ROOMNUMBER + " INTEGER NOT NULL, "
                         + TenantsContract.TenantEntry.COLUMN_DATE + " TEXT NOT NULL, "
-                        + TenantsContract.TenantEntry.COLUMN_TRANSATION_TYPE + " TEXT NOT NULL, "
+                        + TenantsContract.TenantEntry.COLUMN_TRANSACTION_TYPE + " TEXT NOT NULL, "
                         + TenantsContract.TenantEntry.COLUMN_AMOUNT +" INTEGER NOT NULL );";
 
         // Execute the SQL statement

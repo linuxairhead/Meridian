@@ -1,10 +1,5 @@
 package com.lingoville.meridian.Data;
 
-/**
- * Created by m88to on 12/14/2016.
- */
-
-
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -19,7 +14,7 @@ import android.widget.Toast;
 import java.util.IllegalFormatException;
 
 /**
- * {@link ContentProvider} for Pets app.
+ * {@link ContentProvider} for Meridian app.
  */
 public class TenantsProvider extends ContentProvider {
 
@@ -48,6 +43,7 @@ public class TenantsProvider extends ContentProvider {
         sUriMatcher.addURI(TenantsContract.CONTENT_AUTHORITY, TenantsContract.PATH_RoomInfo, RoomInfo );
         sUriMatcher.addURI(TenantsContract.CONTENT_AUTHORITY, TenantsContract.PATH_RoomInfo+"/#", RoomInfo_Vacant );
     }
+
     /**
      * Initialize the provider and the database helper object.
      */
@@ -68,62 +64,72 @@ public class TenantsProvider extends ContentProvider {
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
                         String sortOrder) {
 
-        Log.d(LOG_TAG, " query >" + uri+"<");
-
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        Log.d(LOG_TAG, " query :" + uri);
 
         Cursor cursor;
-
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
         int match = sUriMatcher.match(uri);
 
-        Log.d(LOG_TAG, " query >" + uri+"<match is"+match);
+        Log.d(LOG_TAG, " query :" + uri +"match is" + match);
 
         switch (match) {
+            /*
+            * This will perform a query on the Tenants table
+            */
             case Tenants:
-
                 cursor = db.query(TenantsContract.TenantEntry.Tenants_TABLE_NAME, projection, selection, selectionArgs,
                         null,   null,   sortOrder);
                 if (cursor == null)
                     Log.d(LOG_TAG, " query >" + uri+"cursor is null");
                 break;
 
+            /*
+            * This will perform a query on the Tenants table where the _id equals
+            */
             case Tenants_ID:
                 selection = TenantsContract.TenantEntry._ID + "=?";
                 selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri))};
 
-                /*
-                 * This will perform a query on the Tenants table where the _id equals
-                 */
                 cursor = db.query(TenantsContract.TenantEntry.Tenants_TABLE_NAME, projection, selection, selectionArgs,
                         null, null, sortOrder);
                 break;
+
+            /*
+            * This will perform a query on the Finance table
+            */
             case Finance:
                 cursor = db.query(TenantsContract.TenantEntry.Finance_TABLE_NAME, projection, selection, selectionArgs,
                         null,   null,   sortOrder);
                 break;
+
+            /*
+            * This will perform a query on the Finance table where the _id equals
+            */
             case Finance_ID:
                 selection = TenantsContract.TenantEntry._ID + "=?";
                 selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri))};
 
-                /*
-                 * This will perform a query on the Finance table where the _id equals
-                 */
                 cursor = db.query(TenantsContract.TenantEntry.Finance_TABLE_NAME, projection, selection, selectionArgs,
                         null, null, sortOrder);
                 break;
+
+            /*
+            * This will perform a query on the RoomInfo table
+            */
             case RoomInfo:
                 cursor = db.query(TenantsContract.TenantEntry.ROOM_TABLE_NAME, projection, selection, selectionArgs,
                         null,   null,   sortOrder);
                 break;
+
             case RoomInfo_Vacant:
                 selection = TenantsContract.TenantEntry.COLUMN_Vancant + "=?";
                 selectionArgs = new String[] { "false" };
                 cursor = db.query(TenantsContract.TenantEntry.ROOM_TABLE_NAME, projection, selection, selectionArgs,
                         null,   null,   sortOrder);
                 break;
+
             default:
                 throw new IllegalArgumentException("Cannot query unknown URI " + uri);
-
         }
 
         /*
@@ -258,7 +264,7 @@ public class TenantsProvider extends ContentProvider {
             throw new IllegalArgumentException("Tenant requires a date for transaction" );
         }
 
-        String type = values.getAsString(TenantsContract.TenantEntry.COLUMN_TRANSATION_TYPE);
+        String type = values.getAsString(TenantsContract.TenantEntry.COLUMN_TRANSACTION_TYPE);
         if(date == null) {
             throw new IllegalArgumentException("Tenant requires a type of transaction" );
         }
@@ -333,7 +339,6 @@ public class TenantsProvider extends ContentProvider {
                 getContext().getContentResolver().notifyChange(uri, null);
 
                 return returnVal;
-
             }
 
 

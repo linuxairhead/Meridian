@@ -14,21 +14,17 @@ public final class TenantsContract {
 
 
     /**
-     * The "Content authority" is a name for the entire content provider, similar to the
-     * relationship between a domain name and its website.  A convenient string to use for the
-     * content authority is the package name for the app, which is guaranteed to be unique on the
-     * device.
+     * The name for the entire content provider
      */
     public static final String CONTENT_AUTHORITY = "com.lingoville.meridian";
 
     /**
-     * Use CONTENT_AUTHORITY to create the base of all URI's which apps will use to contact
-     * the content provider.
+     * The base of all URI's which apps will use to contact the content provider.
      */
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
+
     /**
-     * Possible path (appended to base content URI for possible URI's)
-     * as the ContentProvider hasn't been given any information on what to do with "staff".     *
+     * Possible path will appended to base content URI for possible URI's as the ContentProvider
      */
     public static final String PATH_RoomInfo = "RoomInfo";
 
@@ -60,14 +56,6 @@ public final class TenantsContract {
           For Room Info Table
          */
                 /*
-                * Room Vancancy
-                */
-                public final static String COLUMN_Vancant = "Room_Vancancy";
-
-        /*
-          For Tenant Table
-         */
-                /*
                 * Unique ID number for Tenant
                 */
                 public final static String _ID = BaseColumns._ID;
@@ -77,6 +65,23 @@ public final class TenantsContract {
                  */
                 public final static String COLUMN_ROOMNUMBER ="Room_Number";
 
+                /*
+                * Room Vancancy
+                */
+                public final static String COLUMN_Vancant = "Room_Vancancy";
+
+                /*
+                * Define Room Table Projection that specifies the columns from the RoomTable care about.
+                */
+                public final static String[] RoomTableProjection = {
+                        _ID,
+                        COLUMN_ROOMNUMBER,
+                        COLUMN_Vancant
+                };
+
+        /*
+          For Tenant Table
+        */
                 /*
                 * Tenant First Name
                 */
@@ -107,11 +112,21 @@ public final class TenantsContract {
                 */
                 public final static String COLUMN_MOVEOUT = "Move_Out_Date";
 
-
+                /*
+                * Define Tenant Table Pojection that specifies the columns from the Tenant Table care about.
+                */
+                public final static String[] TenantTableProjection = {
+                        _ID,
+                        COLUMN_ROOMNUMBER,
+                        COLUMN_FIRSTNAME,
+                        COLUMN_LASTNAME,
+                        COLUMN_EMAIL,
+                        COLUMN_PHONENUMBER,
+                        COLUMN_MOVEIN,
+                        COLUMN_MOVEOUT };
       /*
       For Finance Table
      */
-
                 /*
                 * Date of Transaction
                  */
@@ -120,7 +135,7 @@ public final class TenantsContract {
                 /*
                  * Type of Transation - Deposit, Rent, Utility
                  */
-                public final static String COLUMN_TRANSATION_TYPE = "Transaction_Type";
+                public final static String COLUMN_TRANSACTION_TYPE = "Transaction_Type";
 
                 /*
                  * The amount of Transation
@@ -130,8 +145,19 @@ public final class TenantsContract {
                 /*
                 *  Tranaction Type
                  */
-                public static final int TRANSATION_DEPOSIT = 0;
-                public static final int TRANSATION_RENT = 1;
-                public static final int TRANSATION_UTILITY = 2;
+                public static final int TRANSACTION_DEPOSIT = 0;
+                public static final int TRANSACTION_RENT = 1;
+                public static final int TRANSACTION_UTILITY = 2;
+
+                /*
+                * Define Transaction projection that specifies the columns from the table care about.
+                */
+                public final static String[] TransactionTableProjection = {
+                            _ID,
+                            COLUMN_ROOMNUMBER,
+                            COLUMN_DATE,
+                            COLUMN_TRANSACTION_TYPE,
+                            COLUMN_AMOUNT
+                    };
     }
 }

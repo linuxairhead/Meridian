@@ -134,7 +134,7 @@ public class TransactionEditActivity extends AppCompatActivity implements Loader
         try{
             values.put(TenantsContract.TenantEntry.COLUMN_ROOMNUMBER, currentRoomNumber);
             values.put(TenantsContract.TenantEntry.COLUMN_DATE, today );
-            values.put(TenantsContract.TenantEntry.COLUMN_TRANSATION_TYPE, mType.getSelectedItem().toString().trim());
+            values.put(TenantsContract.TenantEntry.COLUMN_TRANSACTION_TYPE, mType.getSelectedItem().toString().trim());
             values.put(TenantsContract.TenantEntry.COLUMN_AMOUNT, Integer.parseInt (mAmount.getText().toString().trim()));
 
         } catch ( Exception e) {
@@ -183,23 +183,13 @@ public class TransactionEditActivity extends AppCompatActivity implements Loader
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Log.d(LOG_TAG, "Loader");
-       /*
-       * Define a projection that specifies the columns from the table care about.
-       */
-        String[] projection = {
-                TenantsContract.TenantEntry._ID,
-                TenantsContract.TenantEntry.COLUMN_ROOMNUMBER,
-                TenantsContract.TenantEntry.COLUMN_DATE,
-                TenantsContract.TenantEntry.COLUMN_TRANSATION_TYPE,
-                TenantsContract.TenantEntry.COLUMN_AMOUNT
-        };
 
         /*
          * This loader will execute the ContentProvider's query method on a background thread
          */
         return new android.content.CursorLoader(this,                                   // Finance activity context
                 mCurrentFinanceUri,       // Provider content URI to query
-                projection,                                                                                      // Columns to include in the resulting Cursor
+                TenantsContract.TenantEntry.TransactionTableProjection,    // Columns to include in the resulting Cursor
                 null,                                                                                               // No selection clause
                 null,                                                                                               // No selection arguments
                 null );                                                                                             // Default sort order
