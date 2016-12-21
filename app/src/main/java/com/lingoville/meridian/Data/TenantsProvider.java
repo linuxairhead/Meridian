@@ -499,6 +499,16 @@ public class TenantsProvider extends ContentProvider {
                 returnVal =  db.delete(TenantsContract.TenantEntry.Tenants_TABLE_NAME, selection, selectionArgs);
                 break;
 
+            case Finance:
+                returnVal = db.delete(TenantsContract.TenantEntry.Finance_TABLE_NAME, selection, selectionArgs);
+                break;
+
+            case Finance_ID:
+                selection = TenantsContract.TenantEntry._ID + "=?";
+                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri))};
+                returnVal =  db.delete(TenantsContract.TenantEntry.Finance_TABLE_NAME, selection, selectionArgs);
+                break;
+
             default:
                 throw new IllegalArgumentException("Delete is not supported for " + uri);
         }

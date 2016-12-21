@@ -102,7 +102,7 @@ public class TransactionInfoActivity extends AppCompatActivity implements androi
 
                             case R.id.item_delete:
                                 Log.d(LOG_TAG, "Menu Item Click: Delete");
-                                //deleteTenent();
+                                deleteTransaction();
                                 return true;
                         }
                         return false;
@@ -112,7 +112,6 @@ public class TransactionInfoActivity extends AppCompatActivity implements androi
                 return true;
             }
         });
-
 
         /*
         * Floating Action Button to add new transaction (TrasactionEditActivity)
@@ -182,6 +181,29 @@ public class TransactionInfoActivity extends AppCompatActivity implements androi
 
     private int getCurrentRoomNumber(){
         return mCurrentRoomNumber;
+    }
+
+    private void deleteTransaction() {
+        Log.d(LOG_TAG, "deleteTransaction");
+
+        // Only perform the delete if this is an existing Transaction.
+        if (mCurrentFinanceUri != null) {
+            // Call the ContentResolver to delete the pet at the given content URI.
+            // Pass in null for the selection and selection args because the mCurrentFinanceUri
+            // content URI already identifies the pet that we want.
+            int rowsDeleted = getContentResolver().delete(mCurrentFinanceUri, null, null);
+
+            // Show a toast message depending on whether or not the delete was successful.
+            if (rowsDeleted == 0) {
+                // If no rows were deleted, then there was an error with the delete.
+                Toast.makeText(this, "Failed to Deleted", //getString(R.string.editor_delete_pet_failed),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                // Otherwise, the delete was successful and we can display a toast.
+                Toast.makeText(this, "Successfully Deleted", //getString(R.string.editor_delete_pet_successful),
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
 }

@@ -1,5 +1,8 @@
 Bug Report
 
+12/21/2016 TenantProvider, TransactionInfoActivity
+		TransactionInfoActivity drop down Delete handle at TenantProvider
+		
 12/21/2016 TenantProvider
 		TransactionInfoActivity drop down Edit handle at TenantProvider
 
