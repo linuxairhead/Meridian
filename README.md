@@ -1,5 +1,8 @@
 Bug Report
 
+12/21/2016 TenantProvider
+		TransactionInfoActivity drop down Edit handle at TenantProvider
+
 12/21/2016 TenantEditActivity
 		Bug Fixed: when program was first used, failed to verify RoomVacant Table
 		
@@ -7,7 +10,7 @@ Bug Report
 		Enabled Transaction drop down menu 
 
 12/21/2016 TenantProvider	598ec957ec66cf6238422cd7ac2d220b920aaf80
-		when Tenant was deleted, update RoomInfo Table
+		1. when Tenant was deleted, update RoomInfo Table
 
 12/21/2016 TenantInfoActivity	2b5d58332f414eb88f614809760385228414be87
 		Enabled delete option but still has bug, 

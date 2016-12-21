@@ -307,6 +307,12 @@ public class TenantsProvider extends ContentProvider {
                 selection = TenantsContract.TenantEntry._ID + "=?";
                 selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri))};
                 return updateTenant(uri, contentValues, selection, selectionArgs);
+            case Finance:
+                return updateFinance(uri, contentValues, selection, selectionArgs);
+            case Finance_ID:
+                selection = TenantsContract.TenantEntry._ID + "=?";
+                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri))};
+                return updateFinance(uri, contentValues, selection, selectionArgs);
             default:
                 throw new IllegalArgumentException("Update is not supported for " + uri);
         }
@@ -407,6 +413,56 @@ public class TenantsProvider extends ContentProvider {
 
                 // Returns the number of database rows affected by the update statement
                  int returnVal =  database.update(TenantsContract.TenantEntry.Tenants_TABLE_NAME, values, selection, selectionArgs);
+
+                 /*
+                 *  Notify all listener that the data has changed for the tenant content URI
+                 */
+                getContext().getContentResolver().notifyChange(uri, null);
+
+                return returnVal;
+            }
+
+            private int updateFinance(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+                Log.d(LOG_TAG, " updateFinance :" + uri);
+
+                if (values.containsKey(TenantsContract.TenantEntry.COLUMN_ROOMNUMBER)) {
+                    String roomNum = values.getAsString(TenantsContract.TenantEntry.COLUMN_ROOMNUMBER);
+                    if (roomNum == null) {
+                        throw new IllegalArgumentException("Transaction requires a room number");
+                    }
+                }
+
+                if (values.containsKey(TenantsContract.TenantEntry.COLUMN_DATE)) {
+                    String transDate = values.getAsString(TenantsContract.TenantEntry.COLUMN_DATE);
+                    if (transDate == null) {
+                        throw new IllegalArgumentException("Transaction requires a Date");
+                    }
+                }
+
+                if (values.containsKey(TenantsContract.TenantEntry.COLUMN_TRANSACTION_TYPE)) {
+                    String transType = values.getAsString(TenantsContract.TenantEntry.COLUMN_TRANSACTION_TYPE);
+                    if (transType == null) {
+                        throw new IllegalArgumentException("Transaction requires a Transaction Type");
+                    }
+                }
+
+                if (values.containsKey(TenantsContract.TenantEntry.COLUMN_AMOUNT)) {
+                    String transAmount = values.getAsString(TenantsContract.TenantEntry.COLUMN_AMOUNT);
+                    if (transAmount == null) {
+                        throw new IllegalArgumentException("Transaction requires a amount");
+                    }
+                }
+
+                // If there are no values to update, then don't try to update the database
+                if (values.size() == 0) {
+                    return 0;
+                }
+
+                // Otherwise, get writeable database to update the data
+                SQLiteDatabase database = mDbHelper.getWritableDatabase();
+
+                // Returns the number of database rows affected by the update statement
+                int returnVal =  database.update(TenantsContract.TenantEntry.Finance_TABLE_NAME, values, selection, selectionArgs);
 
                  /*
                  *  Notify all listener that the data has changed for the tenant content URI

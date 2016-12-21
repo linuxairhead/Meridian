@@ -36,7 +36,7 @@ public class TransactionEditActivity extends AppCompatActivity implements Loader
     /* Tenant Uri to access Tenant Provider */
     private Uri mCurrentFinanceUri;
 
-    private static int currentRoomNumber ;
+    private static int mCurrentRoomNumber ;
     private String today;
     private TextView mDate;
     private Spinner mType;
@@ -44,15 +44,14 @@ public class TransactionEditActivity extends AppCompatActivity implements Loader
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(LOG_TAG, "onCreate rm is " + currentRoomNumber);
+        Log.d(LOG_TAG, "onCreate rm is " + mCurrentRoomNumber);
         super.onCreate(savedInstanceState);
 
-
         // get the room number from main activity
-        currentRoomNumber = getIntent().getIntExtra("Room_Number", 1);
+        mCurrentRoomNumber = getIntent().getIntExtra("Room_Number", 1);
 
         // initialized the toolbar
-        setTitle("New Transaction for #" + currentRoomNumber);
+        setTitle("New Transaction for #" + mCurrentRoomNumber);
         setContentView(R.layout.activity_new_transaction);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -96,8 +95,7 @@ public class TransactionEditActivity extends AppCompatActivity implements Loader
 
                 //cancel the activity and go back to main screen.
                 Intent cancelIntent = new Intent(TransactionEditActivity.this, TransactionInfoActivity.class);
-                cancelIntent.putExtra("Room_Number", currentRoomNumber );
-                finish();
+                cancelIntent.putExtra("Room_Number", mCurrentRoomNumber );
                 startActivity(cancelIntent);
             }
         });
@@ -109,14 +107,13 @@ public class TransactionEditActivity extends AppCompatActivity implements Loader
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(LOG_TAG, "SaveTenant rm is " + currentRoomNumber);
+                Log.d(LOG_TAG, "SaveTenant rm is " + mCurrentRoomNumber);
                 // save the Tenant information.
                 saveTransaction();
 
                 // once inserted the Tenant info call go back to main screen
                 Intent saveIntent = new Intent(TransactionEditActivity.this, TransactionInfoActivity.class);
-                saveIntent.putExtra("Room_Number", currentRoomNumber );
-                finish();
+                saveIntent.putExtra("Room_Number", mCurrentRoomNumber );
                 startActivity(saveIntent);
             }
         });
@@ -126,13 +123,13 @@ public class TransactionEditActivity extends AppCompatActivity implements Loader
  * Get the user input from editor and save new tenant into database.
  */
     private void saveTransaction() {
-        Log.d(LOG_TAG, "insertTenant rm is " + currentRoomNumber);
+        Log.d(LOG_TAG, "insertTenant rm is " + mCurrentRoomNumber);
 
         // Create the content value class by reading from user input editor
         ContentValues values = new ContentValues();
 
         try{
-            values.put(TenantsContract.TenantEntry.COLUMN_ROOMNUMBER, currentRoomNumber);
+            values.put(TenantsContract.TenantEntry.COLUMN_ROOMNUMBER, mCurrentRoomNumber);
             values.put(TenantsContract.TenantEntry.COLUMN_DATE, today );
             values.put(TenantsContract.TenantEntry.COLUMN_TRANSACTION_TYPE, mType.getSelectedItem().toString().trim());
             values.put(TenantsContract.TenantEntry.COLUMN_AMOUNT, Integer.parseInt (mAmount.getText().toString().trim()));
@@ -182,7 +179,7 @@ public class TransactionEditActivity extends AppCompatActivity implements Loader
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Log.d(LOG_TAG, "Loader");
+        Log.d(LOG_TAG, "Loader rm is" + mCurrentRoomNumber);
 
         /*
          * This loader will execute the ContentProvider's query method on a background thread
@@ -197,7 +194,7 @@ public class TransactionEditActivity extends AppCompatActivity implements Loader
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        Log.d(LOG_TAG, "onLoaderFinished");
+        Log.d(LOG_TAG, "onLoaderFinished rm is" + mCurrentRoomNumber);
         // Bail early if the cursor is null or there is less than 1 row in the cursor
         if (cursor == null || cursor.getCount() < 1) {
             return;
@@ -207,13 +204,15 @@ public class TransactionEditActivity extends AppCompatActivity implements Loader
         // (This should be the only row in the cursor)
         if (cursor.moveToFirst()) {
             mDate.setText(cursor.getString(cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_DATE)));
+            mDate.setText(cursor.getString(cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_DATE)));
+            //mType.set(cursor.getString(cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_TRANSACTION_TYPE)));
             mAmount.setText(cursor.getString(cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_AMOUNT)));
         }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        Log.d(LOG_TAG, "onLoaderReset");
+        Log.d(LOG_TAG, "onLoaderReset rm:" + mCurrentRoomNumber);
         mDate.setText(today);
         mAmount.setText("");
     }

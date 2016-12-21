@@ -95,6 +95,7 @@ public class TransactionInfoActivity extends AppCompatActivity implements androi
                                 //Toast.makeText(TenantInfoActivity.this, "Edit Clicked", Toast.LENGTH_SHORT).show();
 
                                 Intent transactionIntent = new Intent(TransactionInfoActivity.this, TransactionEditActivity.class);
+                                transactionIntent.putExtra("Room_Number", mCurrentRoomNumber );
                                 transactionIntent.setData(mCurrentFinanceUri);
                                 startActivity(transactionIntent);
                                 return true;
@@ -139,7 +140,6 @@ public class TransactionInfoActivity extends AppCompatActivity implements androi
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        mCurrentRoomNumber = this.getCurrentRoomNumber();
 
         Log.d(LOG_TAG, "onCreateLoader rm is " + mCurrentRoomNumber);
 
