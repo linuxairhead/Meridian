@@ -1,12 +1,21 @@
 Bug Report
 
-12/21/2016 TenantInfoActivity: enabled delete option but still has bug
+12/21/2016 TransactionInfoActivity
+		Enabled Transaction drop down menu 
+
+12/21/2016 TenantProvider	598ec957ec66cf6238422cd7ac2d220b920aaf80
+		when Tenant was deleted, update RoomInfo Table
+
+12/21/2016 TenantInfoActivity	2b5d58332f414eb88f614809760385228414be87
+		Enabled delete option but still has bug, 
 		1. When tenant removed from db, it also need to change the flag on RoomInfo Table
 		2. When tenant removed from db, the transaction table for room need to reset as well.
 
-12/20/2016 TenantInfoActivity: enabled drop down menu and fixed edit option
+12/20/2016 TenantInfoActivity	6147e147f270e5d2826706a6bae5bdb9afdc48f6
+		Enabled Tenant drop down menu and fixed edit option
 
-12/20/2016 TenantsContract: include default Projection for each table
+12/20/2016 TenantsContract
+		Include default Projection for each table
 
 12/20/2016 Created RoomVacant Table to keep track of the Vacancy room
 		And By choosing "List of Vacant room", it view the vacant room from TenantInfoActivity

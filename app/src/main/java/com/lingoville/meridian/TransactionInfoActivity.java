@@ -1,15 +1,22 @@
 package com.lingoville.meridian;
 
+import android.content.ContentUris;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.lingoville.meridian.Data.TenantsContract;
 
@@ -24,6 +31,9 @@ public class TransactionInfoActivity extends AppCompatActivity implements androi
 
     /*The Loader for the Cursor Loader */
     private static final int TRANSACTION_INFO_LOADER = 3;
+
+    /* Content URI for the Current Tenant */
+    private Uri mCurrentFinanceUri;
 
     TransactionCursorAdapter mCursorAdapter;
 
@@ -53,6 +63,56 @@ public class TransactionInfoActivity extends AppCompatActivity implements androi
         });
         toolbar.setNavigationIcon(android.R.drawable.ic_menu_revert);
 
+        final ListView transactionList = (ListView) findViewById(R.id.list_transaction_history);
+        transactionList.setClickable(true);
+        transactionList.setLongClickable(true);
+
+        // Find and set empty view on the ListView, so that it only shows when the list has 0 items.
+        View emptyView = findViewById(R.id.empty_transaction_view);
+        transactionList.setEmptyView(emptyView);
+
+        transactionList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d(LOG_TAG, "Long Click");
+                mCurrentFinanceUri = ContentUris.withAppendedId(TenantsContract.TenantEntry.FINANCE_CONTENT_URI, id);
+
+                LinearLayout tenantListItem = (LinearLayout)findViewById(R.id.list_transaction_info_items) ;
+                //Creating the instance of PopupMenu
+                PopupMenu popupMenu = new PopupMenu(TransactionInfoActivity.this, tenantListItem );
+                //Inflating the Popup using xml file
+                popupMenu.getMenuInflater().inflate(R.menu.tenants_popup, popupMenu.getMenu());
+                //registering popup with OnMenuItemClickListener
+
+                popupMenu.setOnMenuItemClickListener( new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        Log.d(LOG_TAG, "Menu Item Click");
+
+                        switch (item.getItemId()) {
+                            case R.id.item_edit:
+                                Log.d(LOG_TAG, "Menu Item Click: Edit");
+                                //Toast.makeText(TenantInfoActivity.this, "Edit Clicked", Toast.LENGTH_SHORT).show();
+
+                                Intent transactionIntent = new Intent(TransactionInfoActivity.this, TransactionEditActivity.class);
+                                transactionIntent.setData(mCurrentFinanceUri);
+                                startActivity(transactionIntent);
+                                return true;
+
+                            case R.id.item_delete:
+                                Log.d(LOG_TAG, "Menu Item Click: Delete");
+                                //deleteTenent();
+                                return true;
+                        }
+                        return false;
+                    }
+                });
+                popupMenu.show();//showing popup menu*/
+                return true;
+            }
+        });
+
+
         /*
         * Floating Action Button to add new transaction (TrasactionEditActivity)
          */
@@ -65,22 +125,14 @@ public class TransactionInfoActivity extends AppCompatActivity implements androi
                 // get the room number from main activity
                 currentRoomNumber = getIntent().getIntExtra("Room_Number", 1);
                 tenantIntent.putExtra("Room_Number", currentRoomNumber );
-                finish();
                 startActivity(tenantIntent);
             }
         });
 
-        // Find the ListView which will be populated with the pet data
-        ListView petListView = (ListView) findViewById(R.id.list_transaction_history);
-
-        // Find and set empty view on the ListView, so that it only shows when the list has 0 items.
-        View emptyView = findViewById(R.id.empty_transaction_view);
-        petListView.setEmptyView(emptyView);
-
         // Setup cursor adapter using cursor from last step
         mCursorAdapter = new TransactionCursorAdapter(this, null);
         // Attach cursor adapter to the ListView
-        petListView.setAdapter(mCursorAdapter);
+        transactionList.setAdapter(mCursorAdapter);
         // Kick off the loader
         getLoaderManager().initLoader(TRANSACTION_INFO_LOADER, null, this);
     }
@@ -90,7 +142,6 @@ public class TransactionInfoActivity extends AppCompatActivity implements androi
         currentRoomNumber = this.getCurrentRoomNumber();
 
         Log.d(LOG_TAG, "onCreateLoader rm is " + currentRoomNumber);
-
 
         /*
          * To display Transaction info          *
