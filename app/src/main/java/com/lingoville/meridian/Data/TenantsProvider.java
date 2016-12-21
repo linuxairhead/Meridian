@@ -300,7 +300,7 @@ public class TenantsProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         switch (match) {
             case RoomInfo:
-                return updateRoom(uri, contentValues, selection, selectionArgs);
+                return updateRoomStatusToOccupied(uri, contentValues, selection, selectionArgs);
             case Tenants:
                 return updateTenant(uri, contentValues, selection, selectionArgs);
             case Tenants_ID:
@@ -314,7 +314,7 @@ public class TenantsProvider extends ContentProvider {
             /*
              *  private method for update room information
              */
-            private int updateRoom(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+            private int updateRoomStatusToOccupied(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
                 Log.d(LOG_TAG, " updateRoom :" + uri);
 
                 if (values.containsKey(TenantsContract.TenantEntry.COLUMN_Vancant)) {
@@ -438,6 +438,8 @@ public class TenantsProvider extends ContentProvider {
             case Tenants_ID:
                 selection = TenantsContract.TenantEntry._ID + "=?";
                 selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri))};
+
+                updateRoomStatusToVacant(db, selection, selectionArgs);
                 returnVal =  db.delete(TenantsContract.TenantEntry.Tenants_TABLE_NAME, selection, selectionArgs);
                 break;
 
@@ -451,6 +453,27 @@ public class TenantsProvider extends ContentProvider {
         getContext().getContentResolver().notifyChange(uri, null);
 
         return returnVal;
+    }
+
+    private int updateRoomStatusToVacant(SQLiteDatabase db, String selection, String [] selectionArgs) {
+
+        /* get the room number from Tenants Table */
+        Cursor cursor = db.query(TenantsContract.TenantEntry.Tenants_TABLE_NAME,
+                TenantsContract.TenantEntry.TenantTableProjection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null);
+        cursor.moveToFirst();
+        String roomNumber =  cursor.getString(cursor.getColumnIndexOrThrow(TenantsContract.TenantEntry.COLUMN_ROOMNUMBER));
+
+        /* update the room vacancy status to Room Table */
+        ContentValues values = new ContentValues();
+        values.put(TenantsContract.TenantEntry.COLUMN_Vancant, "false");
+        selection = TenantsContract.TenantEntry.COLUMN_ROOMNUMBER + "=?";
+        selectionArgs = new String[] { roomNumber  };
+        return db.update(TenantsContract.TenantEntry.ROOM_TABLE_NAME, values, selection, selectionArgs );
     }
 
     /**
