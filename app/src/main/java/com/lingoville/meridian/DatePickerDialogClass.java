@@ -45,8 +45,10 @@ public class DatePickerDialogClass extends DialogFragment implements DatePickerD
 
         if(mID == R.id.newTenant_MoveInDate )
             textview = (TextView)getActivity().findViewById(R.id.newTenant_MoveInDate);
-        else
+        else if(mID == R.id.newTenant_MoveOutDate)
             textview = (TextView)getActivity().findViewById(R.id.newTenant_MoveOutDate);
+        else
+            textview = (TextView)getActivity().findViewById(R.id.newTrans_Date);
 
         textview.setText(year + " / " +  (month+1) + " / " + day);
     }

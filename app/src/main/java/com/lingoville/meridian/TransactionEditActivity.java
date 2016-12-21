@@ -1,5 +1,6 @@
 package com.lingoville.meridian;
 
+import android.app.DialogFragment;
 import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -80,10 +81,7 @@ public class TransactionEditActivity extends AppCompatActivity implements Loader
         /*
          * Get today's instance and set today's date.
          */
-        Date curDate = (Date) Calendar.getInstance().getTime();
-        DateFormat formatter = new SimpleDateFormat("yyy / MM / dd");
-        today = formatter.format(curDate);
-        mDate.setText(today);
+        setDatePickerAsToday();
 
         /*
          *   Handle Button for Cancel Tenant
@@ -119,9 +117,71 @@ public class TransactionEditActivity extends AppCompatActivity implements Loader
         });
     }
 
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Log.d(LOG_TAG, "Loader rm is" + mCurrentRoomNumber);
+
+        /*
+         * This loader will execute the ContentProvider's query method on a background thread
+         */
+        return new android.content.CursorLoader(this,                                   // Finance activity context
+                mCurrentFinanceUri,       // Provider content URI to query
+                TenantsContract.TenantEntry.TransactionTableProjection,    // Columns to include in the resulting Cursor
+                null,                                                                                               // No selection clause
+                null,                                                                                               // No selection arguments
+                null );                                                                                             // Default sort order
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        Log.d(LOG_TAG, "onLoaderFinished rm is" + mCurrentRoomNumber);
+        // Bail early if the cursor is null or there is less than 1 row in the cursor
+        if (cursor == null || cursor.getCount() < 1) {
+            return;
+        }
+
+        // Proceed with moving to the first row of the cursor and reading data from it
+        // (This should be the only row in the cursor)
+        if (cursor.moveToFirst()) {
+            mDate.setText(cursor.getString(cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_DATE)));
+            mDate.setText(cursor.getString(cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_DATE)));
+            //mType.set(cursor.getString(cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_TRANSACTION_TYPE)));
+            mAmount.setText(cursor.getString(cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_AMOUNT)));
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        Log.d(LOG_TAG, "onLoaderReset rm:" + mCurrentRoomNumber);
+        mDate.setText(today);
+        mAmount.setText("");
+    }
+
     /*
- * Get the user input from editor and save new tenant into database.
- */
+    *  When setDatePicker initizlized, set as today's date
+    */
+    private void setDatePickerAsToday(){
+
+        Log.d(LOG_TAG, "setDatePickerAsToday");
+
+        Date curDate = (Date) java.util.Calendar.getInstance().getTime();
+        DateFormat formatter = new SimpleDateFormat("yyy / MM / dd");
+        String today = formatter.format(curDate);
+
+        mDate.setText(today);
+        mDate.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                DialogFragment dialogfragment = new DatePickerDialogClass(R.id.newTrans_Date);
+                dialogfragment.show(getFragmentManager(), "Date Picker Dialog");
+            }
+        });
+    }
+
+    /*
+    * Get the user input from editor and save new tenant into database.
+    */
     private void saveTransaction() {
         Log.d(LOG_TAG, "insertTenant rm is " + mCurrentRoomNumber);
 
@@ -130,7 +190,7 @@ public class TransactionEditActivity extends AppCompatActivity implements Loader
 
         try{
             values.put(TenantsContract.TenantEntry.COLUMN_ROOMNUMBER, mCurrentRoomNumber);
-            values.put(TenantsContract.TenantEntry.COLUMN_DATE, today );
+            values.put(TenantsContract.TenantEntry.COLUMN_DATE, mDate.getText().toString().trim( ));
             values.put(TenantsContract.TenantEntry.COLUMN_TRANSACTION_TYPE, mType.getSelectedItem().toString().trim());
             values.put(TenantsContract.TenantEntry.COLUMN_AMOUNT, Integer.parseInt (mAmount.getText().toString().trim()));
 
@@ -174,46 +234,6 @@ public class TransactionEditActivity extends AppCompatActivity implements Loader
                 // Otherwise, the update was successful and we can display a toast.
                 Toast.makeText(this, getString(R.string.editor_update_transaction_successful), Toast.LENGTH_SHORT).show();
             }
-         }
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Log.d(LOG_TAG, "Loader rm is" + mCurrentRoomNumber);
-
-        /*
-         * This loader will execute the ContentProvider's query method on a background thread
-         */
-        return new android.content.CursorLoader(this,                                   // Finance activity context
-                mCurrentFinanceUri,       // Provider content URI to query
-                TenantsContract.TenantEntry.TransactionTableProjection,    // Columns to include in the resulting Cursor
-                null,                                                                                               // No selection clause
-                null,                                                                                               // No selection arguments
-                null );                                                                                             // Default sort order
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        Log.d(LOG_TAG, "onLoaderFinished rm is" + mCurrentRoomNumber);
-        // Bail early if the cursor is null or there is less than 1 row in the cursor
-        if (cursor == null || cursor.getCount() < 1) {
-            return;
         }
-
-        // Proceed with moving to the first row of the cursor and reading data from it
-        // (This should be the only row in the cursor)
-        if (cursor.moveToFirst()) {
-            mDate.setText(cursor.getString(cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_DATE)));
-            mDate.setText(cursor.getString(cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_DATE)));
-            //mType.set(cursor.getString(cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_TRANSACTION_TYPE)));
-            mAmount.setText(cursor.getString(cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_AMOUNT)));
-        }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        Log.d(LOG_TAG, "onLoaderReset rm:" + mCurrentRoomNumber);
-        mDate.setText(today);
-        mAmount.setText("");
     }
 }
