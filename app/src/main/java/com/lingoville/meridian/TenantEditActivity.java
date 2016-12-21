@@ -36,9 +36,9 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
     /* Tenant Uri to access Tenant Provider */
     private Uri mCurrentTenantUri;
 
-    private int currentRoomNumber;
+    private int mCurrentRoomNumber;
 
-    private int numberOfRoom;
+    private int mNumberOfRoom;
     private static boolean isRoomInit = false;
 
     private TextView mRoomNumber;
@@ -81,6 +81,9 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
             setTitle(R.string.title_activity_edit_tenant);
             getLoaderManager().initLoader(CURRENT_TENANT_LOADER, null, this);
         } else {
+            /* initRoom will only initilized once */
+            if(!isRoomInit) initRoomTable();
+
             /*
              * check for whether the current room has occupied or not.
              * if occupied, call transactionInfoActivity to view transaction history
@@ -89,13 +92,10 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
 
             if (isRoomInit && occupiedRoom() == 1) {
                 Intent transactionIntent = new Intent(TenantEditActivity.this, TransactionInfoActivity.class);
-                transactionIntent.putExtra("Room_Number", currentRoomNumber);
+                transactionIntent.putExtra("Room_Number", mCurrentRoomNumber);
                 startActivity(transactionIntent);
             } else
                 setTitle(R.string.title_activity_new_tenant);
-
-            /* initRoom will only initilized once */
-            if(!isRoomInit) initRoom();
 
             /* set today''s date as Date */
             setDatePickerAsToday();
@@ -127,7 +127,7 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
 
                     // once inserted the Tenant info call go back to main screen
                     Intent saveIntent = new Intent(TenantEditActivity.this, TransactionInfoActivity.class);
-                    saveIntent.putExtra("Room_Number", currentRoomNumber);
+                    saveIntent.putExtra("Room_Number", mCurrentRoomNumber);
                     startActivity(saveIntent);
                 } catch ( IllegalArgumentException e ) {
                     Log.d(LOG_TAG, "onCreate : handling illegal argument exception");
@@ -145,7 +145,7 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
         // Create the content value class by reading from user input editor
         ContentValues values = new ContentValues();
 
-        values.put(TenantsContract.TenantEntry.COLUMN_ROOMNUMBER, currentRoomNumber);
+        values.put(TenantsContract.TenantEntry.COLUMN_ROOMNUMBER, mCurrentRoomNumber);
         values.put(TenantsContract.TenantEntry.COLUMN_FIRSTNAME, mFirstName.getText().toString().trim());
         values.put(TenantsContract.TenantEntry.COLUMN_LASTNAME, mLastName.getText().toString().trim());
         values.put(TenantsContract.TenantEntry.COLUMN_PHONENUMBER, mPhoneNumber.getText().toString().trim());
@@ -177,7 +177,7 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
                 ContentValues trueValues = new ContentValues();
                 trueValues.put(TenantsContract.TenantEntry.COLUMN_Vancant, true);
                 String selection = TenantsContract.TenantEntry.COLUMN_ROOMNUMBER + " = ?";
-                String[] selectionArgs = new String[]{Integer.toString(currentRoomNumber)};
+                String[] selectionArgs = new String[]{Integer.toString(mCurrentRoomNumber)};
                 getContentResolver().update(TenantsContract.TenantEntry.ROOM_CONTENT_URI,trueValues, selection, selectionArgs);
 
             }
@@ -201,16 +201,20 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
     /*
      *  This should be initialized only once for entire program, even if the program restarted
      */
-    private void initRoom() {
+    private void initRoomTable() {
 
-        Log.d(LOG_TAG, "initRoom");
+        Log.d(LOG_TAG, "initRoomTable");
 
+        /* verify the room table has been initilized or not */
         String selection = TenantsContract.TenantEntry.COLUMN_ROOMNUMBER + " = ?";
         String [] selectionArgs = new String[] { Integer.toString(roomNumber[0])};
         Cursor cursor = getContentResolver().query(TenantsContract.TenantEntry.ROOM_CONTENT_URI,
                 TenantsContract.TenantEntry.RoomTableProjection, selection, selectionArgs, null );
-        if(cursor.getCount() != 0)
+        // if cursor return counter more then zero, the table was already initialized */
+        if(cursor.getCount() != 0) {
             isRoomInit = true;
+            return;
+        }
 
         /*
          * If this program is using for the first time and db doesn't contain RoomTable,
@@ -220,7 +224,7 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
             // Create the content value class by reading from user input editor
             ContentValues values = new ContentValues();
 
-            for (int counter = 0; counter < numberOfRoom; counter++) {
+            for (int counter = 0; counter < mNumberOfRoom; counter++) {
 
                 values.put(TenantsContract.TenantEntry.COLUMN_ROOMNUMBER, roomNumber[counter]);
                 values.put(TenantsContract.TenantEntry.COLUMN_Vancant, "false");
@@ -237,7 +241,7 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
 
         String selection = TenantsContract.TenantEntry.COLUMN_ROOMNUMBER + " = ?";
 
-        String [] selectionArgs = new String[] { Integer.toString(currentRoomNumber)};
+        String [] selectionArgs = new String[] { Integer.toString(mCurrentRoomNumber)};
 
         Cursor cursor = getContentResolver().query(TenantsContract.TenantEntry.ROOM_CONTENT_URI,
                 TenantsContract.TenantEntry.RoomTableProjection, selection, selectionArgs, null );
@@ -313,7 +317,7 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
     public void onLoaderReset(Loader<Cursor> loader) {
         Log.d(LOG_TAG, "onLoaderReset");
 
-        mRoomNumber.setText(""+currentRoomNumber);
+        mRoomNumber.setText(""+mCurrentRoomNumber);
         mFirstName.setText("");
         mLastName.setText("");
         mPhoneNumber.setText("");
@@ -326,10 +330,10 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
     */
     private void initializeLocalVariable(){
         // get the room number from main activity
-        currentRoomNumber = getIntent().getIntExtra("Room_Number", 1);
+        mCurrentRoomNumber = getIntent().getIntExtra("Room_Number", 1);
 
         mRoomNumber = (TextView) findViewById(R.id.newTenant_RoomNumber);
-        mRoomNumber.setText("" + currentRoomNumber);
+        mRoomNumber.setText("" + mCurrentRoomNumber);
         mFirstName = (EditText) findViewById(R.id.newTenant_firstName);
         mLastName = (EditText) findViewById(R.id.newTenant_lastName);
         mPhoneNumber = (EditText) findViewById(R.id.newTenant_PhoneNumber);
@@ -341,7 +345,7 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
         Intent intent = getIntent();
         mCurrentTenantUri = intent.getData();
 
-        numberOfRoom = roomNumber.length;
+        mNumberOfRoom = roomNumber.length;
     }
 
     /*

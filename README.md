@@ -1,6 +1,9 @@
 Bug Report
 
-12/21/2016 TransactionInfoActivity
+12/21/2016 TenantEditActivity
+		Bug Fixed: when program was first used, failed to verify RoomVacant Table
+		
+12/21/2016 TransactionInfoActivity	d6de89018933ff80626881f98ff492d19a752e17
 		Enabled Transaction drop down menu 
 
 12/21/2016 TenantProvider	598ec957ec66cf6238422cd7ac2d220b920aaf80

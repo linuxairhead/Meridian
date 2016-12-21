@@ -27,7 +27,7 @@ public class TransactionInfoActivity extends AppCompatActivity implements androi
 
     /* This variable will tell which tenant's finance table to use
     *  It will be pass from intent from previous activity */
-    private static int currentRoomNumber;
+    private static int mCurrentRoomNumber;
 
     /*The Loader for the Cursor Loader */
     private static final int TRANSACTION_INFO_LOADER = 3;
@@ -39,12 +39,12 @@ public class TransactionInfoActivity extends AppCompatActivity implements androi
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(LOG_TAG, "onCreate rm is " + currentRoomNumber);
+        Log.d(LOG_TAG, "onCreate rm is " + mCurrentRoomNumber);
         super.onCreate(savedInstanceState);
 
         // get the room number from main activity
-        currentRoomNumber = getIntent().getIntExtra("Room_Number", 1);
-        setTitle("Transaction for #" + currentRoomNumber);
+        mCurrentRoomNumber = getIntent().getIntExtra("Room_Number", 1);
+        setTitle("Transaction for #" + mCurrentRoomNumber);
 
         setContentView(R.layout.activity_transaction_history);
         /*
@@ -56,7 +56,7 @@ public class TransactionInfoActivity extends AppCompatActivity implements androi
             @Override
             public void onClick(View v) {
                 Intent tenantIntent = new Intent(TransactionInfoActivity.this, MainActivity.class);
-                tenantIntent.putExtra("Room_Number", currentRoomNumber);
+                tenantIntent.putExtra("Room_Number", mCurrentRoomNumber);
                 finish();
                 startActivity(tenantIntent);
             }
@@ -123,8 +123,8 @@ public class TransactionInfoActivity extends AppCompatActivity implements androi
 
                 Intent tenantIntent = new Intent(TransactionInfoActivity.this, TransactionEditActivity.class);
                 // get the room number from main activity
-                currentRoomNumber = getIntent().getIntExtra("Room_Number", 1);
-                tenantIntent.putExtra("Room_Number", currentRoomNumber );
+                mCurrentRoomNumber = getIntent().getIntExtra("Room_Number", 1);
+                tenantIntent.putExtra("Room_Number", mCurrentRoomNumber );
                 startActivity(tenantIntent);
             }
         });
@@ -139,18 +139,18 @@ public class TransactionInfoActivity extends AppCompatActivity implements androi
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        currentRoomNumber = this.getCurrentRoomNumber();
+        mCurrentRoomNumber = this.getCurrentRoomNumber();
 
-        Log.d(LOG_TAG, "onCreateLoader rm is " + currentRoomNumber);
+        Log.d(LOG_TAG, "onCreateLoader rm is " + mCurrentRoomNumber);
 
         /*
          * To display Transaction info          *
-         *  query(SELECT * FROM financeTable WHERE Room_Number = "currentRoomNumber")
+         *  query(SELECT * FROM financeTable WHERE Room_Number = "mCurrentRoomNumber")
          *  selection will set as "Room_Number = ?"
-         *  selectionArgs will set as currentRoomnumber
+         *  selectionArgs will set as mCurrentRoomNumber
          */
         String selection = TenantsContract.TenantEntry.COLUMN_ROOMNUMBER + " = ?";
-        String [] selectionArgs = new String[] { Integer.toString(currentRoomNumber)};
+        String [] selectionArgs = new String[] { Integer.toString(mCurrentRoomNumber)};
         /*
          * This loader will execute the ContentProvider's query method on a background thread
          */
@@ -181,7 +181,7 @@ public class TransactionInfoActivity extends AppCompatActivity implements androi
     }
 
     private int getCurrentRoomNumber(){
-        return currentRoomNumber;
+        return mCurrentRoomNumber;
     }
 
 }
