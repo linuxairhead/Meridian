@@ -193,7 +193,6 @@ public class TransactionEditActivity extends AppCompatActivity implements Loader
                 null,                                                                                               // No selection clause
                 null,                                                                                               // No selection arguments
                 null );                                                                                             // Default sort order
-
     }
 
     @Override

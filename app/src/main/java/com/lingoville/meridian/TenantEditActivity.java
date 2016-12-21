@@ -90,7 +90,6 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
             if (isRoomInit && occupiedRoom() == 1) {
                 Intent transactionIntent = new Intent(TenantEditActivity.this, TransactionInfoActivity.class);
                 transactionIntent.putExtra("Room_Number", currentRoomNumber);
-                finish();
                 startActivity(transactionIntent);
             } else
                 setTitle(R.string.title_activity_new_tenant);

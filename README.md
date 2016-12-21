@@ -1,5 +1,13 @@
 Bug Report
 
+12/21/2016 TenantInfoActivity: enabled delete option but still has bug
+		1. When tenant removed from db, it also need to change the flag on RoomInfo Table
+		2. When tenant removed from db, the transaction table for room need to reset as well.
+
+12/20/2016 TenantInfoActivity: enabled drop down menu and fixed edit option
+
+12/20/2016 TenantsContract: include default Projection for each table
+
 12/20/2016 Created RoomVacant Table to keep track of the Vacancy room
 		And By choosing "List of Vacant room", it view the vacant room from TenantInfoActivity
  
@@ -11,9 +19,9 @@ Bug Report
 		5. Bug, it won't display the transaction info for the room.
 		Miss spell the string for putExtra for Intent Object. from RoomNumber to Room_Number
 
-12/18/2016 Transaction Info was update with LoaderManager
+12/18/2016 TransactionInfo : update with LoaderManager
 
-12/18/2016 Transaction Info was able to print only for the particular room
+12/18/2016 TransactionInfo : able to print only for the particular room
 		OnCreateloader where does query occur when the CursorLoader
 
 12/17/2016 TenantsDbHelper 

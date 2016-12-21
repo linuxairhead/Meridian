@@ -1,6 +1,7 @@
 package com.lingoville.meridian;
 
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -22,10 +23,11 @@ public class TenantInfoActivity extends AppCompatActivity implements android.app
 
     public static final String LOG_TAG = TenantInfoActivity.class.getSimpleName();
 
-    /*
-    * The Loader for the Cursor Loader
-    */
+    /*  The Loader for the Cursor Loader  */
     private static final int TENANT_LOADER = 0;
+
+    /* Content URI for the Current Tenant */
+    private Uri mCurrentTenentUri;
 
     private TenantCursorAdapter mCursorAdapter;
 
@@ -77,7 +79,7 @@ public class TenantInfoActivity extends AppCompatActivity implements android.app
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d(LOG_TAG, "Long Click");
-                final Uri currentTenantUri = ContentUris.withAppendedId(TenantsContract.TenantEntry.TENANT_CONTENT_URI, id);
+                mCurrentTenentUri = ContentUris.withAppendedId(TenantsContract.TenantEntry.TENANT_CONTENT_URI, id);
 
                 LinearLayout tenantListItem = (LinearLayout)findViewById(R.id.list_tenant_info_items) ;
                 //Creating the instance of PopupMenu
@@ -97,24 +99,20 @@ public class TenantInfoActivity extends AppCompatActivity implements android.app
                                 Toast.makeText(TenantInfoActivity.this, "Edit Clicked", Toast.LENGTH_SHORT).show();
 
                                 Intent tenantIntent = new Intent(TenantInfoActivity.this, TenantEditActivity.class);
-                                tenantIntent.setData(currentTenantUri);
+                                tenantIntent.setData(mCurrentTenentUri);
                                 startActivity(tenantIntent);
-
                                 return true;
 
                             case R.id.item_delete:
                                 Log.d(LOG_TAG, "Menu Item Click: Delete");
-                                Toast.makeText(TenantInfoActivity.this, "Delete Clicked", Toast.LENGTH_SHORT).show();
+                                deleteTenent();
                                 return true;
-
                         }
                         return false;
                     }
-
                 });
                 popupMenu.show();//showing popup menu*/
                 return true;
-
             }
         });
         // Setup cursor adapter using cursor from last step
@@ -202,6 +200,33 @@ public class TenantInfoActivity extends AppCompatActivity implements android.app
         mCursorAdapter.swapCursor(null);
     }
 
+    private void deleteTenent() {
+        Log.d(LOG_TAG, "deleteTenent");
+        // Only perform the delete if this is an existing pet.
+        if (mCurrentTenentUri != null) {
+            // Call the ContentResolver to delete the pet at the given content URI.
+            // Pass in null for the selection and selection args because the mCurrentTenentUri
+            // content URI already identifies the pet that we want.
+            int rowsDeleted = getContentResolver().delete(mCurrentTenentUri, null, null);
+
+            // Show a toast message depending on whether or not the delete was successful.
+            if (rowsDeleted == 0) {
+                // If no rows were deleted, then there was an error with the delete.
+                Toast.makeText(this, "Failed to Deleted", //getString(R.string.editor_delete_pet_failed),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                // Otherwise, the delete was successful and we can display a toast.
+                Toast.makeText(this, "Successfully Deleted", //getString(R.string.editor_delete_pet_successful),
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        // Close the activity
+        finish();
+    }
+    /*
+     *  Perform the deletion of the tenents in the database
+     */
     private int[] listOfRoom = {
             101, 102, 103, 104, 105,
             201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211,
