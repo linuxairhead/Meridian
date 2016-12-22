@@ -2,13 +2,10 @@ package com.lingoville.meridian;
 
 import android.app.DialogFragment;
 import android.app.LoaderManager;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.icu.text.DateFormat;
-import android.icu.text.SimpleDateFormat;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -19,11 +16,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import com.lingoville.meridian.Data.TenantsContract;
 
 
-import java.util.Date;
 
 public class TenantEditActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
