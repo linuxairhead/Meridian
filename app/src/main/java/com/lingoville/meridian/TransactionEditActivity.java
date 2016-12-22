@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -22,8 +23,10 @@ import android.widget.Toast;
 
 import com.lingoville.meridian.Data.TenantsContract;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import static java.security.AccessController.getContext;
 
@@ -42,6 +45,7 @@ public class TransactionEditActivity extends AppCompatActivity implements Loader
     private TextView mDate;
     private Spinner mType;
     private EditText mAmount;
+    ArrayAdapter<String> dataAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +80,13 @@ public class TransactionEditActivity extends AppCompatActivity implements Loader
          */
         mDate = (TextView) findViewById(R.id.newTrans_Date);
         mType = (Spinner) findViewById(R.id.newTrans_Type);
+        List<String> typeList = new ArrayList<String>();
+        typeList.add("Rent");
+        typeList.add("Utility");
+        typeList.add("Deposit");
+        dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, typeList);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mType.setAdapter(dataAdapter);
         mAmount = (EditText) findViewById(R.id.newTrans_Amount);
 
         /*
@@ -145,7 +156,7 @@ public class TransactionEditActivity extends AppCompatActivity implements Loader
         if (cursor.moveToFirst()) {
             mDate.setText(cursor.getString(cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_DATE)));
             mDate.setText(cursor.getString(cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_DATE)));
-            //mType.set(cursor.getString(cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_TRANSACTION_TYPE)));
+            mType.setSelection(dataAdapter.getPosition(cursor.getString(cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_TRANSACTION_TYPE))));
             mAmount.setText(cursor.getString(cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_AMOUNT)));
         }
     }

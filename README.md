@@ -1,5 +1,8 @@
 Bug Report
 
+12/21/2016 TransactionEditActivity
+		Bug Fixed: Transaction Spinner won't set proper value for Edit
+		
 12/21/2016 DatePickerDialogClass, TransactionEditActivity
 		Implemented DatePicker for TransactionEditActivity
 
