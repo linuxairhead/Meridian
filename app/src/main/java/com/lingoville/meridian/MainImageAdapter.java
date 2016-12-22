@@ -3,6 +3,7 @@ package com.lingoville.meridian;
 import android.content.Context;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -37,7 +38,10 @@ public class MainImageAdapter extends BaseAdapter {
         ImageView imageView;
         if (convertView == null) {  // if it's not recycled, initialize some attributes
             imageView = new ImageView(mContext);
-            imageView.setLayoutParams(new GridView.LayoutParams(250, 200));
+            DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
+            int screenWidth = metrics.widthPixels;
+            //imageView.setLayoutParams(new GridView.LayoutParams(250, 200));
+            imageView.setLayoutParams(new GridView.LayoutParams(screenWidth/5, screenWidth/5));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imageView.setPadding(8, 8, 8, 8);
         } else {

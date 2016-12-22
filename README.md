@@ -1,5 +1,8 @@
 Bug Report
 
+12/22/2016 MainImageAdapter
+		Bug Fixed: UI fixed for Small Screen Device
+		
 12/21/2016 TransactionEditActivity
 		Bug Fixed: Transaction Spinner won't set proper value for Edit
 		
