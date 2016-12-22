@@ -184,7 +184,10 @@ public class TransactionEditActivity extends AppCompatActivity implements Loader
 
             @Override
             public void onClick(View v) {
-                DialogFragment dialogfragment = new DatePickerDialogClass(R.id.newTrans_Date);
+                DialogFragment dialogfragment = new DatePickerDialogClass();
+                Bundle aBundle = new Bundle();
+                aBundle.putInt("DATE", R.id.newTrans_Date);
+                dialogfragment.onCreateDialog(aBundle);
                 dialogfragment.show(getFragmentManager(), "Date Picker Dialog");
             }
         });

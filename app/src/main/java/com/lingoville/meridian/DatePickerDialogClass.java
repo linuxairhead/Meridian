@@ -4,10 +4,11 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.widget.DatePicker;
 import android.widget.TextView;
+
+import java.util.Calendar;
 
 /**
  * Created by m88to on 12/13/2016.
@@ -17,13 +18,16 @@ public class DatePickerDialogClass extends DialogFragment implements DatePickerD
 
     private int mID;
 
-    public DatePickerDialogClass() {
-        switch (mID = 0) {
+    private int mYear;
 
-        }
-    }
-    public DatePickerDialogClass(int rID) {
-        mID = rID;
+    private int mMonth;
+
+    private int mDay;
+
+    DatePickerDialog datepickerdialog;
+
+    public DatePickerDialogClass() {
+
     }
 
     @Override
@@ -31,14 +35,16 @@ public class DatePickerDialogClass extends DialogFragment implements DatePickerD
 
         final Calendar calendar = Calendar.getInstance();
 
-        int year = calendar.get(Calendar.YEAR);
+        mID = savedInstanceState.getInt("DATE");
 
-        int month = calendar.get(Calendar.MONTH);
+        mYear = calendar.get(Calendar.YEAR);
 
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        mMonth = calendar.get(Calendar.MONTH);
 
-        DatePickerDialog datepickerdialog = new DatePickerDialog(getActivity(),
-                AlertDialog.THEME_DEVICE_DEFAULT_DARK,this,year,month,day);
+        mDay = calendar.get(Calendar.DAY_OF_MONTH);
+
+        datepickerdialog = new DatePickerDialog(getActivity(),
+                AlertDialog.THEME_DEVICE_DEFAULT_DARK,this,mYear,mMonth,mDay);
 
         return datepickerdialog;
     }

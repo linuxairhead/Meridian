@@ -1,5 +1,8 @@
 Bug Report
 
+12/22/2016 DatePickerDialogClass, TenantEditActivity, TransactionEditActivity
+		Secure Apk Build Error Fixed  
+
 12/22/2016 MainImageAdapter
 		Bug Fixed: UI fixed for Small Screen Device
 		
