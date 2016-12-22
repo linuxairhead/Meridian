@@ -55,7 +55,6 @@ public class TransactionCursorAdapter extends CursorAdapter{
         ImageView transType = (ImageView) view.findViewById(R.id.list_TransType);
         TextView transDate = (TextView) view.findViewById(R.id.list_TransDate);
         TextView transAmount = (TextView) view.findViewById(R.id.list_TransAmount);
-        //TextView transTotal = (TextView) view.findViewById(R.id.list_TotalAmount);
 
         String type = c.getString(c.getColumnIndexOrThrow(TenantsContract.TenantEntry.COLUMN_TRANSACTION_TYPE));
         TextDrawable.IBuilder drawable = TextDrawable.builder().beginConfig().withBorder(8).endConfig().roundRect(20);
