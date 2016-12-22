@@ -1,5 +1,8 @@
 Bug Report
 
+12/21/2016 DatePickerDialogClass, TransactionEditActivity
+		Implemented DatePicker for TransactionEditActivity
+
 12/21/2016 TenantProvider, TransactionInfoActivity
 		TransactionInfoActivity drop down Delete handle at TenantProvider
 		

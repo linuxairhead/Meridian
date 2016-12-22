@@ -17,6 +17,11 @@ public class DatePickerDialogClass extends DialogFragment implements DatePickerD
 
     private int mID;
 
+    public DatePickerDialogClass() {
+        switch (mID = 0) {
+
+        }
+    }
     public DatePickerDialogClass(int rID) {
         mID = rID;
     }

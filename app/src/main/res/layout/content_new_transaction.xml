@@ -62,7 +62,7 @@
 
         <EditText
             android:id="@+id/newTrans_Amount"
-            android:inputType="textCapWords"
+            android:inputType="number"
             style="@style/EditorFieldStyle" />
     </LinearLayout>
 

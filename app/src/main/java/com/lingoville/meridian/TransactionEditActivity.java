@@ -165,7 +165,7 @@ public class TransactionEditActivity extends AppCompatActivity implements Loader
         Log.d(LOG_TAG, "setDatePickerAsToday");
 
         Date curDate = (Date) java.util.Calendar.getInstance().getTime();
-        DateFormat formatter = new SimpleDateFormat("yyy / MM / dd");
+        DateFormat formatter = new SimpleDateFormat("yyyy / MM / dd");
         String today = formatter.format(curDate);
 
         mDate.setText(today);

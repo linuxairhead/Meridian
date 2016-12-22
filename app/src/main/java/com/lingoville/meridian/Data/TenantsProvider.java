@@ -6,11 +6,14 @@ import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.icu.text.DateFormat;
+import android.icu.text.SimpleDateFormat;
 import android.net.Uri;
 import android.util.Log;
 import android.util.Patterns;
 import android.widget.Toast;
 
+import java.util.Date;
 import java.util.IllegalFormatException;
 
 /**
@@ -302,11 +305,19 @@ public class TenantsProvider extends ContentProvider {
             case RoomInfo:
                 return updateRoomStatusToOccupied(uri, contentValues, selection, selectionArgs);
             case Tenants:
-                return updateTenant(uri, contentValues, selection, selectionArgs);
+                try {
+                    return updateTenant(uri, contentValues, selection, selectionArgs);
+                } catch ( Exception e) {
+                    Log.d(LOG_TAG, " Exception " );
+                }
             case Tenants_ID:
                 selection = TenantsContract.TenantEntry._ID + "=?";
                 selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri))};
-                return updateTenant(uri, contentValues, selection, selectionArgs);
+                try {
+                    return updateTenant(uri, contentValues, selection, selectionArgs);
+                } catch ( Exception e) {
+                    Log.d(LOG_TAG, " Exception " );
+                }
             case Finance:
                 return updateFinance(uri, contentValues, selection, selectionArgs);
             case Finance_ID:
@@ -351,7 +362,7 @@ public class TenantsProvider extends ContentProvider {
             /*
              *  private method for update tenant infomation
              */
-            private int updateTenant(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+            private int updateTenant(Uri uri, ContentValues values, String selection, String[] selectionArgs) throws Exception {
 
                 Log.d(LOG_TAG, " updateTenant :" + uri);
 
@@ -395,12 +406,27 @@ public class TenantsProvider extends ContentProvider {
                 if (values.containsKey(TenantsContract.TenantEntry.COLUMN_MOVEIN) &&
                     values.containsKey(TenantsContract.TenantEntry.COLUMN_MOVEOUT)) {
 
-                    double movein = values.getAsDouble(TenantsContract.TenantEntry.COLUMN_MOVEIN);
-                    double moveout = values.getAsDouble(TenantsContract.TenantEntry.COLUMN_MOVEOUT);
+                    String movein = values.getAsString(TenantsContract.TenantEntry.COLUMN_MOVEIN);
+                    String moveout = values.getAsString(TenantsContract.TenantEntry.COLUMN_MOVEOUT);
 
-                    if( (movein != 0 || moveout != 0) && (movein > moveout) ) {
+                    if(movein == "" || moveout == ""){
                         throw new IllegalArgumentException("Tenant requires valied move in and out date");
                     }
+
+                    DateFormat df = new SimpleDateFormat("yyyy / MM / dd");
+
+                    try {
+                        Date moveInDate = df.parse(movein);
+                        Date moveoutDate = df.parse(moveout);
+
+                        if(moveInDate.after(moveoutDate)) {
+                            throw new IllegalArgumentException(" Move out date should be later then move in date");
+                        }
+                    } catch ( Exception e){
+                        Log.d(LOG_TAG, " updateTenant Parse Exception" );
+                    }
+
+
                 }
 
                 // If there are no values to update, then don't try to update the database
