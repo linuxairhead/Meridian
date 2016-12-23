@@ -53,7 +53,7 @@
 
     <!-- Empty Transaction -->
     <!-- Title text for the empty view, which describes the empty dog house image [CHAR LIMIT=50] -->
-    <string name="empty_transaction_view_title_text">There is no history of transaction</string>
+    <string name="empty_transaction_view_title_text">No Transaction History Available</string>
     <!-- Subtitle text for the empty view that prompts the user to add a pet [CHAR LIMIT=50] -->
     <string name="empty_transaction_view_subtitle_text">Please add transation</string>
 

@@ -47,7 +47,7 @@ public class MainImageAdapter extends BaseAdapter {
         } else {
             imageView = (ImageView) convertView;
         }
-        TextDrawable.IBuilder drawable = TextDrawable.builder().beginConfig().withBorder(4).endConfig().roundRect(10);
+        TextDrawable.IBuilder drawable = TextDrawable.builder().beginConfig().withBorder(5).endConfig().roundRect(100);
         imageView.setImageDrawable(drawable.build(""+getRoomNumber(position), mContext.getResources().getColor(mFloorColor[position])));
 
         return imageView;

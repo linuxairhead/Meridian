@@ -108,7 +108,7 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
             @Override
             public void onClick(View v) {
                 //cancel the activity and go back to main screen.
-                Intent cancelIntent = new Intent(TenantEditActivity.this, TenantInfoActivity.class);
+                Intent cancelIntent = new Intent(TenantEditActivity.this, MainActivity.class);
                 cancelIntent.putExtra("Room_Number", mCurrentRoomNumber);
                 startActivity(cancelIntent);
             }
