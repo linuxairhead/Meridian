@@ -367,6 +367,7 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
                 DialogFragment dialogfragment = new DatePickerDialogClass();//(R.id.newTenant_MoveInDate);
                 Bundle aBundle = new Bundle();
                 aBundle.putInt("DATE", R.id.newTenant_MoveInDate);
+                dialogfragment.setArguments(aBundle);
                 dialogfragment.onCreateDialog(aBundle);
                 dialogfragment.show(getFragmentManager(), "Date Picker Dialog");
             }
@@ -377,9 +378,10 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
 
             @Override
             public void onClick(View v) {
-                DialogFragment dialogfragment = new DatePickerDialogClass();//(R.id.newTenant_MoveOutDate);
+                DialogFragment dialogfragment = new DatePickerDialogClass();
                 Bundle aBundle = new Bundle();
                 aBundle.putInt("DATE", R.id.newTenant_MoveOutDate);
+                dialogfragment.setArguments(aBundle);
                 dialogfragment.onCreateDialog(aBundle);
                 dialogfragment.show(getFragmentManager(), "Date Picker Dialog");
             }

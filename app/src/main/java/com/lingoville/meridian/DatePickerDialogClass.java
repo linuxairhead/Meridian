@@ -35,7 +35,8 @@ public class DatePickerDialogClass extends DialogFragment implements DatePickerD
 
         final Calendar calendar = Calendar.getInstance();
 
-        mID = savedInstanceState.getInt("DATE");
+        Bundle aBundle = getArguments();
+        mID = aBundle.getInt("DATE");
 
         mYear = calendar.get(Calendar.YEAR);
 
@@ -43,8 +44,11 @@ public class DatePickerDialogClass extends DialogFragment implements DatePickerD
 
         mDay = calendar.get(Calendar.DAY_OF_MONTH);
 
+        if (!this.isAdded()) { //this = current fragment
+            return null;         }
+
         datepickerdialog = new DatePickerDialog(getActivity(),
-                AlertDialog.THEME_DEVICE_DEFAULT_DARK,this,mYear,mMonth,mDay);
+                android.R.style.Theme_DeviceDefault_Light_Dialog_Alert,this,mYear,mMonth,mDay);
 
         return datepickerdialog;
     }
