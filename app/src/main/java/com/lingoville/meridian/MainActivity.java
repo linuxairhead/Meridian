@@ -1,8 +1,9 @@
 package com.lingoville.meridian;
 
-import android.content.ContentUris;
+import android.app.LoaderManager;
 import android.content.Intent;
-import android.net.Uri;
+import android.content.Loader;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,9 +22,16 @@ import android.widget.Toast;
 import com.lingoville.meridian.Data.TenantsContract;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final String LOG_TAG = MainActivity.class.getSimpleName();
+
+    /* Tenant Data Loader */
+    private static final int CURRENT_TENANT_LOADER = 0;
+
+    private MainImageAdapter mImageAdapter;
+
+    private GridView gridview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,22 +43,12 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        GridView gridview = (GridView) findViewById(R.id.gridview);
-        final MainImageAdapter image = new MainImageAdapter(this);
-        gridview.setAdapter(image);
-        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                Toast.makeText(MainActivity.this, "" + image.getRoomNumber(position), Toast.LENGTH_SHORT).show();
-
-                Intent tenantIntent = new Intent(MainActivity.this, TenantEditActivity.class);
-                tenantIntent.putExtra("Room_Number", roomNumber[position]);
-                startActivity(tenantIntent);
-            }
-        });
+        // Kick off the loader
+        getLoaderManager().initLoader(CURRENT_TENANT_LOADER, null, this);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-            this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
@@ -143,4 +141,41 @@ public class MainActivity extends AppCompatActivity
             401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411,
             501, 502, 503, 504
     };
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        /*
+         * This loader will execute the ContentProvider's query method on a background thread
+         */
+        return new android.content.CursorLoader(this,                           // Parent activity context
+                TenantsContract.TenantEntry.ROOM_CONTENT_URI,   // Provider content URI to query
+                TenantsContract.TenantEntry.RoomTableProjection,       // Columns to include in the resulting Cursor
+                null,                                                                                       // No selection clause
+                null,                                                                                       // No selection arguments
+                null);                                                                                       // Default sort order
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+        gridview = (GridView) findViewById(R.id.gridview);
+        mImageAdapter = new MainImageAdapter(this);
+        mImageAdapter.setCursor(data);
+        gridview.setAdapter(mImageAdapter);
+
+        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                Toast.makeText(MainActivity.this, "" + mImageAdapter.getRoomNumber(position), Toast.LENGTH_SHORT).show();
+
+                Intent tenantIntent = new Intent(MainActivity.this, TenantEditActivity.class);
+                tenantIntent.putExtra("Room_Number", roomNumber[position]);
+                startActivity(tenantIntent);
+            }
+        });
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
 }

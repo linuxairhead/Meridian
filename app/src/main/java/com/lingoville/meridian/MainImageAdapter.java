@@ -1,8 +1,7 @@
 package com.lingoville.meridian;
 
 import android.content.Context;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.OvalShape;
+import android.database.Cursor;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,12 +9,23 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.lingoville.meridian.Data.TenantsContract;
+
 public class MainImageAdapter extends BaseAdapter {
+
+    /** Tag for the log messages */
+    public static final String LOG_TAG = MainImageAdapter.class.getSimpleName();
 
     private Context mContext;
 
+    private Cursor mCursor;
+
     public MainImageAdapter(Context context){
         mContext = context;
+    }
+
+    public void setCursor(Cursor c) {
+        mCursor = c;
     }
 
     public int getCount() {
@@ -40,7 +50,6 @@ public class MainImageAdapter extends BaseAdapter {
             imageView = new ImageView(mContext);
             DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
             int screenWidth = metrics.widthPixels;
-            //imageView.setLayoutParams(new GridView.LayoutParams(250, 200));
             imageView.setLayoutParams(new GridView.LayoutParams(screenWidth/5, screenWidth/5));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imageView.setPadding(8, 8, 8, 8);
@@ -48,7 +57,27 @@ public class MainImageAdapter extends BaseAdapter {
             imageView = (ImageView) convertView;
         }
         TextDrawable.IBuilder drawable = TextDrawable.builder().beginConfig().withBorder(5).endConfig().roundRect(100);
-        imageView.setImageDrawable(drawable.build(""+getRoomNumber(position), mContext.getResources().getColor(mFloorColor[position])));
+
+        /*
+         *  Set the Background image with ractagular
+         */
+        imageView.setBackground(drawable.build("" + getRoomNumber(position), mContext.getResources().getColor(mFloorColor[position])));
+
+        /*
+         *  mCursor which was initialized at MainActivity by query RoomVacant Table.
+         *  move along the position, fetch the data, if the Vacant was set as occupied (1), set the image.
+         */
+        if (position >= 0 && mCursor != null) {
+            mCursor.moveToPosition(position);
+            int index = mCursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_Vancant);
+            int vacancy = mCursor.getInt(index);
+
+            if (vacancy == 1) {
+                imageView.setAlpha(100);
+                imageView.setImageResource(R.mipmap.man);
+            }
+        }
+
 
         return imageView;
     }
