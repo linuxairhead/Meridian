@@ -1,5 +1,8 @@
 Bug Report
 
+12/24/2016 MainFragment, MainActivity
+		Implemented the Fragment for the Main and Migrate RoomTable related db work
+		
 12/23/2016 MainActivity, MainImageAdapter
 		Implemented If the room has occupied, set a man image to the room
 
