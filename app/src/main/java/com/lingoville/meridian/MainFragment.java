@@ -1,11 +1,9 @@
 package com.lingoville.meridian;
 
 import android.content.ContentValues;
-import android.content.CursorLoader;
 import android.support.v4.app.LoaderManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -32,15 +30,6 @@ import com.lingoville.meridian.Data.TenantsContract;
 public class MainFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final String LOG_TAG = MainFragment.class.getSimpleName();
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     /* Tenant Data Loader */
     private static final int CURRENT_TENANT_LOADER = 0;
@@ -78,8 +67,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         MainFragment fragment = new MainFragment();
         Bundle args = new Bundle();
 
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -96,10 +83,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
          /* initRoom will only initilized once */
         if(!mRoomInit) initRoomTable();
 
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
