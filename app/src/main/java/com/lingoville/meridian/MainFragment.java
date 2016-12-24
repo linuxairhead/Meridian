@@ -1,5 +1,6 @@
 package com.lingoville.meridian;
 
+import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.support.v4.app.LoaderManager;
 import android.content.Context;
@@ -50,6 +51,12 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
     private View fragmentView;
 
+    private int mCurrentRoomNumber;
+
+    private int mNumberOfRoom;
+
+    private static boolean mRoomInit = false;
+
     private OnFragmentInteractionListener mListener;
 
     public MainFragment() {
@@ -84,6 +91,11 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
         getLoaderManager().initLoader(CURRENT_TENANT_LOADER, null, this);
 
+        mNumberOfRoom = roomNumber.length;
+
+         /* initRoom will only initilized once */
+        if(!mRoomInit) initRoomTable();
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -101,6 +113,8 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
         // initialize the grid view
         gridView = (GridView)fragmentView.findViewById(R.id.gridview);
+
+        mImageAdapter = new MainImageAdapter(getActivity());
 
         return fragmentView;
     }
@@ -157,18 +171,28 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     public void onLoadFinished(android.support.v4.content.Loader<Cursor> loader, Cursor data) {
         Log.d(LOG_TAG, "onLoadFinished");
 
-
-        mImageAdapter = new MainImageAdapter(getActivity());
         mImageAdapter.setCursor(data);
+
         gridView.setAdapter(mImageAdapter);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 Toast.makeText(getActivity(), "" + mImageAdapter.getRoomNumber(position), Toast.LENGTH_SHORT).show();
-
-                // Intent tenantIntent = new Intent(MainFragment.this, TenantEditActivity.class);
-                // tenantIntent.putExtra("Room_Number", roomNumber[position]);
-                // startActivity(tenantIntent);
+                mCurrentRoomNumber = roomNumber[position];
+                /*
+                 * check for whether the current room has occupied or not.
+                 * if occupied, call transactionInfoActivity to view transaction history
+                 * if not occupied, continue edit activity with new tenant title
+                 */
+                if (occupiedRoom() == 1) {
+                    Intent transactionIntent = new Intent(getActivity(), TransactionInfoActivity.class);
+                    transactionIntent.putExtra("Room_Number", mCurrentRoomNumber);
+                    startActivity(transactionIntent);
+                } else {
+                    Intent tenantIntent = new Intent(getActivity(), TenantEditActivity.class);
+                    tenantIntent.putExtra("Room_Number", mCurrentRoomNumber);
+                    startActivity(tenantIntent);
+                }
             }
         });
     }
@@ -191,5 +215,67 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    private int[] roomNumber = {
+            101, 102, 103, 104, 105,
+            201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211,
+            301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311,
+            401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411,
+            501, 502, 503, 504
+    };
+
+    /*
+    *  This should be initialized only once for entire program, even if the program restarted
+    */
+    private void initRoomTable() {
+
+        Log.d(LOG_TAG, "initRoomTable");
+
+        /* verify the room table has been initilized or not */
+        String selection = TenantsContract.TenantEntry.COLUMN_ROOMNUMBER + " = ?";
+        String [] selectionArgs = new String[] { Integer.toString(roomNumber[0])};
+        Cursor cursor = getActivity().getContentResolver().query(TenantsContract.TenantEntry.ROOM_CONTENT_URI,
+                TenantsContract.TenantEntry.RoomTableProjection, selection, selectionArgs, null );
+
+        // if cursor return counter more then zero, the table was already initialized */
+        if(cursor.getCount() != 0) {
+            mRoomInit = true;
+            return;
+        }
+
+        /*
+         * If this program is using for the first time and db doesn't contain RoomTable,
+         * following will be initialied all the room with false as COLUMN_Vancant
+         */
+        if( !mRoomInit ) {
+            // Create the content value class by reading from user input editor
+            ContentValues values = new ContentValues();
+
+            for (int counter = 0; counter < mNumberOfRoom; counter++) {
+
+                values.put(TenantsContract.TenantEntry.COLUMN_ROOMNUMBER, roomNumber[counter]);
+                values.put(TenantsContract.TenantEntry.COLUMN_Vancant, "false");
+
+                Uri newUri = getActivity().getContentResolver().insert(TenantsContract.TenantEntry.ROOM_CONTENT_URI, values);
+            }
+            mRoomInit = true;
+        }
+    }
+
+    private int occupiedRoom() {
+
+        Log.d(LOG_TAG, "occupiedRoom");
+
+        String selection = TenantsContract.TenantEntry.COLUMN_ROOMNUMBER + " = ?";
+
+        String [] selectionArgs = new String[] { Integer.toString(mCurrentRoomNumber)};
+
+        Cursor cursor = getActivity().getContentResolver().query(TenantsContract.TenantEntry.ROOM_CONTENT_URI,
+                TenantsContract.TenantEntry.RoomTableProjection, selection, selectionArgs, null );
+        cursor.moveToFirst();
+        // Get the tenant entry and check whether the room is occupied or not.
+        return cursor.getInt(cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_Vancant));
+
     }
 }

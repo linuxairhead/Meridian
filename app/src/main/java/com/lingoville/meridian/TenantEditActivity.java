@@ -37,9 +37,6 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
 
     private int mCurrentRoomNumber;
 
-    private int mNumberOfRoom;
-    private static boolean isRoomInit = false;
-
     private TextView mRoomNumber;
     private EditText mFirstName;
     private EditText mLastName;
@@ -80,20 +77,7 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
             setTitle(R.string.title_activity_edit_tenant);
             getLoaderManager().initLoader(CURRENT_TENANT_LOADER, null, this);
         } else {
-            /* initRoom will only initilized once */
-            if(!isRoomInit) initRoomTable();
 
-            /*
-             * check for whether the current room has occupied or not.
-             * if occupied, call transactionInfoActivity to view transaction history
-             * if not occupied, continue edit activity with new tenant title
-             */
-
-            if (isRoomInit && occupiedRoom() == 1) {
-                Intent transactionIntent = new Intent(TenantEditActivity.this, TransactionInfoActivity.class);
-                transactionIntent.putExtra("Room_Number", mCurrentRoomNumber);
-                startActivity(transactionIntent);
-            } else
                 setTitle(R.string.title_activity_new_tenant);
 
             /* set today''s date as Date */
@@ -199,59 +183,6 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
     }
 
     /*
-     *  This should be initialized only once for entire program, even if the program restarted
-     */
-    private void initRoomTable() {
-
-        Log.d(LOG_TAG, "initRoomTable");
-
-        /* verify the room table has been initilized or not */
-        String selection = TenantsContract.TenantEntry.COLUMN_ROOMNUMBER + " = ?";
-        String [] selectionArgs = new String[] { Integer.toString(roomNumber[0])};
-        Cursor cursor = getContentResolver().query(TenantsContract.TenantEntry.ROOM_CONTENT_URI,
-                TenantsContract.TenantEntry.RoomTableProjection, selection, selectionArgs, null );
-        // if cursor return counter more then zero, the table was already initialized */
-        if(cursor.getCount() != 0) {
-            isRoomInit = true;
-            return;
-        }
-
-        /*
-         * If this program is using for the first time and db doesn't contain RoomTable,
-         * following will be initialied all the room with false as COLUMN_Vancant
-         */
-        if( !isRoomInit ) {
-            // Create the content value class by reading from user input editor
-            ContentValues values = new ContentValues();
-
-            for (int counter = 0; counter < mNumberOfRoom; counter++) {
-
-                values.put(TenantsContract.TenantEntry.COLUMN_ROOMNUMBER, roomNumber[counter]);
-                values.put(TenantsContract.TenantEntry.COLUMN_Vancant, "false");
-
-                Uri newUri = getContentResolver().insert(TenantsContract.TenantEntry.ROOM_CONTENT_URI, values);
-            }
-            isRoomInit = true;
-        }
-    }
-
-    private int occupiedRoom() {
-
-        Log.d(LOG_TAG, "occupiedRoom");
-
-        String selection = TenantsContract.TenantEntry.COLUMN_ROOMNUMBER + " = ?";
-
-        String [] selectionArgs = new String[] { Integer.toString(mCurrentRoomNumber)};
-
-        Cursor cursor = getContentResolver().query(TenantsContract.TenantEntry.ROOM_CONTENT_URI,
-                TenantsContract.TenantEntry.RoomTableProjection, selection, selectionArgs, null );
-        cursor.moveToLast();
-        // Get the tenant entry and check whether the room is occupied or not.
-        return cursor.getInt(cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_Vancant));
-
-    }
-
-    /*
      * When Tenant Editor shows all the proper attributes which defined projection,
      * call Cursor Loader will execute the ContentProvider's query method on background
      */
@@ -344,8 +275,6 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
         // Examine the intent for the proper toolbar title
         Intent intent = getIntent();
         mCurrentTenantUri = intent.getData();
-
-        mNumberOfRoom = roomNumber.length;
     }
 
     /*

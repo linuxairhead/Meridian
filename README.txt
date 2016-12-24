@@ -1,5 +1,8 @@
 Bug Report
 
+12/24/2016 MainFragment, TenantEditActivity
+		Continue migrate RoomTable db from TenantEditActivity to MainFragment
+
 12/24/2016 MainFragment, MainActivity
 		Implemented the Fragment for the Main and Migrate RoomTable related db work
 		
