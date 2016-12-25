@@ -2,7 +2,6 @@ package com.lingoville.meridian;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,17 +43,18 @@ public class MainImageAdapter extends BaseAdapter {
     public int getRoomNumber(int position) {
         return roomNumber[position];
     }
+
     // create a new ImageView for each item referenced by the Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
         Log.d(LOG_TAG, "getView the position is " + position);
+
         ImageView imageView;
+
         if (convertView == null) {  // if it's not recycled, initialize some attributes
 
             imageView = new ImageView(mContext);
 
-            DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
-
-            int screenWidth = metrics.widthPixels;
+            int screenWidth = mContext.getResources().getDisplayMetrics().widthPixels;
 
             imageView.setLayoutParams(new GridView.LayoutParams(screenWidth/5, screenWidth/5));
 
@@ -65,31 +65,36 @@ public class MainImageAdapter extends BaseAdapter {
         } else {
             imageView = (ImageView) convertView;
         }
+            // draw rectangular object
+            TextDrawable.IBuilder drawable = TextDrawable.builder().beginConfig().withBorder(5).endConfig().roundRect(100);
+            /*
+             *  mCursor which was initialized at MainActivity by query RoomVacant Table.
+             *  move along the position, fetch the data, if the Vacant was set as occupied (1), set the image.
+             */
+            if (position >= 0 && mCursor != null) {
 
-        TextDrawable.IBuilder drawable = TextDrawable.builder().beginConfig().withBorder(5).endConfig().roundRect(100);
+                mCursor.moveToPosition(position);
 
-        /*
-         *  Set the Background image with ractagular
-         */
-        imageView.setBackground(drawable.build("" + getRoomNumber(position), mContext.getResources().getColor(mFloorColor[position])));
+                String occupied = mCursor.getString(mCursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_Vacancy));
 
-        /*
-         *  mCursor which was initialized at MainActivity by query RoomVacant Table.
-         *  move along the position, fetch the data, if the Vacant was set as occupied (1), set the image.
-         */
-        if (position >= 0 && mCursor != null) {
+                if (occupied.matches("true")) {
+                    /*
+                    *  if the room is occupied, set the image resource and background image with rectangular
+                    */
+                    imageView.setAlpha(180);
 
-            mCursor.moveToPosition(position);
+                    imageView.setImageResource(R.mipmap.man);
 
-            String occupied = mCursor.getString(mCursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_Vacancy));
+                    imageView.setBackground(drawable.build("" + getRoomNumber(position), mContext.getResources().getColor(mFloorColor[position])));
+                } else {
+                    /*
+                    *  If the room is unoccupied, just set the Background image with rectangular and make image resource as transparent
+                    */
+                    imageView.setImageResource(android.R.color.transparent);
 
-            if (occupied.matches("true")) {
-                Log.d(LOG_TAG, "getView : occupied the position is " + position);
-                imageView.setAlpha(100);
-                imageView.setImageResource(R.mipmap.man);
+                    imageView.setBackground(drawable.build("" + getRoomNumber(position), mContext.getResources().getColor(mFloorColor[position])));
+                }
             }
-        }
-
 
         return imageView;
     }
