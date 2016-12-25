@@ -218,8 +218,12 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         /* verify the room table has been initilized or not */
         String selection = TenantsContract.TenantEntry.COLUMN_ROOMNUMBER + " = ?";
         String [] selectionArgs = new String[] { Integer.toString(roomNumber[0])};
-        Cursor cursor = getActivity().getContentResolver().query(TenantsContract.TenantEntry.ROOM_CONTENT_URI,
-                TenantsContract.TenantEntry.RoomTableProjection, selection, selectionArgs, null );
+        Cursor cursor = getActivity().getContentResolver().
+                query(TenantsContract.TenantEntry.ROOM_CONTENT_URI,
+                            TenantsContract.TenantEntry.RoomTableProjection,
+                            selection,
+                            selectionArgs,
+                            null );
 
         // if cursor return counter more then zero, the table was already initialized */
         if(cursor.getCount() != 0) {
@@ -238,9 +242,10 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             for (int counter = 0; counter < mNumberOfRoom; counter++) {
 
                 values.put(TenantsContract.TenantEntry.COLUMN_ROOMNUMBER, roomNumber[counter]);
-                values.put(TenantsContract.TenantEntry.COLUMN_Vancant, "false");
 
-                Uri newUri = getActivity().getContentResolver().insert(TenantsContract.TenantEntry.ROOM_CONTENT_URI, values);
+                values.put(TenantsContract.TenantEntry.COLUMN_Vacancy, "false");
+
+                getActivity().getContentResolver().insert(TenantsContract.TenantEntry.ROOM_CONTENT_URI, values);
             }
             mRoomInit = true;
         }
@@ -254,11 +259,17 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
         String [] selectionArgs = new String[] { Integer.toString(mCurrentRoomNumber)};
 
-        Cursor cursor = getActivity().getContentResolver().query(TenantsContract.TenantEntry.ROOM_CONTENT_URI,
-                TenantsContract.TenantEntry.RoomTableProjection, selection, selectionArgs, null );
+        Cursor cursor = getActivity().getContentResolver().
+                query(TenantsContract.TenantEntry.ROOM_CONTENT_URI,
+                            TenantsContract.TenantEntry.RoomTableProjection,
+                            selection,
+                            selectionArgs,
+                            null );
+
         cursor.moveToFirst();
+
         // Get the tenant entry and check whether the room is occupied or not.
-        return cursor.getInt(cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_Vancant));
+        return cursor.getInt(cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_Vacancy));
 
     }
 }

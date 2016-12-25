@@ -159,7 +159,7 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
                 Toast.makeText(this, getString(R.string.editor_insert_tenant_successful), Toast.LENGTH_SHORT).show();
 
                 ContentValues trueValues = new ContentValues();
-                trueValues.put(TenantsContract.TenantEntry.COLUMN_Vancant, true);
+                trueValues.put(TenantsContract.TenantEntry.COLUMN_Vacancy, "true");
                 String selection = TenantsContract.TenantEntry.COLUMN_ROOMNUMBER + " = ?";
                 String[] selectionArgs = new String[]{Integer.toString(mCurrentRoomNumber)};
                 getContentResolver().update(TenantsContract.TenantEntry.ROOM_CONTENT_URI,trueValues, selection, selectionArgs);

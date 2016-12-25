@@ -125,7 +125,7 @@ public class TenantsProvider extends ContentProvider {
                 break;
 
             case RoomInfo_Vacant:
-                selection = TenantsContract.TenantEntry.COLUMN_Vancant + "=?";
+                selection = TenantsContract.TenantEntry.COLUMN_Vacancy + "=?";
                 selectionArgs = new String[] { "false" };
                 cursor = db.query(TenantsContract.TenantEntry.ROOM_TABLE_NAME, projection, selection, selectionArgs,
                         null,   null,   sortOrder);
@@ -174,7 +174,7 @@ public class TenantsProvider extends ContentProvider {
             throw new IllegalArgumentException("Room need proper room number");
         }
 
-        boolean vacancy = values.getAsBoolean(TenantsContract.TenantEntry.COLUMN_Vancant);
+        boolean vacancy = values.getAsBoolean(TenantsContract.TenantEntry.COLUMN_Vacancy);
 
         // insert the content value to the database
        long id = db.insert(TenantsContract.TenantEntry.ROOM_TABLE_NAME, null, values);
@@ -334,8 +334,8 @@ public class TenantsProvider extends ContentProvider {
             private int updateRoomStatusToOccupied(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
                 Log.d(LOG_TAG, " updateRoom :" + uri);
 
-                if (values.containsKey(TenantsContract.TenantEntry.COLUMN_Vancant)) {
-                    String roomNum = values.getAsString(TenantsContract.TenantEntry.COLUMN_Vancant);
+                if (values.containsKey(TenantsContract.TenantEntry.COLUMN_Vacancy)) {
+                    String roomNum = values.getAsString(TenantsContract.TenantEntry.COLUMN_Vacancy);
                     if (roomNum == null) {
                         throw new IllegalArgumentException("Tenant requires a room number");
                     }
@@ -562,7 +562,7 @@ public class TenantsProvider extends ContentProvider {
 
         /* update the room vacancy status to Room Table */
         ContentValues values = new ContentValues();
-        values.put(TenantsContract.TenantEntry.COLUMN_Vancant, "false");
+        values.put(TenantsContract.TenantEntry.COLUMN_Vacancy, "false");
         selection = TenantsContract.TenantEntry.COLUMN_ROOMNUMBER + "=?";
         selectionArgs = new String[] { roomNumber  };
         return db.update(TenantsContract.TenantEntry.ROOM_TABLE_NAME, values, selection, selectionArgs );

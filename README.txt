@@ -1,5 +1,8 @@
 Bug Report
 
+12/24/2016 MainFragment
+		MainFragment clean unnecessary variable
+
 12/24/2016 MainFragment, TenantEditActivity
 		Continue migrate RoomTable db from TenantEditActivity to MainFragment
 

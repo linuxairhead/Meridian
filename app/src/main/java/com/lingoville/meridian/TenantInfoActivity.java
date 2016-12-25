@@ -135,7 +135,7 @@ public class TenantInfoActivity extends AppCompatActivity implements android.app
                                 /*
                  * This loader will execute the ContentProvider's query method on a background thread
                  */
-                String selection = TenantsContract.TenantEntry.COLUMN_Vancant + "=?";
+                String selection = TenantsContract.TenantEntry.COLUMN_Vacancy + "=?";
                 String[] selectionArgs = new String[] { "false" };
                 return new android.content.CursorLoader(this,                           // Parent activity context
                         TenantsContract.TenantEntry.ROOM_CONTENT_URI,   // Provider content URI to query

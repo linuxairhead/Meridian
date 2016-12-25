@@ -68,7 +68,7 @@ public final class TenantsContract {
                 /*
                 * Room Vancancy
                 */
-                public final static String COLUMN_Vancant = "Room_Vancancy";
+                public final static String COLUMN_Vacancy = "Room_Vacancy";
 
                 /*
                 * Define Room Table Projection that specifies the columns from the RoomTable care about.
@@ -76,7 +76,7 @@ public final class TenantsContract {
                 public final static String[] RoomTableProjection = {
                         _ID,
                         COLUMN_ROOMNUMBER,
-                        COLUMN_Vancant
+                        COLUMN_Vacancy
                 };
 
         /*

@@ -3,6 +3,7 @@ package com.lingoville.meridian;
 import android.content.Context;
 import android.database.Cursor;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -45,17 +46,26 @@ public class MainImageAdapter extends BaseAdapter {
     }
     // create a new ImageView for each item referenced by the Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
+        Log.d(LOG_TAG, "getView the position is " + position);
         ImageView imageView;
         if (convertView == null) {  // if it's not recycled, initialize some attributes
+
             imageView = new ImageView(mContext);
+
             DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
+
             int screenWidth = metrics.widthPixels;
+
             imageView.setLayoutParams(new GridView.LayoutParams(screenWidth/5, screenWidth/5));
+
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
             imageView.setPadding(8, 8, 8, 8);
+
         } else {
             imageView = (ImageView) convertView;
         }
+
         TextDrawable.IBuilder drawable = TextDrawable.builder().beginConfig().withBorder(5).endConfig().roundRect(100);
 
         /*
@@ -68,11 +78,13 @@ public class MainImageAdapter extends BaseAdapter {
          *  move along the position, fetch the data, if the Vacant was set as occupied (1), set the image.
          */
         if (position >= 0 && mCursor != null) {
-            mCursor.moveToPosition(position);
-            int index = mCursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_Vancant);
-            int vacancy = mCursor.getInt(index);
 
-            if (vacancy == 1) {
+            mCursor.moveToPosition(position);
+
+            String occupied = mCursor.getString(mCursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_Vacancy));
+
+            if (occupied.matches("true")) {
+                Log.d(LOG_TAG, "getView : occupied the position is " + position);
                 imageView.setAlpha(100);
                 imageView.setImageResource(R.mipmap.man);
             }

@@ -72,7 +72,7 @@ public class TenantsDbHelper extends SQLiteOpenHelper {
                 "CREATE TABLE " + TenantsContract.TenantEntry.ROOM_TABLE_NAME + " ("
                         + TenantsContract.TenantEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                         + TenantsContract.TenantEntry.COLUMN_ROOMNUMBER + " INTEGER NOT NULL, "
-                        + TenantsContract.TenantEntry.COLUMN_Vancant +" BOOLEAN NOT NULL );";
+                        + TenantsContract.TenantEntry.COLUMN_Vacancy +" BOOLEAN NOT NULL );";
 
         // Execute the SQL statement
         db.execSQL(SQL_CREATE_ROOM_INFO_TABLE);
