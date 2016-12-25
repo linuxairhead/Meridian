@@ -1,5 +1,11 @@
 Bug Report
 
+12/25/2016 MainActivity, TenantInfoActivity
+		Remove unwanted MainMenu
+
+12/25/2016 MainImageAdapter
+		Bug Fixed: Main Image randomly set improperly *****
+
 12/24/2016 MainFragment
 		MainFragment clean unnecessary variable
 

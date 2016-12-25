@@ -39,21 +39,7 @@ public class TenantInfoActivity extends AppCompatActivity implements android.app
         setContentView(R.layout.activity_tenant_info);
 
         /* Tenant List will view among three
-        * Va
-        */
-        mTenantInfoAction = getIntent().getStringExtra("Tenant_Info");
 
-        switch (mTenantInfoAction) {
-            case "Tenant_Vacant_List":
-                setTitle(R.string.action_vacancy);
-                break;
-            case "Tenant_Unpaied_List":
-                setTitle(R.string.action_unpaidRent);
-                break;
-            default: // Tenant_Info_List
-                setTitle(R.string.action_tenantsList);
-                break;
-        }
          /*  Create toolbar */
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

@@ -52,38 +52,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        Log.d(LOG_TAG, "onCreateOptionsMenu");
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Log.d(LOG_TAG, "onOptionsItemSelected");
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_unpaidRent) {
-            Intent tenantIntent = new Intent(MainActivity.this, TenantInfoActivity.class);
-            tenantIntent.putExtra("Tenant_Info", "Tenant_Unpaied_List");
-            startActivity(tenantIntent);
-            return true;
-        } else if (id == R.id.action_vacancy) {
-            Intent tenantIntent = new Intent(MainActivity.this, TenantInfoActivity.class);
-            tenantIntent.putExtra("Tenant_Info", "Tenant_Vacant_List");
-            startActivity(tenantIntent);
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
