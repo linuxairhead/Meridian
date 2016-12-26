@@ -78,7 +78,7 @@ public class MainImageAdapter extends BaseAdapter {
 
                 if (occupied.matches("true")) {
                     // draw rectangular object
-                    drawable = TextDrawable.builder().beginConfig().withBorder(20).textLocation(1).endConfig().roundRect(100);
+                    drawable = TextDrawable.builder().beginConfig().withBorder(20).textLocation(2).endConfig().roundRect(100);
                     /*
                     *  if the room is occupied, set the image resource and background image with rectangular
                     */
@@ -87,7 +87,7 @@ public class MainImageAdapter extends BaseAdapter {
                     imageView.setImageDrawable(drawable.build("" + getRoomNumber(position), mContext.getResources().getColor(mFloorColor[position])));
                 } else {
                     // draw rectangular object
-                    drawable = TextDrawable.builder().beginConfig().withBorder(20).textLocation(0).endConfig().roundRect(100);
+                    drawable = TextDrawable.builder().beginConfig().withBorder(20).textLocation(1).endConfig().roundRect(100);
                     /*
                     *  If the room is unoccupied, just set the Background image with rectangular and make image resource as transparent
                     */

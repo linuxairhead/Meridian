@@ -45,6 +45,9 @@ public class TextDrawable extends ShapeDrawable {
         Paint paint = getPaint();
         paint.setAlpha(1);
         paint.clearShadowLayer();
+        if(textLocation == 0)
+            paint.setColor(builder.color);
+
 
         // text and color
         text = builder.toUpperCase ? builder.text.toUpperCase() : builder.text;
@@ -58,10 +61,7 @@ public class TextDrawable extends ShapeDrawable {
         textPaint.setTypeface(builder.font);
         textPaint.setTextAlign(Paint.Align.CENTER);
         textPaint.setStrokeWidth(builder.borderThickness);
-        if(textLocation == 0)
-                textPaint.setColor(builder.textColor);
-        else
-                textPaint.setColor(builder.textColor);
+        textPaint.setColor(builder.textColor);
     }
 
     private int getDarkerShade(int color) {
@@ -90,18 +90,17 @@ public class TextDrawable extends ShapeDrawable {
 
         int fontSize;
 
-        if(textLocation == 0)
-             fontSize = this.fontSize < 0 ? (Math.min(width, height) / 2) : this.fontSize;
-        else
+        if(textLocation == 2)
             fontSize = this.fontSize < 0 ? (Math.min(width, height) / 3) : this.fontSize;
+        else
+            fontSize = this.fontSize < 0 ? (Math.min(width, height) / 2) : this.fontSize;
 
         textPaint.setTextSize(fontSize);
 
-        if(textLocation == 0)
-                canvas.drawText(text, width / 2, height / 2  - ((textPaint.descent() + textPaint.ascent()) / 2), textPaint);
+        if(textLocation == 2)
+            canvas.drawText(text, width / 2, height - height / 9 - ((textPaint.descent() + textPaint.ascent()) / 2), textPaint);
         else
-                canvas.drawText(text, width / 2, height - height / 9 - ((textPaint.descent() + textPaint.ascent()) / 2), textPaint);
-
+            canvas.drawText(text, width / 2, height / 2  - ((textPaint.descent() + textPaint.ascent()) / 2), textPaint);
 
         canvas.restoreToCount(count);
 
