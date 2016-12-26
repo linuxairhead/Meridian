@@ -58,7 +58,6 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
           */
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(android.R.drawable.ic_menu_revert);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,10 +90,8 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //cancel the activity and go back to main screen.
-                Intent cancelIntent = new Intent(TenantEditActivity.this, MainActivity.class);
-                cancelIntent.putExtra("Room_Number", mCurrentRoomNumber);
-                startActivity(cancelIntent);
+                //cancel : finish the current activity and go back to previous screen.
+                finish();
             }
         });
 
@@ -112,6 +109,7 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
                     // once inserted the Tenant info call go back to main screen
                     Intent saveIntent = new Intent(TenantEditActivity.this, TransactionInfoActivity.class);
                     saveIntent.putExtra("Room_Number", mCurrentRoomNumber);
+                    finish();
                     startActivity(saveIntent);
                 } catch ( IllegalArgumentException e ) {
                     Log.d(LOG_TAG, "onCreate : handling illegal argument exception");

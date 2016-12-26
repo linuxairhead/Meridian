@@ -101,11 +101,8 @@ public class TransactionEditActivity extends AppCompatActivity implements Loader
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                //cancel the activity and go back to main screen.
-                Intent cancelIntent = new Intent(TransactionEditActivity.this, TransactionInfoActivity.class);
-                cancelIntent.putExtra("Room_Number", mCurrentRoomNumber );
-                startActivity(cancelIntent);
+                //cancel : finish the current activity and go back to previous screen.
+                finish();
             }
         });
 
@@ -123,6 +120,7 @@ public class TransactionEditActivity extends AppCompatActivity implements Loader
                 // once inserted the Tenant info call go back to main screen
                 Intent saveIntent = new Intent(TransactionEditActivity.this, TransactionInfoActivity.class);
                 saveIntent.putExtra("Room_Number", mCurrentRoomNumber );
+                finish();
                 startActivity(saveIntent);
             }
         });

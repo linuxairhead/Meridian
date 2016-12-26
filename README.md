@@ -1,5 +1,8 @@
 Bug Report
 
+12/25/2016 MainFragment, TenantEditActivity, TenantInfoActivity ...
+		Improve User Nevigation 
+		
 12/25/2016 MainFragment
 		Bug Fixed: RoomTable db query and varify fixed
 

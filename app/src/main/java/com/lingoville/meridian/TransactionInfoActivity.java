@@ -52,6 +52,7 @@ public class TransactionInfoActivity extends AppCompatActivity implements androi
          */
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -61,7 +62,6 @@ public class TransactionInfoActivity extends AppCompatActivity implements androi
                 startActivity(tenantIntent);
             }
         });
-        toolbar.setNavigationIcon(android.R.drawable.ic_menu_revert);
 
         final ListView transactionList = (ListView) findViewById(R.id.list_transaction_history);
         transactionList.setClickable(true);

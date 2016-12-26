@@ -170,10 +170,12 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                 if (occupiedRoom().matches("true")) {
                     Intent transactionIntent = new Intent(getActivity(), TransactionInfoActivity.class);
                     transactionIntent.putExtra("Room_Number", mCurrentRoomNumber);
+                    getActivity().finish();
                     startActivity(transactionIntent);
                 } else {
                     Intent tenantIntent = new Intent(getActivity(), TenantEditActivity.class);
                     tenantIntent.putExtra("Room_Number", mCurrentRoomNumber);
+                    getActivity().finish();
                     startActivity(tenantIntent);
                 }
             }

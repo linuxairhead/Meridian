@@ -43,15 +43,16 @@ public class TenantInfoActivity extends AppCompatActivity implements android.app
          /*  Create toolbar */
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //cancel the activity and go back to main screen.
                 Intent goBackToMain = new Intent(TenantInfoActivity.this, MainActivity.class);
+                finish();
                 startActivity(goBackToMain);
             }
         });
-        toolbar.setNavigationIcon(android.R.drawable.ic_menu_revert);
 
         final ListView tenantList = (ListView) findViewById(R.id.list_tenant_info);
         tenantList.setClickable(true);
