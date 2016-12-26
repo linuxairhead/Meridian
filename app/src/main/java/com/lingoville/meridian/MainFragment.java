@@ -167,7 +167,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                  * if occupied, call transactionInfoActivity to view transaction history
                  * if not occupied, continue edit activity with new tenant title
                  */
-                if (occupiedRoom() == 1) {
+                if (occupiedRoom().matches("true")) {
                     Intent transactionIntent = new Intent(getActivity(), TransactionInfoActivity.class);
                     transactionIntent.putExtra("Room_Number", mCurrentRoomNumber);
                     startActivity(transactionIntent);
@@ -251,7 +251,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         }
     }
 
-    private int occupiedRoom() {
+    private String occupiedRoom() {
 
         Log.d(LOG_TAG, "occupiedRoom");
 
@@ -269,7 +269,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         cursor.moveToFirst();
 
         // Get the tenant entry and check whether the room is occupied or not.
-        return cursor.getInt(cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_Vacancy));
+        return cursor.getString(cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_Vacancy));
 
     }
 }

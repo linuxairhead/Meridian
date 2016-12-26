@@ -1,12 +1,42 @@
 Bug Report
 
-12/22/2016 DatePickerDialogClass, TenantEditActivity, TransactionEditActivity
+12/25/2016 MainFragment
+		Bug Fixed: RoomTable db query and varify fixed
+
+12/25/2016 MainActivity, TenantInfoActivity
+		Remove unwanted MainMenu
+
+12/25/2016 MainImageAdapter
+		Bug Fixed: Main Image randomly set improperly *****
+
+12/24/2016 MainFragment
+		MainFragment clean unnecessary variable
+
+12/24/2016 MainFragment, TenantEditActivity
+		Continue migrate RoomTable db from TenantEditActivity to MainFragment
+
+12/24/2016 MainFragment, MainActivity
+		Implemented the Fragment for the Main and Migrate RoomTable related db work
+		
+12/23/2016 MainActivity, MainImageAdapter
+		Implemented If the room has occupied, set a man image to the room
+
+12/23/2016 MainImageAdapter, TenantEditActivity
+		Miscellaneous UX change
+		
+12/22/2016 TenantEditActivity, DatePickerDialogClass
+		Bug Fixed: previous commit cause bug.
+		
+12/22/2016 TenantEditActivity,	08623f4686b24da4a840e66bcdce8381f0d1e7aa
+		Bug Fixed: downgrade lib for DateFormat, SimpleDateFormte, Date.
+
+12/22/2016 DatePickerDialogClass, TenantEditActivity, TransactionEditActivity 	5b4cada9cb01c9a31b707eb19a3cc933345845b2
 		Secure Apk Build Error Fixed  
 
-12/22/2016 MainImageAdapter
+12/22/2016 MainImageAdapter		ffdfe609b241816443384a1235bfc7af1ea02334
 		Bug Fixed: UI fixed for Small Screen Device
 		
-12/21/2016 TransactionEditActivity
+12/21/2016 TransactionEditActivity 	228893fac97739e1e839ed6a11ea83a574ea0e82
 		Bug Fixed: Transaction Spinner won't set proper value for Edit
 		
 12/21/2016 DatePickerDialogClass, TransactionEditActivity
