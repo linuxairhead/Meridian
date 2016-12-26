@@ -66,7 +66,7 @@ public class MainImageAdapter extends BaseAdapter {
             imageView = (ImageView) convertView;
         }
             // draw rectangular object
-            TextDrawable.IBuilder drawable = TextDrawable.builder().beginConfig().withBorder(5).endConfig().roundRect(100);
+            TextDrawable.IBuilder drawable = TextDrawable.builder().beginConfig().withBorder(20).endConfig().roundRect(100);
             /*
              *  mCursor which was initialized at MainActivity by query RoomVacant Table.
              *  move along the position, fetch the data, if the Vacant was set as occupied (1), set the image.
@@ -81,18 +81,18 @@ public class MainImageAdapter extends BaseAdapter {
                     /*
                     *  if the room is occupied, set the image resource and background image with rectangular
                     */
-                    imageView.setAlpha(180);
+                    //imageView.setAlpha(255);
 
-                    imageView.setImageResource(R.mipmap.man);
+                    imageView.setBackgroundResource(R.mipmap.student2);
 
-                    imageView.setBackground(drawable.build("" + getRoomNumber(position), mContext.getResources().getColor(mFloorColor[position])));
+                    imageView.setImageDrawable(drawable.build("" + getRoomNumber(position), mContext.getResources().getColor(mFloorColor[position])));
                 } else {
                     /*
                     *  If the room is unoccupied, just set the Background image with rectangular and make image resource as transparent
                     */
-                    imageView.setImageResource(android.R.color.transparent);
+                    imageView.setBackgroundResource(android.R.color.transparent);
 
-                    imageView.setBackground(drawable.build("" + getRoomNumber(position), mContext.getResources().getColor(mFloorColor[position])));
+                    imageView.setImageDrawable(drawable.build("" + getRoomNumber(position), mContext.getResources().getColor(mFloorColor[position])));
                 }
             }
 

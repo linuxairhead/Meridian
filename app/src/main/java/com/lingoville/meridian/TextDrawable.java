@@ -57,7 +57,9 @@ public class TextDrawable extends ShapeDrawable {
 
         // drawable paint color
         Paint paint = getPaint();
-        paint.setColor(color);
+        paint.setAlpha(50);
+        paint.clearShadowLayer();
+        //paint.setColor(Color.WHITE);
 
     }
 
@@ -166,7 +168,7 @@ public class TextDrawable extends ShapeDrawable {
             text = "";
             color = Color.GRAY;
             textColor = Color.WHITE;
-            borderThickness = 0;
+            borderThickness = 1;
             width = -1;
             height = -1;
             shape = new RectShape();

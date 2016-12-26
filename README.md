@@ -1,5 +1,7 @@
 Bug Report
 
+12/26/2016 Design update
+
 12/25/2016 MainFragment, TenantEditActivity, TenantInfoActivity ...
 		Improve User Nevigation 
 		
