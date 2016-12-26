@@ -65,8 +65,7 @@ public class MainImageAdapter extends BaseAdapter {
         } else {
             imageView = (ImageView) convertView;
         }
-            // draw rectangular object
-            TextDrawable.IBuilder drawable = TextDrawable.builder().beginConfig().withBorder(20).endConfig().roundRect(100);
+        TextDrawable.IBuilder drawable;
             /*
              *  mCursor which was initialized at MainActivity by query RoomVacant Table.
              *  move along the position, fetch the data, if the Vacant was set as occupied (1), set the image.
@@ -78,15 +77,17 @@ public class MainImageAdapter extends BaseAdapter {
                 String occupied = mCursor.getString(mCursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_Vacancy));
 
                 if (occupied.matches("true")) {
+                    // draw rectangular object
+                    drawable = TextDrawable.builder().beginConfig().withBorder(20).textLocation(1).endConfig().roundRect(100);
                     /*
                     *  if the room is occupied, set the image resource and background image with rectangular
                     */
-                    //imageView.setAlpha(255);
-
                     imageView.setBackgroundResource(R.mipmap.student2);
 
                     imageView.setImageDrawable(drawable.build("" + getRoomNumber(position), mContext.getResources().getColor(mFloorColor[position])));
                 } else {
+                    // draw rectangular object
+                    drawable = TextDrawable.builder().beginConfig().withBorder(20).textLocation(0).endConfig().roundRect(100);
                     /*
                     *  If the room is unoccupied, just set the Background image with rectangular and make image resource as transparent
                     */

@@ -16,13 +16,13 @@ public class TextDrawable extends ShapeDrawable {
     private final Paint borderPaint;
     private static final float SHADE_FACTOR = 0.9f;
     private final String text;
-    private final int color;
     private final RectShape shape;
     private final int height;
     private final int width;
     private final int fontSize;
     private final float radius;
     private final int borderThickness;
+    private final int textLocation;
 
     private TextDrawable(Builder builder) {
         super(builder.shape);
@@ -33,34 +33,35 @@ public class TextDrawable extends ShapeDrawable {
         width = builder.width;
         radius = builder.radius;
 
+        // border paint settings
+        borderThickness = builder.borderThickness;
+        textLocation = builder.textLocation;
+        borderPaint = new Paint();
+        borderPaint.setColor(getDarkerShade(builder.color));
+        borderPaint.setStyle(Paint.Style.STROKE);
+        borderPaint.setStrokeWidth(borderThickness);
+
+        // drawable paint color
+        Paint paint = getPaint();
+        paint.setAlpha(1);
+        paint.clearShadowLayer();
+
         // text and color
         text = builder.toUpperCase ? builder.text.toUpperCase() : builder.text;
-        color = builder.color;
 
         // text paint settings
         fontSize = builder.fontSize;
         textPaint = new Paint();
-        textPaint.setColor(builder.textColor);
         textPaint.setAntiAlias(true);
         textPaint.setFakeBoldText(builder.isBold);
         textPaint.setStyle(Paint.Style.FILL);
         textPaint.setTypeface(builder.font);
         textPaint.setTextAlign(Paint.Align.CENTER);
         textPaint.setStrokeWidth(builder.borderThickness);
-
-        // border paint settings
-        borderThickness = builder.borderThickness;
-        borderPaint = new Paint();
-        borderPaint.setColor(getDarkerShade(color));
-        borderPaint.setStyle(Paint.Style.STROKE);
-        borderPaint.setStrokeWidth(borderThickness);
-
-        // drawable paint color
-        Paint paint = getPaint();
-        paint.setAlpha(50);
-        paint.clearShadowLayer();
-        //paint.setColor(Color.WHITE);
-
+        if(textLocation == 0)
+                textPaint.setColor(builder.textColor);
+        else
+                textPaint.setColor(builder.textColor);
     }
 
     private int getDarkerShade(int color) {
@@ -74,7 +75,6 @@ public class TextDrawable extends ShapeDrawable {
         super.draw(canvas);
         Rect r = getBounds();
 
-
         // draw border
         if (borderThickness > 0) {
             drawBorder(canvas);
@@ -85,10 +85,23 @@ public class TextDrawable extends ShapeDrawable {
 
         // draw text
         int width = this.width < 0 ? r.width() : this.width;
+
         int height = this.height < 0 ? r.height() : this.height;
-        int fontSize = this.fontSize < 0 ? (Math.min(width, height) / 2) : this.fontSize;
+
+        int fontSize;
+
+        if(textLocation == 0)
+             fontSize = this.fontSize < 0 ? (Math.min(width, height) / 2) : this.fontSize;
+        else
+            fontSize = this.fontSize < 0 ? (Math.min(width, height) / 3) : this.fontSize;
+
         textPaint.setTextSize(fontSize);
-        canvas.drawText(text, width / 2, height / 2 - ((textPaint.descent() + textPaint.ascent()) / 2), textPaint);
+
+        if(textLocation == 0)
+                canvas.drawText(text, width / 2, height / 2  - ((textPaint.descent() + textPaint.ascent()) / 2), textPaint);
+        else
+                canvas.drawText(text, width / 2, height - height / 9 - ((textPaint.descent() + textPaint.ascent()) / 2), textPaint);
+
 
         canvas.restoreToCount(count);
 
@@ -146,6 +159,8 @@ public class TextDrawable extends ShapeDrawable {
 
         private int borderThickness;
 
+        private int textLocation;
+
         private int width;
 
         private int height;
@@ -166,9 +181,10 @@ public class TextDrawable extends ShapeDrawable {
 
         private Builder() {
             text = "";
-            color = Color.GRAY;
-            textColor = Color.WHITE;
+            color = Color.WHITE;
+            textColor = Color.BLACK;
             borderThickness = 1;
+            textLocation = 0;
             width = -1;
             height = -1;
             shape = new RectShape();
@@ -190,6 +206,11 @@ public class TextDrawable extends ShapeDrawable {
 
         public IConfigBuilder textColor(int color) {
             this.textColor = color;
+            return this;
+        }
+
+        public IConfigBuilder textLocation(int location) {
+            this.textLocation = location;
             return this;
         }
 
@@ -280,6 +301,8 @@ public class TextDrawable extends ShapeDrawable {
         public IConfigBuilder height(int height);
 
         public IConfigBuilder textColor(int color);
+
+        public IConfigBuilder textLocation(int location);
 
         public IConfigBuilder withBorder(int thickness);
 
