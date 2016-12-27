@@ -11,11 +11,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lingoville.meridian.Data.TenantsContract;
@@ -77,9 +79,8 @@ public class TransactionInfoActivity extends AppCompatActivity implements androi
                 Log.d(LOG_TAG, "Long Click");
                 mCurrentFinanceUri = ContentUris.withAppendedId(TenantsContract.TenantEntry.FINANCE_CONTENT_URI, id);
 
-                LinearLayout tenantListItem = (LinearLayout)findViewById(R.id.list_transaction_info_items) ;
                 //Creating the instance of PopupMenu
-                PopupMenu popupMenu = new PopupMenu(TransactionInfoActivity.this, tenantListItem );
+                PopupMenu popupMenu = new PopupMenu(TransactionInfoActivity.this, view, Gravity.END );
                 //Inflating the Popup using xml file
                 popupMenu.getMenuInflater().inflate(R.menu.tenants_popup, popupMenu.getMenu());
                 //registering popup with OnMenuItemClickListener
@@ -92,7 +93,6 @@ public class TransactionInfoActivity extends AppCompatActivity implements androi
                         switch (item.getItemId()) {
                             case R.id.item_edit:
                                 Log.d(LOG_TAG, "Menu Item Click: Edit");
-                                //Toast.makeText(TenantInfoActivity.this, "Edit Clicked", Toast.LENGTH_SHORT).show();
 
                                 Intent transactionIntent = new Intent(TransactionInfoActivity.this, TransactionEditActivity.class);
                                 transactionIntent.putExtra("Room_Number", mCurrentRoomNumber );
