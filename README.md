@@ -1,5 +1,8 @@
 Bug Report
 
+12/29/2016 TenantEditActivity
+		Implemented new floating fab button for tenant image 
+
 12/28/2016 TenantEditActivity, TransactionEditActivity
 		Remove Room Number TextView for Edit Activity 
 

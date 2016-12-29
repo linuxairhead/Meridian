@@ -15,31 +15,50 @@
     tools:context="com.lingoville.meridian.TenantEditActivity"
     tools:showIn="@layout/activity_new_tenant">
 
-    -<LinearLayout
-        android:orientation="vertical"
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:gravity="center_horizontal">
-        <LinearLayout
+        <FrameLayout
             android:orientation="vertical"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:background="@color/colorPrimaryDark"
-            android:elevation="5dp"
-            android:layout_marginBottom="20dp">
-            <ImageView
+            android:gravity="center_horizontal">
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:id="@+id/newTenant_image"
-                android:elevation="10dp"
-                android:layout_marginBottom="10dp"
-                android:src="@drawable/student2"
-                android:layout_gravity="center"
-                android:layout_marginRight="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"/>
-        </LinearLayout>
+                android:background="@color/colorPrimaryDark"
+                android:elevation="5dp"
+                android:layout_marginBottom="25dp"
+                android:layout_marginRight="25dp"
+                android:layout_marginLeft="25dp">
+                <ImageView
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:id="@+id/newTenant_image"
+                    android:elevation="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:src="@drawable/student2"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"/>
+            </LinearLayout>
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/tenantImage_fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="@dimen/fab_margin"
+                app:backgroundTint="@color/colorFab"
+                app:elevation="12dp"
+                app:fabSize="mini"
+                app:srcCompat="@android:drawable/ic_input_add" />
+        </FrameLayout>
     </LinearLayout>
+
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

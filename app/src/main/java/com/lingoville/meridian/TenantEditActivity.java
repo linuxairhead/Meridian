@@ -8,9 +8,13 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -80,6 +84,34 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
             /* set today''s date as Date */
             setDatePickerAsToday();
         }
+
+        /*
+        * Floating Action Button to add new transaction (TrasactionEditActivity)
+        */
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.tenantImage_fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                //Creating the instance of PopupMenu
+                PopupMenu popupMenu = new PopupMenu(TenantEditActivity.this, view, Gravity.END );
+                //Inflating the Popup using xml file
+                popupMenu.getMenuInflater().inflate(R.menu.tenantimage_popup, popupMenu.getMenu());
+                //registering popup with OnMenuItemClickListener
+
+                popupMenu.setOnMenuItemClickListener( new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        Log.d(LOG_TAG, "Menu Item Click");
+
+
+                        return false;
+                    }
+                });
+                popupMenu.show();//showing popup menu*/
+
+            }
+        });
 
         /*
          *   Handle Button for Cancel Tenant
