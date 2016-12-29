@@ -23,7 +23,7 @@
         android:layout_marginBottom="30dp"
         android:orientation="horizontal">
         <TextView
-            android:text="Date                  :  "
+            android:text="Date"
             style="@style/CategoryStyle"  />
         <TextView
             android:id="@+id/newTrans_Date"
@@ -38,7 +38,7 @@
         android:layout_marginBottom="30dp"
         android:orientation="horizontal">
         <TextView
-            android:text="Type                  :"
+            android:text="Type"
             style="@style/CategoryStyle"  />
         <Spinner
             android:id="@+id/newTrans_Type"
@@ -57,7 +57,7 @@
         android:layout_marginBottom="30dp"
         android:orientation="horizontal">
         <TextView
-            android:text="Amount             : $"
+            android:text="Amount"
             style="@style/CategoryStyle"  />
 
         <EditText

@@ -37,7 +37,6 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
 
     private int mCurrentRoomNumber;
 
-    private TextView mRoomNumber;
     private EditText mFirstName;
     private EditText mLastName;
     private EditText mPhoneNumber;
@@ -73,11 +72,10 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
           * so initialize cursor loader for load save tenant info
          */
         if(mCurrentTenantUri != null) {
-            setTitle(R.string.title_activity_edit_tenant);
+            setTitle(getString(R.string.title_activity_edit_tenant) + mCurrentRoomNumber);
             getLoaderManager().initLoader(CURRENT_TENANT_LOADER, null, this);
         } else {
-
-                setTitle(R.string.title_activity_new_tenant);
+            setTitle(getString(R.string.title_activity_new_tenant) + mCurrentRoomNumber);
 
             /* set today''s date as Date */
             setDatePickerAsToday();
@@ -229,7 +227,6 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
             String outDate = cursor.getString(outDateColumnIndex);
 
             // Update the views on the screen with the values from the database
-            mRoomNumber.setText(roomNum);
             mFirstName.setText(fName);
             mLastName.setText(lName);
             mPhoneNumber.setText(phoneNum);
@@ -246,7 +243,6 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
     public void onLoaderReset(Loader<Cursor> loader) {
         Log.d(LOG_TAG, "onLoaderReset");
 
-        mRoomNumber.setText(""+mCurrentRoomNumber);
         mFirstName.setText("");
         mLastName.setText("");
         mPhoneNumber.setText("");
@@ -260,9 +256,6 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
     private void initializeLocalVariable(){
         // get the room number from main activity
         mCurrentRoomNumber = getIntent().getIntExtra("Room_Number", 1);
-
-        mRoomNumber = (TextView) findViewById(R.id.newTenant_RoomNumber);
-        mRoomNumber.setText("" + mCurrentRoomNumber);
         mFirstName = (EditText) findViewById(R.id.newTenant_firstName);
         mLastName = (EditText) findViewById(R.id.newTenant_lastName);
         mPhoneNumber = (EditText) findViewById(R.id.newTenant_PhoneNumber);

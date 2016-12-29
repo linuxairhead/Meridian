@@ -1,5 +1,8 @@
 Bug Report
 
+12/28/2016 TenantEditActivity, TransactionEditActivity
+		Remove Room Number TextView for Edit Activity 
+
 12/28/2016 Reorganize the navigation between activity
 
 12/28/2016 Redesign the TenantEditActivity View
