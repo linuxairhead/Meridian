@@ -41,8 +41,8 @@
 
 <!--  Transaction  -->
     <string name="title_activity_transaction_history">List of Transaction</string>
-    <string name="title_activity_new_transaction">New Transaction</string>
-    <string name="title_activity_edit_transaction">Edit Transaction</string>
+    <string name="title_activity_new_transaction">New Transaction for #</string>
+    <string name="title_activity_edit_transaction">Edit Transaction for #</string>
 
     <!-- Toast message in Transaction Edit Activity -->
     <string name="editor_insert_transaction_failed">Error with inserting Transaction Info</string>

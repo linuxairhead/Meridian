@@ -72,7 +72,7 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
           * so initialize cursor loader for load save tenant info
          */
         if(mCurrentTenantUri != null) {
-            setTitle(getString(R.string.title_activity_edit_tenant) + mCurrentRoomNumber);
+
             getLoaderManager().initLoader(CURRENT_TENANT_LOADER, null, this);
         } else {
             setTitle(getString(R.string.title_activity_new_tenant) + mCurrentRoomNumber);
@@ -208,31 +208,15 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
         // Proceed with moving to the first row of the cursor and reading data from it
         // (This should be the only row in the cursor)
         if (cursor.moveToFirst()) {
-            // Find the columns of tenant attributes that we're interested in
-            int roomNumColumnIndex = cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_ROOMNUMBER);
-            int fNameColumnIndex = cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_FIRSTNAME);
-            int lNameColumnIndex = cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_LASTNAME);
-            int phoneNumColumnIndex = cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_PHONENUMBER);
-            int emailColumnIndex = cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_EMAIL);
-            int inDateColumnIndex = cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_MOVEIN);
-            int outDateColumnIndex = cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_MOVEOUT);
-
-            // Extract out the value from the Cursor for the given column index
-            String roomNum = cursor.getString(roomNumColumnIndex);
-            String fName = cursor.getString(fNameColumnIndex);
-            String lName = cursor.getString(lNameColumnIndex);
-            String phoneNum = cursor.getString(phoneNumColumnIndex);
-            String email = cursor.getString(emailColumnIndex);
-            String inDate = cursor.getString(inDateColumnIndex);
-            String outDate = cursor.getString(outDateColumnIndex);
-
             // Update the views on the screen with the values from the database
-            mFirstName.setText(fName);
-            mLastName.setText(lName);
-            mPhoneNumber.setText(phoneNum);
-            mEmail.setText(email);
-            mMoveInDate.setText(inDate);
-            mMoveOutDate.setText(outDate);
+            mCurrentRoomNumber = cursor.getInt(cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_ROOMNUMBER));
+            setTitle(getString(R.string.title_activity_edit_tenant) + mCurrentRoomNumber);
+            mFirstName.setText(cursor.getString(cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_FIRSTNAME)));
+            mLastName.setText(cursor.getString(cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_LASTNAME)));
+            mPhoneNumber.setText(cursor.getString(cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_PHONENUMBER)));
+            mEmail.setText(cursor.getString(cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_EMAIL)));
+            mMoveInDate.setText(cursor.getString(cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_MOVEIN)));
+            mMoveOutDate.setText(cursor.getString(cursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_MOVEOUT)));
         }
     }
 

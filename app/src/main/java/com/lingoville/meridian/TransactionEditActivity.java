@@ -68,10 +68,10 @@ public class TransactionEditActivity extends AppCompatActivity implements Loader
           * so initialize cursor loader for load save finance info
          */
         if(mCurrentFinanceUri != null) {
-            setTitle(R.string.title_activity_edit_transaction + mCurrentRoomNumber);
+            setTitle(getString(R.string.title_activity_edit_transaction) + mCurrentRoomNumber);
             getLoaderManager().initLoader(TRANSACTION_EDIT_LOADER, null, this);
         } else {
-            setTitle(R.string.title_activity_new_transaction + mCurrentRoomNumber);
+            setTitle(getString(R.string.title_activity_new_transaction) + mCurrentRoomNumber);
         }
         /*
          *  initialized all the local variable for the Transaction Edit Activity by setting View
