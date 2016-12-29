@@ -58,10 +58,7 @@ public class TransactionInfoActivity extends AppCompatActivity implements androi
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent tenantIntent = new Intent(TransactionInfoActivity.this, MainActivity.class);
-                tenantIntent.putExtra("Room_Number", mCurrentRoomNumber);
                 finish();
-                startActivity(tenantIntent);
             }
         });
 

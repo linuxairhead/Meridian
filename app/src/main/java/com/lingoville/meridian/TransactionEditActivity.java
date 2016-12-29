@@ -114,14 +114,12 @@ public class TransactionEditActivity extends AppCompatActivity implements Loader
             @Override
             public void onClick(View v) {
                 Log.d(LOG_TAG, "SaveTenant rm is " + mCurrentRoomNumber);
+
                 // save the Tenant information.
                 saveTransaction();
 
                 // once inserted the Tenant info call go back to main screen
-                Intent saveIntent = new Intent(TransactionEditActivity.this, TransactionInfoActivity.class);
-                saveIntent.putExtra("Room_Number", mCurrentRoomNumber );
                 finish();
-                startActivity(saveIntent);
             }
         });
     }
