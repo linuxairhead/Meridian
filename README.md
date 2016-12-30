@@ -1,6 +1,9 @@
 Bug Report
 
 12/30/2016 TenantEditActivity
+		Implemented get the image from camera app set to View
+		
+12/30/2016 TenantEditActivity
 		Implemented starting camera app by choosing floating fab 
 		
 12/29/2016 TenantEditActivity

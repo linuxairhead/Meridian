@@ -1,15 +1,21 @@
 package com.lingoville.meridian;
 
+import android.Manifest;
 import android.app.DialogFragment;
 import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
@@ -22,6 +28,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -41,14 +49,20 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
     /* Tenant Uri to access Tenant Provider */
     private Uri mCurrentTenantUri;
 
+    /*
+     * Internal static identifier
+     */
+    private static final int PICK_Camera_IMAGE = 0;
+    private static final int PICK_Gallery_IMAGE=1;
+    private static final int REQUEST_READ_MEDIA = 2;
+
+    /* Main Activity pass Current Room Number */
     private int mCurrentRoomNumber;
 
-    private static final int PICK_Camera_IMAGE = 0;
-
-    private static final int PICK_Gallery_IMAGE=1;
-
+    /*
+     * View variable to set the Tenant Edit Activity
+     */
     private ImageView mImageView;
-
     private EditText mFirstName;
     private EditText mLastName;
     private EditText mPhoneNumber;
@@ -64,9 +78,10 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_new_tenant);
+
         /*
-            Create toolbar
-          */
+         * Create toolbar
+         */
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -76,7 +91,7 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
             }
         });
 
-        /* to improve code readability initialized all the local variable with private method */
+        /* initialized all the local variable */
         initializeLocalVariable();
 
         /*
@@ -117,7 +132,6 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
                                Log.d(LOG_TAG, "Menu Item Click: take photo");
 
                                Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                               //takePicture.putExtra(MediaStore.EXTRA_OUTPUT, mPhotoURI);
                                startActivityForResult(takePicture, PICK_Camera_IMAGE);
 
                                return true;
@@ -175,6 +189,7 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
      * Get the user input from editor and save new tenant into database.
      */
     private void saveTenant() {
+        
         Log.d(LOG_TAG, " saveTenant ");
 
         // Create the content value class by reading from user input editor
@@ -239,6 +254,7 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
      */
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
         Log.d(LOG_TAG, "onCreateLoader");
 
         /*
@@ -254,7 +270,9 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+
         Log.d(LOG_TAG, "onLoadFinished");
+
         // Bail early if the cursor is null or there is less than 1 row in the cursor
         if (cursor == null || cursor.getCount() < 1) {
             return;
@@ -280,6 +298,7 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
      */
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+
         Log.d(LOG_TAG, "onLoaderReset");
 
         mFirstName.setText("");
@@ -293,6 +312,7 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
     *  initialized all the local variable for the Tenant Edit Activity by setting View
     */
     private void initializeLocalVariable(){
+
         Log.d(LOG_TAG, "initializeLocalVariable " );
 
         // get the room number from main activity
@@ -350,13 +370,56 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
         });
     }
 
-    private int[] roomNumber = {
-            101, 102, 103, 104, 105,
-            201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211,
-            301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311,
-            401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411,
-            501, 502, 503, 504
-    };
+    /*
+     * When it return from Camera or Gallery Activity,
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
+        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
+
+        Log.d(LOG_TAG, "onActivityResult ");
+
+        /* check whether able to get the image from camera or gallery */
+        if (resultCode == RESULT_OK) {
+
+            /* Check to see whether it obtain the read permission from external source
+             *  And If it failed to obtain the read permission, request the read permission.
+             */
+            if( ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                            != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_READ_MEDIA);
+            } else {
+                // get the image uri from previous activity and set the View
+                previewCapturedImage(imageReturnedIntent.getData());
+            }
+        } else {
+            Log.d(LOG_TAG, "onActivityResult : Unable to get the image");
+        }
+    }
+
+    /*
+     * From image uri, get the Bitmap, resize to Bitmap and set to the View
+     */
+    private void previewCapturedImage(Uri photoUri) {
+        Log.d(LOG_TAG, "previewCapturedImage " );
+
+        try {
+            // Get the image from uri and resize
+            final Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(photoUri));
+            Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 500, 500, false);
+
+            // Set Bitmap to View
+            mImageView.setImageBitmap(resizedBitmap);
+
+        } catch (NullPointerException e) {
+            Log.d(LOG_TAG, "previewCapturedImage : NullPointerException" );
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            Log.d(LOG_TAG, "previewCapturedImage : FileNotFoundException" );
+            e.printStackTrace();
+        }
+    }
+
 }
 
 
