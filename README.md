@@ -1,5 +1,8 @@
 Bug Report
 
+12/30/2016 TenantEditActivity
+		Implemented starting camera app by choosing floating fab 
+		
 12/29/2016 TenantEditActivity
 		Implemented new floating fab button for tenant image 
 

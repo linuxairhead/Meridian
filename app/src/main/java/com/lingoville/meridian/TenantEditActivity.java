@@ -8,6 +8,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
@@ -18,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.text.DateFormat;
@@ -40,6 +42,12 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
     private Uri mCurrentTenantUri;
 
     private int mCurrentRoomNumber;
+
+    private static final int PICK_Camera_IMAGE = 0;
+
+    private static final int PICK_Gallery_IMAGE=1;
+
+    private ImageView mImageView;
 
     private EditText mFirstName;
     private EditText mLastName;
@@ -104,15 +112,30 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
                     public boolean onMenuItemClick(MenuItem item) {
                         Log.d(LOG_TAG, "Menu Item Click");
 
+                       switch (item.getItemId()) {
+                           case R.id.item_CameraImage:
+                               Log.d(LOG_TAG, "Menu Item Click: take photo");
 
-                        return false;
-                    }
-                });
-                popupMenu.show();//showing popup menu*/
+                               Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                               //takePicture.putExtra(MediaStore.EXTRA_OUTPUT, mPhotoURI);
+                               startActivityForResult(takePicture, PICK_Camera_IMAGE);
 
-            }
-        });
+                               return true;
 
+                           case R.id.item_GalleryImage:
+                               Log.d(LOG_TAG, "Menu Item Click: select gallery");
+
+                               Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                               startActivityForResult(pickPhoto , PICK_Gallery_IMAGE);
+
+                               return true;
+                       }
+                       return false;
+                   }
+               });
+               popupMenu.show();//showing popup menu*/
+           }
+       });
         /*
          *   Handle Button for Cancel Tenant
          */
@@ -270,7 +293,10 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
     *  initialized all the local variable for the Tenant Edit Activity by setting View
     */
     private void initializeLocalVariable(){
+        Log.d(LOG_TAG, "initializeLocalVariable " );
+
         // get the room number from main activity
+        mImageView = (ImageView) findViewById(R.id.newTenant_image);
         mCurrentRoomNumber = getIntent().getIntExtra("Room_Number", 1);
         mFirstName = (EditText) findViewById(R.id.newTenant_firstName);
         mLastName = (EditText) findViewById(R.id.newTenant_lastName);
@@ -300,7 +326,7 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
 
             @Override
             public void onClick(View v) {
-                DialogFragment dialogfragment = new DatePickerDialogClass();//(R.id.newTenant_MoveInDate);
+                DialogFragment dialogfragment = new DatePickerDialogClass();
                 Bundle aBundle = new Bundle();
                 aBundle.putInt("DATE", R.id.newTenant_MoveInDate);
                 dialogfragment.setArguments(aBundle);

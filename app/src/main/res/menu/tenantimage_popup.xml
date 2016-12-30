@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/item_takePhoto"
-        android:title="Take photo"
+        android:id="@+id/item_CameraImage"
+        android:title="Take A Photo From Camera"
         android:visible="true"/>
     <item
-        android:id="@+id/item_selectGallery"
-        android:title="Select from Gallery"
+        android:id="@+id/item_GalleryImage"
+        android:title="Select A Photo From Gallery"
         android:visible="true"/>
 </menu>
