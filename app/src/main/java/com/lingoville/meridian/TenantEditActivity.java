@@ -3,6 +3,7 @@ package com.lingoville.meridian;
 import android.Manifest;
 import android.app.DialogFragment;
 import android.app.LoaderManager;
+import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.Loader;
@@ -53,8 +54,9 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
      * Internal static identifier
      */
     private static final int PICK_Camera_IMAGE = 0;
-    private static final int PICK_Gallery_IMAGE=1;
-    private static final int REQUEST_READ_MEDIA = 2;
+    private static final int PICK_Gallery_IMAGE= 1;
+    private static final int PICK_CROP_IMAGE = 2;
+    private static final int REQUEST_READ_MEDIA = 3;
 
     /* Main Activity pass Current Room Number */
     private int mCurrentRoomNumber;
@@ -189,7 +191,7 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
      * Get the user input from editor and save new tenant into database.
      */
     private void saveTenant() {
-        
+
         Log.d(LOG_TAG, " saveTenant ");
 
         // Create the content value class by reading from user input editor
@@ -389,37 +391,59 @@ public class TenantEditActivity extends AppCompatActivity implements LoaderManag
                             != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_READ_MEDIA);
             } else {
-                // get the image uri from previous activity and set the View
-                previewCapturedImage(imageReturnedIntent.getData());
+
+
+                switch (requestCode) {
+                    case PICK_Camera_IMAGE:
+                    case PICK_Gallery_IMAGE:
+                        Uri image = imageReturnedIntent.getData();
+                            //carry out the crop operation
+                            performCrop(image);
+                            break;
+                    case PICK_CROP_IMAGE:
+                            // get the image uri from previous activity and set the View
+                            Bundle bundle = imageReturnedIntent.getExtras();
+                            Bitmap thePic = bundle.getParcelable("data");
+                            mImageView.setImageBitmap(thePic);
+                            break;
+                }
             }
         } else {
             Log.d(LOG_TAG, "onActivityResult : Unable to get the image");
         }
     }
 
-    /*
-     * From image uri, get the Bitmap, resize to Bitmap and set to the View
-     */
-    private void previewCapturedImage(Uri photoUri) {
-        Log.d(LOG_TAG, "previewCapturedImage " );
-
+    private void performCrop(Uri photoUri){
         try {
-            // Get the image from uri and resize
-            final Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(photoUri));
-            Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 500, 500, false);
+            //call the standard crop action intent (the user device may not support it)
+            Intent cropIntent = new Intent("com.android.camera.action.CROP");
+            //indicate image type and Uri
+            cropIntent.setDataAndType(photoUri, "image/*");
 
-            // Set Bitmap to View
-            mImageView.setImageBitmap(resizedBitmap);
+            //set crop properties
+            cropIntent.putExtra("crop", "true");
 
-        } catch (NullPointerException e) {
-            Log.d(LOG_TAG, "previewCapturedImage : NullPointerException" );
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            Log.d(LOG_TAG, "previewCapturedImage : FileNotFoundException" );
-            e.printStackTrace();
+            //indicate aspect of desired crop
+            cropIntent.putExtra("aspectX", 1);
+            cropIntent.putExtra("aspectY", 1);
+
+            //indicate output X and Y
+            cropIntent.putExtra("outputX", 256);
+            cropIntent.putExtra("outputY", 256);
+
+            //retrieve data on return
+            cropIntent.putExtra("return-data", true);
+
+            //start the activity - we handle returning in onActivityResult
+            startActivityForResult(cropIntent, PICK_CROP_IMAGE);
+        }
+        catch(ActivityNotFoundException e){
+            //display an error message
+            String errorMessage = "Whoops - your device doesn't support the crop action!";
+            Toast toast = Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT);
+            toast.show();
         }
     }
-
 }
 
 

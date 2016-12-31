@@ -1,6 +1,9 @@
 Bug Report
 
 12/30/2016 TenantEditActivity
+		Implemented before set the View the image, crop the image
+		
+12/30/2016 TenantEditActivity
 		Implemented get the image from camera app set to View
 		
 12/30/2016 TenantEditActivity
