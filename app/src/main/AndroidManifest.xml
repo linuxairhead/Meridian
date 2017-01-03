@@ -22,9 +22,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".TenantActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".TenantEditActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
