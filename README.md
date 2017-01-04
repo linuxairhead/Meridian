@@ -1,5 +1,8 @@
 Bug Report
 
+1/3/2017 LoginActivity, activity_login
+		Implemented LoginActivity
+
 12/30/2016 TenantEditActivity
 		Implemented before set the View the image, crop the image
 		
