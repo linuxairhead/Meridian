@@ -1,5 +1,8 @@
 Bug Report
 
+1/3/2017 AndroidManifest
+		Android Manifest clean up
+		
 1/3/2017 LoginActivity, activity_login
 		Implemented LoginActivity
 
