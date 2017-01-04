@@ -1,5 +1,8 @@
 Bug Report
 
+1/3/2017 activity_login
+		UI update for activity_login
+
 1/3/2017 AndroidManifest
 		Android Manifest clean up
 		
