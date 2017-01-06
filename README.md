@@ -1,5 +1,8 @@
 Bug Report
 
+1/6/2017 RegisterActivity
+		New Activity for RegisterActivity
+		
 1/3/2017 activity_login
 		UI update for activity_login
 

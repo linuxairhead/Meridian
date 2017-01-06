@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/content_new_tenant"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- First Name field -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:text="First Name"
+                    style="@style/CategoryStyle"  />
+                <EditText
+                    android:id="@+id/newTenant_firstName"
+                    android:inputType="textCapWords"
+                    android:hint="John"
+                    android:ems="10"
+                    style="@style/EditorFieldStyle" />
+            </LinearLayout>
+
+            <!-- Last Name field -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:text="Last Name"
+                    style="@style/CategoryStyle"  />
+
+                <EditText
+                    android:id="@+id/newTenant_lastName"
+                    android:inputType="textCapWords"
+                    android:hint="Smith"
+                    android:ems="10"
+                    style="@style/EditorFieldStyle" />
+            </LinearLayout>
+
+            <!-- Phone Number field -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:text="Phone Number"
+                    style="@style/CategoryStyle"  />
+                <EditText
+                    android:id="@+id/newTenant_PhoneNumber"
+                    android:inputType="phone"
+                    android:digits="0123456789+"
+                    android:hint="XXX-XXX-XXXX"
+                    style="@style/EditorFieldStyle" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:text="Email Address"
+                    style="@style/CategoryStyle"  />
+                <EditText
+                    android:id="@+id/newTenant_Email"
+                    android:inputType="textEmailAddress"
+                    android:hint="John.Smith@gmail.com"
+                    style="@style/EditorFieldStyle" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="horizontal">
+                <Button
+                    android:id="@+id/SaveTenant"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:text="Save" />
+                <Button
+                    android:id="@+id/CancelTenant"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:text="Cancel"/>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
