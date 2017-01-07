@@ -8,136 +8,64 @@
     android:layout_height="match_parent"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
+    android:gravity="center_vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <LinearLayout
-        android:orientation="horizontal"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:gravity="center_horizontal">
-        <FrameLayout
-            android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:elevation="10dp"
+        android:gravity="center_vertical">
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:gravity="center_horizontal">
-            <LinearLayout
+            <FrameLayout
                 android:orientation="vertical"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:background="@color/colorPrimaryDark"
-                android:elevation="5dp"
-                android:layout_marginBottom="25dp"
-                android:layout_marginRight="25dp"
-                android:layout_marginLeft="25dp">
-                <ImageView
+                android:background="@drawable/rounded_image"
+                android:gravity="center_horizontal">
+                <LinearLayout
+                    android:orientation="vertical"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
-                    android:id="@+id/newTenant_image"
-                    android:elevation="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:src="@drawable/student2"
-                    android:layout_gravity="center"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"/>
-            </LinearLayout>
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/tenantImage_fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end"
-                android:layout_margin="@dimen/fab_margin"
-                app:backgroundTint="@color/colorFab"
-                app:elevation="12dp"
-                app:fabSize="mini"
-                app:srcCompat="@android:drawable/ic_input_add" />
-        </FrameLayout>
-    </LinearLayout>
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginLeft="15dp">
 
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="30dp"
-        android:layout_gravity="center"
-        android:fillViewport="true">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+                    <ImageView
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:id="@+id/register_image"
+                        android:elevation="10dp"
+                        android:src="@drawable/student"
+                        android:layout_gravity="center" />
+                </LinearLayout>
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/tenantImage_fab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|end"
+                    android:layout_margin="@dimen/fab_margin"
+                    app:backgroundTint="@color/colorFab"
+                    app:elevation="12dp"
+                    app:fabSize="normal"
+                    app:srcCompat="@android:drawable/ic_input_add" />
+            </FrameLayout>
+        </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="20dp"
-                android:orientation="vertical">
-                <!-- First Name field -->
-                <TextView
-                    android:text="First Name"
-                    style="@style/CategoryStyle"  />
-                <EditText
-                    android:id="@+id/newTenant_firstName"
-                    android:inputType="textCapWords"
-                    android:hint="John"
-                    style="@style/RegisterEditorFieldStyle" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="20dp"
-                android:orientation="vertical">
-                <!-- Last Name field -->
-                <TextView
-                    android:text="Last Name"
-                    style="@style/CategoryStyle"  />
-                <EditText
-                    android:id="@+id/newTenant_lastName"
-                    android:inputType="textCapWords"
-                    android:hint="Smith"
-                    style="@style/RegisterEditorFieldStyle" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="20dp"
-                android:orientation="vertical">
-                <!-- Phone Number field -->
-                <TextView
-                    android:text="Phone Number"
-                    style="@style/CategoryStyle"  />
-                <EditText
-                    android:id="@+id/newTenant_PhoneNumber"
-                    android:inputType="phone"
-                    android:digits="0123456789+"
-                    android:hint="XXX-XXX-XXXX"
-                    style="@style/RegisterEditorFieldStyle" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="20dp"
-                android:orientation="vertical">
-                <TextView
-                    android:text="Email Address"
-                    style="@style/CategoryStyle"  />
-                <EditText
-                    android:id="@+id/newTenant_Email"
-                    android:inputType="textEmailAddress"
-                    android:hint="John.Smith@gmail.com"
-                    style="@style/RegisterEditorFieldStyle" />
-            </LinearLayout>
-        <LinearLayout
+        <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="0dp"
-            android:orientation="vertical">
-        </LinearLayout>
-
-        </LinearLayout>
-    </ScrollView>
+            android:background="@drawable/rounded_edittext"
+            android:id="@+id/registerNext"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:text="Next"/>
+    </LinearLayout>
 </LinearLayout>

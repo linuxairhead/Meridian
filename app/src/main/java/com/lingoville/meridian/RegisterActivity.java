@@ -1,5 +1,6 @@
 package com.lingoville.meridian;
 
+import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -10,14 +11,18 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.Button;
 import android.widget.TextView;
 
 public class RegisterActivity extends AppCompatActivity {
+
+    public static final String LOG_TAG = RegisterActivity.class.getSimpleName();
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -33,6 +38,9 @@ public class RegisterActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+
+    private Button    nextButton;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,15 +59,22 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
+    private void setSectionPagerAdapter(int position) {
+        mViewPager.setCurrentItem(position);
+    }
+
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class RegisterUserFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
+    public static class RegisterUserFragment extends Fragment implements View.OnClickListener {
+
+        public static final String LOG_TAG = RegisterUserFragment.class.getSimpleName();
+
         private static final String ARG_SECTION_NUMBER = "section_number";
+
+        private View rootView;
+
+        private Button nextButton;
 
         public RegisterUserFragment() {
         }
@@ -79,22 +94,37 @@ public class RegisterActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_register, container, false);
+            rootView = inflater.inflate(R.layout.fragment_register, container, false);
+
+            nextButton = (Button) rootView.findViewById(R.id.registerNext);
             //TextView textView = (TextView) rootView.findViewById(R.id.section_label);
             //textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+
+            nextButton.setOnClickListener(this);
+
             return rootView;
+        }
+
+        @Override
+        public void onClick(View v) {
+            Log.d(LOG_TAG, "onButtonPressed");
+            RegisterActivity ra = (RegisterActivity) getActivity();
+            ra.setSectionPagerAdapter(1);
         }
     }
 
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class RegisterPropertyFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
+    public static class RegisterPropertyFragment extends Fragment implements View.OnClickListener{
+
+        public static final String LOG_TAG = RegisterPropertyFragment.class.getSimpleName();
+
         private static final String ARG_SECTION_NUMBER = "section_number";
+
+        private View rootView;
+
+        private Button nextButton;
 
         public RegisterPropertyFragment() {
         }
@@ -114,11 +144,21 @@ public class RegisterActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_register2, container, false);
+            rootView = inflater.inflate(R.layout.fragment_register2, container, false);
+            //nextButton = (Button) rootView.findViewById(R.id.registerNext);
             //TextView textView = (TextView) rootView.findViewById(R.id.section_label);
             //textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+            //nextButton.setOnClickListener(this);
             return rootView;
         }
+
+        @Override
+        public void onClick(View v) {
+        Log.d(LOG_TAG, "onButtonPressed");
+            RegisterActivity ra = (RegisterActivity) getActivity();
+            ra.setSectionPagerAdapter(0);
+        }
+
     }
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
