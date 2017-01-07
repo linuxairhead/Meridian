@@ -22,15 +22,15 @@ import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.WindowManager;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -65,6 +65,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     // UI references.
     private ScrollView mScroll;
+    private ImageView mImage;
+    private TextView mSpace;
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
@@ -77,20 +79,51 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         Log.d(LOG_TAG, "onCreate");
 
-        // Set up the login form.
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
+
+        // Set up the login form.
+        mImage = (ImageView) findViewById(R.id.imageView);
+        mSpace = (TextView) findViewById(R.id.imageSpace);
+
+        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+        mEmailView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    mImage.setVisibility(View.GONE);
+                    mSpace.setVisibility(View.VISIBLE);
+                } else {
+                    mImage.setVisibility(View.VISIBLE);
+                    mSpace.setVisibility(View.GONE);
+                }
+            }
+        });
+
         mScroll = (ScrollView) findViewById(R.id.login_form);
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
+
                 if (id == R.id.login || id == EditorInfo.IME_NULL) {
                     attemptLogin();
                     return true;
                 }
                 return false;
+            }
+        });
+
+        mPasswordView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    mImage.setVisibility(View.GONE);
+                    mSpace.setVisibility(View.VISIBLE);
+                } else {
+                    mImage.setVisibility(View.VISIBLE);
+                    mSpace.setVisibility(View.GONE);
+                }
             }
         });
 
@@ -141,6 +174,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
         return false;
     }
+
 
     /**
      * Callback received when a permissions request has been completed.

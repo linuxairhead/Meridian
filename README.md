@@ -1,5 +1,8 @@
 Bug Report
 
+1/6/2017 LoginActivity
+		UX improvement
+		
 1/6/2017 RegisterActivity
 		New Activity for RegisterActivity
 		
