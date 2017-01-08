@@ -1,6 +1,8 @@
 package com.lingoville.meridian;
 
 import android.Manifest;
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -17,6 +19,7 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +32,7 @@ import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.util.concurrent.ExecutionException;
-
+import java.util.regex.Pattern;
 
 
 public class RegisterActivity extends AppCompatActivity {
@@ -273,17 +276,17 @@ public class RegisterActivity extends AppCompatActivity {
             backGround.execute();
 
             Log.d(LOG_TAG, "onCreate Email is --->");
-/*
+
             Pattern emailPattern = Patterns.EMAIL_ADDRESS; // API level 8+
             Account[] accounts = AccountManager.get(getActivity()).getAccounts();
             for (Account account : accounts) {
                 if (emailPattern.matcher(account.name).matches()) {
                     String possibleEmail = account.name;
-                    //mEmailAddress.setText(possibleEmail);
+                    mEmailAddress.setText(possibleEmail);
                     Log.d(LOG_TAG, "onCreate " + possibleEmail);
                 }
             }
-            */
+
             return rootView;
         }
 
