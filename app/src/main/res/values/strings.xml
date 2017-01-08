@@ -6,6 +6,15 @@
     <string name="title_activity_register">Register</string>
     <string name="section_format">Hello World from section: %1$d</string>
 
+    <!-- Strings related with user name -->
+    <string name="register_firstName">First Name</string>
+    <string name="register_lastName">Last Name</string>
+    <string name="register_phoneNumber">Phone Number</string>
+    <string name="register_emailAddress">Email Address</string>
+    <string name="register_numberOfBuilding">Number Of Building</string>
+    <string name="register_numberOfFloor">Number Of Floor</string>
+    <string name="register_numberOfUnit">Number Of Unit</string>
+
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
