@@ -8,63 +8,48 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:orientation="vertical"
+    android:elevation="10dp"
     android:gravity="center_vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <FrameLayout
         android:orientation="vertical"
         android:elevation="10dp"
-        android:gravity="center_vertical">
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:background="@drawable/rounded_image"
+        android:layout_gravity="center">
         <LinearLayout
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:gravity="center_horizontal">
-            <FrameLayout
-                android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="15dp">
+            <ImageView
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:background="@drawable/rounded_image"
-                android:gravity="center_horizontal">
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginBottom="15dp"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginLeft="15dp">
-
-                    <ImageView
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:id="@+id/register_image"
-                        android:elevation="10dp"
-                        android:src="@drawable/student"
-                        android:layout_gravity="center" />
-                </LinearLayout>
-                <android.support.design.widget.FloatingActionButton
-                    android:id="@+id/tenantImage_fab"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|end"
-                    android:layout_margin="@dimen/fab_margin"
-                    app:backgroundTint="@color/colorFab"
-                    app:elevation="12dp"
-                    app:fabSize="normal"
-                    app:srcCompat="@android:drawable/ic_input_add" />
-            </FrameLayout>
+                android:layout_gravity="center"
+                android:id="@+id/register_image"
+                android:contentDescription="@null"
+                android:src="@drawable/student" />
         </LinearLayout>
-
-        <Button
-            android:layout_width="match_parent"
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/tenantImage_fab"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/rounded_edittext"
-            android:id="@+id/register_next"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
-            android:text="Next"/>
-    </LinearLayout>
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/large_fab_margin"
+            app:backgroundTint="@color/colorFab"
+            app:elevation="12dp"
+            app:fabSize="normal"
+            app:srcCompat="@android:drawable/ic_input_add" />
+    </FrameLayout>
+
+    <Button
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:id="@+id/register_next"
+        android:text="Next"
+        style="@style/RegisterFragmentLongButtonStyle"/>
 </LinearLayout>

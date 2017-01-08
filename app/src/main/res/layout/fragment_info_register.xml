@@ -20,17 +20,11 @@
             android:layout_marginTop="20dp"
             android:orientation="vertical">
             <TextView
-                android:layout_width="match_parent"
-                android:gravity="center_horizontal"
-                android:layout_marginBottom="20dp"
                 android:text="Phone Number &amp; Email Address"
-                style="@style/CategoryStyle"  />
+                style="@style/RegisterTitleStyle"  />
             <TextView
-                android:layout_width="match_parent"
-                android:gravity="center_horizontal"
-                android:layout_marginBottom="20dp"
-                android:text="Imported the your information from device"
-                style="@style/CategoryStyle"  />
+                android:text="Imported information from device. It will be use for communicate with tenant. Please update if you would like to use other phone number or email address"
+                style="@style/RegisterDescriptionStyle"  />
         </LinearLayout>
 
         <!-- Phone Number field -->
@@ -40,13 +34,10 @@
             android:layout_marginBottom="10dp">
             <EditText
                 android:id="@+id/register_phoneNumber"
-                android:inputType="textCapWords"
                 android:hint="@string/register_phoneNumber"
                 android:imeActionId="@+id/login"
                 android:imeActionLabel="@string/action_sign_in"
-                android:imeOptions="actionUnspecified"
-                android:ems="20"
-                style="@style/EditorFieldStyle" />
+                style="@style/RegisterEditorFieldStyle" />
         </android.support.design.widget.TextInputLayout>
 
 
@@ -56,32 +47,29 @@
             android:layout_height="wrap_content">
             <EditText
                 android:id="@+id/register_emailAddress"
-                android:inputType="textCapWords"
                 android:hint="@string/register_emailAddress"
                 android:imeActionId="@+id/login"
                 android:imeActionLabel="@string/action_sign_in"
-                android:imeOptions="actionUnspecified"
-                android:ems="20"
-                style="@style/EditorFieldStyle" />
+                style="@style/RegisterEditorFieldStyle" />
         </android.support.design.widget.TextInputLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
             android:gravity="center"
             android:orientation="horizontal">
+
             <Button
                 android:id="@+id/info_before"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:text="Before" />
+                android:text="Before"
+                android:layout_marginRight="10dp"
+                style="@style/RegisterFragmentButtonStyle"/>
+
             <Button
                 android:id="@+id/info_next"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:text="Next" />
+                android:text="Next"
+                android:layout_marginRight="10dp"
+                style="@style/RegisterFragmentButtonStyle"/>
         </LinearLayout>
     </LinearLayout>
 </ScrollView>
