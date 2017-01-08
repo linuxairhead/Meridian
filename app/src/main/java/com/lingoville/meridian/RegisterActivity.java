@@ -1,11 +1,13 @@
 package com.lingoville.meridian;
 
 import android.Manifest;
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.PagerAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.support.v4.app.Fragment;
@@ -15,27 +17,33 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import java.util.regex.Pattern;
+
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.appindexing.Thing;
+import com.google.android.gms.common.api.GoogleApiClient;
+
+import java.util.concurrent.ExecutionException;
 
 
-public class RegisterActivity extends AppCompatActivity  {
+
+public class RegisterActivity extends AppCompatActivity {
 
     public static final String LOG_TAG = RegisterActivity.class.getSimpleName();
 
     private static final int PERMISSION_REQUEST_CODE = 3;
     /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
+     * The {@link PagerAdapter} that will provide
      * fragments for each of the sections. We use a
      * {@link FragmentPagerAdapter} derivative, which will keep every
      * loaded fragment in memory. If this becomes too memory intensive, it
      * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
+     * {@link FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
@@ -44,7 +52,12 @@ public class RegisterActivity extends AppCompatActivity  {
      */
     private ViewPager mViewPager;
 
-    private Button    nextButton;
+    private Button nextButton;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
 
     @Override
@@ -65,10 +78,49 @@ public class RegisterActivity extends AppCompatActivity  {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     private void setSectionPagerAdapter(int position) {
         mViewPager.setCurrentItem(position);
+    }
+
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    public Action getIndexApiAction() {
+        Thing object = new Thing.Builder()
+                .setName("Register Page") // TODO: Define a title for the content shown.
+                // TODO: Make sure this auto-generated URL is correct.
+                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
+                .build();
+        return new Action.Builder(Action.TYPE_VIEW)
+                .setObject(object)
+                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
+                .build();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        AppIndex.AppIndexApi.start(client, getIndexApiAction());
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        AppIndex.AppIndexApi.end(client, getIndexApiAction());
+        client.disconnect();
     }
 
     /**
@@ -121,7 +173,7 @@ public class RegisterActivity extends AppCompatActivity  {
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class RegisterUserNameFragment extends Fragment implements View.OnClickListener{
+    public static class RegisterUserNameFragment extends Fragment implements View.OnClickListener {
 
         public static final String LOG_TAG = RegisterUserNameFragment.class.getSimpleName();
 
@@ -155,8 +207,8 @@ public class RegisterActivity extends AppCompatActivity  {
                                  Bundle savedInstanceState) {
             Log.d(LOG_TAG, "onCreateView");
             rootView = inflater.inflate(R.layout.fragment_name_register, container, false);
-            firstName = (EditText)rootView.findViewById(R.id.register_firstName);
-            lastName = (EditText)rootView.findViewById(R.id.register_lastName);
+            firstName = (EditText) rootView.findViewById(R.id.register_firstName);
+            lastName = (EditText) rootView.findViewById(R.id.register_lastName);
 
             nextButton = (Button) rootView.findViewById(R.id.name_next);
             nextButton.setOnClickListener(this);
@@ -172,10 +224,11 @@ public class RegisterActivity extends AppCompatActivity  {
         }
 
     }
+
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class RegisterUserInfoFragment extends Fragment implements View.OnClickListener{
+    public static class RegisterUserInfoFragment extends Fragment implements View.OnClickListener {
 
         public static final String LOG_TAG = RegisterUserInfoFragment.class.getSimpleName();
 
@@ -183,11 +236,11 @@ public class RegisterActivity extends AppCompatActivity  {
 
         private View rootView;
 
-        private EditText phoneNumber;
+        private EditText mPhoneNumber;
 
-        private EditText emailAddress;
+        private EditText mEmailAddress;
 
-        private Button nextButton;
+        private Button mNextButton;
 
         public RegisterUserInfoFragment() {
         }
@@ -208,54 +261,72 @@ public class RegisterActivity extends AppCompatActivity  {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             Log.d(LOG_TAG, "onCreateView");
-/*
-            Log.d(LOG_TAG, "onCreate Email is --->" );
 
+            rootView = inflater.inflate(R.layout.fragment_info_register, container, false);
+            mPhoneNumber = (EditText) rootView.findViewById(R.id.register_phoneNumber);
+            mEmailAddress = (EditText) rootView.findViewById(R.id.register_emailAddress);
+
+            mNextButton = (Button) rootView.findViewById(R.id.info_next);
+            mNextButton.setOnClickListener(this);
+
+            retrievePhoneNumber backGround = new retrievePhoneNumber();
+            backGround.execute();
+
+            Log.d(LOG_TAG, "onCreate Email is --->");
+/*
             Pattern emailPattern = Patterns.EMAIL_ADDRESS; // API level 8+
             Account[] accounts = AccountManager.get(getActivity()).getAccounts();
             for (Account account : accounts) {
                 if (emailPattern.matcher(account.name).matches()) {
                     String possibleEmail = account.name;
+                    //mEmailAddress.setText(possibleEmail);
                     Log.d(LOG_TAG, "onCreate " + possibleEmail);
                 }
             }
-
-            Log.d(LOG_TAG, "onCreate Phone Number is --->");
-
-            if( ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_SMS)
-                    != PackageManager.PERMISSION_GRANTED) {
-                do {
-                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_SMS}, PERMISSION_REQUEST_CODE);
-                }while ( ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_SMS)
-                        != PackageManager.PERMISSION_GRANTED);
-            } else {
-                TelephonyManager tMgr = (TelephonyManager) getActivity().getSystemService(getActivity().TELEPHONY_SERVICE);
-                String mPhoneNumber = tMgr.getLine1Number();
-                Log.d(LOG_TAG, "onCreate Phone Number " + mPhoneNumber);
-            }
             */
-            rootView = inflater.inflate(R.layout.fragment_info_register, container, false);
-            phoneNumber = (EditText) rootView.findViewById(R.id.register_phoneNumber);
-            emailAddress = (EditText) rootView.findViewById(R.id.register_emailAddress);
-
-            nextButton = (Button) rootView.findViewById(R.id.info_next);
-            nextButton.setOnClickListener(this);
-
             return rootView;
         }
 
         @Override
         public void onClick(View v) {
-        Log.d(LOG_TAG, "onButtonPressed");
+            Log.d(LOG_TAG, "onButtonPressed");
             RegisterActivity ra = (RegisterActivity) getActivity();
             ra.setSectionPagerAdapter(3);
+        }
+
+        private class retrievePhoneNumber extends AsyncTask<Void, Void, String> {
+
+            @Override
+            protected String doInBackground(Void... mVoid) {
+                Log.d(LOG_TAG, "doInBackground");
+
+                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_SMS)
+                        != PackageManager.PERMISSION_GRANTED) {
+
+                    if (shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)) {
+                        Log.d(LOG_TAG, "onCreate Phone Number Permission is reqiured");
+                    }
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_SMS}, PERMISSION_REQUEST_CODE);
+                 }
+                return "PERMISSION_REQUESTED";
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+                Log.d(LOG_TAG, "onPostExecute");
+
+                while (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_SMS)
+                        != PackageManager.PERMISSION_GRANTED) {  }
+                TelephonyManager tMgr = (TelephonyManager) getActivity().getSystemService(getActivity().TELEPHONY_SERVICE);
+                mPhoneNumber.setText(tMgr.getLine1Number());
+            }
         }
     }
 
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class RegisterPropertyFragment extends Fragment implements View.OnClickListener{
+    public static class RegisterPropertyFragment extends Fragment implements View.OnClickListener {
 
         public static final String LOG_TAG = RegisterPropertyFragment.class.getSimpleName();
 
@@ -296,6 +367,7 @@ public class RegisterActivity extends AppCompatActivity  {
             ra.setSectionPagerAdapter(0);
         }
     }
+
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
