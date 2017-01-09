@@ -3,6 +3,7 @@ package com.lingoville.meridian;
 import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -23,16 +24,24 @@ import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
+
+import static com.lingoville.meridian.RegisterActivity.RegisterPropertyFragment.*;
 
 
 public class RegisterActivity extends AppCompatActivity {
@@ -268,7 +277,6 @@ public class RegisterActivity extends AppCompatActivity {
             rootView = inflater.inflate(R.layout.fragment_info_register, container, false);
             mPhoneNumber = (EditText) rootView.findViewById(R.id.register_phoneNumber);
             mEmailAddress = (EditText) rootView.findViewById(R.id.register_emailAddress);
-
             mNextButton = (Button) rootView.findViewById(R.id.info_next);
             mNextButton.setOnClickListener(this);
 
@@ -337,10 +345,25 @@ public class RegisterActivity extends AppCompatActivity {
 
         private View rootView;
 
+        private LinearLayout newRootView;
+
+        private Spinner mNumFloor;
+
+        private TextView mUnitQ;
+
+        private ArrayList<LinearLayout> linearLayoutArray;
+
+        private int previousSelectedFloor = 0;
+
+        private int currentNumFloor = 0;
+
         private Button nextButton;
 
-        public RegisterPropertyFragment() {
-        }
+        private String floor[] = {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th"  };
+
+        private Integer unit[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
+
+        public RegisterPropertyFragment() {   }
 
         /**
          * Returns a new instance of this fragment for the given section
@@ -351,14 +374,92 @@ public class RegisterActivity extends AppCompatActivity {
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
             fragment.setArguments(args);
+
             return fragment;
         }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
+
             Log.d(LOG_TAG, "onCreateView");
-            rootView = inflater.inflate(R.layout.fragment_property_fragment, container, false);
+
+            /*  initialize rootView by inflate the fragment_property_register layout*/
+            rootView = inflater.inflate(R.layout.fragment_property_register, container, false);
+
+            /* newRootView will hold the all the element view and
+             * will dynamically add more spinner view for floor */
+            newRootView = (LinearLayout) rootView.findViewById(R.id.parentProperty);
+
+            /* initialize mNumFloor spinner to get the number of floor from user
+            *  spinnerFloorArrayAdapter will have floor number as item and it will set to mNumFloor spinner.
+            * */
+            mNumFloor = (Spinner) rootView.findViewById(R.id.register_numberOfFloor);
+            ArrayAdapter<String> spinnerFloorArrayAdapter = new ArrayAdapter<String>(getActivity(),   android.R.layout.simple_spinner_item, floor);
+            spinnerFloorArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); // The drop down view
+            mNumFloor.setAdapter(spinnerFloorArrayAdapter);
+            linearLayoutArray = new ArrayList<LinearLayout>();
+            mNumFloor.setSelection(0);
+            mNumFloor.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+                /*
+                 * When the user selected the nNumFloor, it will dynamically initialize floors with newFloorSpinner
+                 */
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                    /* Get the number of floor user selected */
+                    currentNumFloor = mNumFloor.getSelectedItemPosition();
+
+                    /* If the user changed the number of floor need to resize the view
+                     *  Case (previousSelectedFloor < currentNumFloor)
+                     *           user selected more unit than previous selected, then only need to add extra unit
+                     *           so increase index to currentNumFloor
+                     *
+                     *   Case (previousSelectedFloor > currentNumFloor)
+                     *           user selected less unit than previous selected, then only need to remove the extra unit
+                     */
+                    if( previousSelectedFloor <=currentNumFloor ) {
+
+                        for (int index = previousSelectedFloor; index <= currentNumFloor ; index++) {
+                            Log.d(LOG_TAG, "onCreateView index " + index  + " floor " + floor[index]);
+                            //use linearlayout inflater to create new property_units on the fly
+                            LinearLayout newFloor = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.property_units, null);
+
+                            /*initialize newFloorText from newFloor inflater*/
+                            TextView newFloorText = (TextView) newFloor.findViewById(R.id.register_floorNum);
+                            newFloorText.setText("Unit for " + floor[index] + " Floor");
+
+                            /*initialize newFloorspinner from newFloor inflater*/
+                            Spinner newFloorSpinner = (Spinner) newFloor.findViewById(R.id.register_numberOfUnit);
+                            // Application of the Array to the Spinner
+                            ArrayAdapter<Integer> spinnerUnitArrayAdapter = new ArrayAdapter<Integer>(getActivity(), android.R.layout.simple_spinner_item, unit);
+                            spinnerUnitArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); // The drop down view
+                            newFloorSpinner.setAdapter(spinnerUnitArrayAdapter);
+
+                            /* add newFloor to rootView */
+                            newRootView.addView(newFloor);
+                            linearLayoutArray.add(newFloor);
+                        }
+                    } else {
+                        int index = linearLayoutArray.size()-1;
+
+                        for ( ; index > currentNumFloor ; index-- ) {
+                            LinearLayout linearView = (LinearLayout)linearLayoutArray.remove(index);
+                            newRootView.removeView(linearView);
+                        }
+                    }
+
+                    /* new previous selected floor
+                    *  this variable will be used when the user changed num of floor*/
+                    previousSelectedFloor = ++currentNumFloor;
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
 
             return rootView;
         }

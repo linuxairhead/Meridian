@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:fillViewport="true"
+    tools:ignore="UselessParent"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:paddingBottom="40dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical">
+        <TextView
+            android:text="Detail Property Infomation"
+            style="@style/RegisterTitleStyle"  />
+        <TextView
+            android:text="This property information will initialized the app. Please input accurate infomation for good user experience"
+            style="@style/RegisterDescriptionStyle"  />
+        <TextView
+            android:text="How many floor is your property?"
+            style="@style/RegisterDescriptionStyle"  />
+    </LinearLayout>
+
+    <!-- Number of Building field -->
+    <android.support.design.widget.TextInputLayout
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp">
+        <Spinner
+            android:id="@+id/register_numberOfBuilding"
+            style="@style/RegisterEditorFieldStyle" />
+    </android.support.design.widget.TextInputLayout>
+
+    <!-- Number Of Floor for Each Building field -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:weightSum="2"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Number of Floor"/>
+
+        <Spinner
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/register_numberOfFloor"
+            android:spinnerMode="dropdown" />
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginBottom="5dp"
+        android:background="@color/colorAccent" />
+    <TextView
+        android:text="How many units do each floor has it?"
+        style="@style/RegisterDescriptionStyle"  />
+    <ScrollView
+        android:paddingBottom="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:id="@+id/parentProperty"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </LinearLayout>
+    </ScrollView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/info_before"
+            android:text="Before"
+            android:layout_marginRight="10dp"
+            style="@style/RegisterFragmentButtonStyle"/>
+
+        <Button
+            android:id="@+id/info_next"
+            android:text="Next"
+            android:layout_marginRight="10dp"
+            style="@style/RegisterFragmentButtonStyle"/>
+    </LinearLayout>
+</LinearLayout>
+
