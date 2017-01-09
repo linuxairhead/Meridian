@@ -64,7 +64,10 @@ public class RegisterActivity extends AppCompatActivity {
      */
     private ViewPager mViewPager;
 
-    private Button nextButton;
+    private Button mBeforeButton;
+
+    private Button mNextButton;
+
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -138,7 +141,7 @@ public class RegisterActivity extends AppCompatActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class RegisterUserFragment extends Fragment implements View.OnClickListener {
+    public static class RegisterUserFragment extends Fragment {
 
         public static final String LOG_TAG = RegisterUserFragment.class.getSimpleName();
 
@@ -146,7 +149,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         private View rootView;
 
-        private Button nextButton;
+        private Button mNextButton;
 
         public RegisterUserFragment() {
         }
@@ -168,24 +171,24 @@ public class RegisterActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             rootView = inflater.inflate(R.layout.fragment_image_register, container, false);
 
-            nextButton = (Button) rootView.findViewById(R.id.register_next);
-            nextButton.setOnClickListener(this);
+            mNextButton = (Button) rootView.findViewById(R.id.register_next);
+            mNextButton.setOnClickListener( new Button.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(LOG_TAG, "onButtonPressed Next");
+                    RegisterActivity ra = (RegisterActivity) getActivity();
+                    ra.setSectionPagerAdapter(1);
+                }
+            });
 
             return rootView;
-        }
-
-        @Override
-        public void onClick(View v) {
-            Log.d(LOG_TAG, "onButtonPressed");
-            RegisterActivity ra = (RegisterActivity) getActivity();
-            ra.setSectionPagerAdapter(1);
         }
     }
 
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class RegisterUserNameFragment extends Fragment implements View.OnClickListener {
+    public static class RegisterUserNameFragment extends Fragment {
 
         public static final String LOG_TAG = RegisterUserNameFragment.class.getSimpleName();
 
@@ -197,7 +200,9 @@ public class RegisterActivity extends AppCompatActivity {
 
         private EditText lastName;
 
-        private Button nextButton;
+        private Button mBeforeButton;
+
+        private Button mNextButton;
 
         public RegisterUserNameFragment() {
         }
@@ -222,25 +227,33 @@ public class RegisterActivity extends AppCompatActivity {
             firstName = (EditText) rootView.findViewById(R.id.register_firstName);
             lastName = (EditText) rootView.findViewById(R.id.register_lastName);
 
-            nextButton = (Button) rootView.findViewById(R.id.name_next);
-            nextButton.setOnClickListener(this);
+            mBeforeButton = (Button) rootView.findViewById(R.id.name_before);
+            mBeforeButton.setOnClickListener( new Button.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(LOG_TAG, "onButtonPressed Before");
+                    RegisterActivity ra = (RegisterActivity) getActivity();
+                    ra.setSectionPagerAdapter(0);
+                }
+            });
 
+            mNextButton = (Button) rootView.findViewById(R.id.name_next);
+            mNextButton.setOnClickListener( new Button.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(LOG_TAG, "onButtonPressed Next");
+                    RegisterActivity ra = (RegisterActivity) getActivity();
+                    ra.setSectionPagerAdapter(2);
+                }
+            });
             return rootView;
         }
-
-        @Override
-        public void onClick(View v) {
-            Log.d(LOG_TAG, "onButtonPressed");
-            RegisterActivity ra = (RegisterActivity) getActivity();
-            ra.setSectionPagerAdapter(2);
-        }
-
     }
 
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class RegisterUserInfoFragment extends Fragment implements View.OnClickListener {
+    public static class RegisterUserInfoFragment extends Fragment {
 
         public static final String LOG_TAG = RegisterUserInfoFragment.class.getSimpleName();
 
@@ -251,6 +264,8 @@ public class RegisterActivity extends AppCompatActivity {
         private EditText mPhoneNumber;
 
         private EditText mEmailAddress;
+
+        private Button mBeforeButton;
 
         private Button mNextButton;
 
@@ -277,8 +292,26 @@ public class RegisterActivity extends AppCompatActivity {
             rootView = inflater.inflate(R.layout.fragment_info_register, container, false);
             mPhoneNumber = (EditText) rootView.findViewById(R.id.register_phoneNumber);
             mEmailAddress = (EditText) rootView.findViewById(R.id.register_emailAddress);
+
+            mBeforeButton = (Button) rootView.findViewById(R.id.info_before);
+            mBeforeButton.setOnClickListener( new Button.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(LOG_TAG, "onButtonPressed Before");
+                    RegisterActivity ra = (RegisterActivity) getActivity();
+                    ra.setSectionPagerAdapter(1);
+                }
+            });
+
             mNextButton = (Button) rootView.findViewById(R.id.info_next);
-            mNextButton.setOnClickListener(this);
+            mNextButton.setOnClickListener( new Button.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(LOG_TAG, "onButtonPressed Next");
+                    RegisterActivity ra = (RegisterActivity) getActivity();
+                    ra.setSectionPagerAdapter(3);
+                }
+            });
 
             retrievePhoneNumber backGround = new retrievePhoneNumber();
             backGround.execute();
@@ -296,13 +329,6 @@ public class RegisterActivity extends AppCompatActivity {
             }
 
             return rootView;
-        }
-
-        @Override
-        public void onClick(View v) {
-            Log.d(LOG_TAG, "onButtonPressed");
-            RegisterActivity ra = (RegisterActivity) getActivity();
-            ra.setSectionPagerAdapter(3);
         }
 
         private class retrievePhoneNumber extends AsyncTask<Void, Void, String> {
@@ -353,11 +379,13 @@ public class RegisterActivity extends AppCompatActivity {
 
         private ArrayList<LinearLayout> linearLayoutArray;
 
-        private int previousSelectedFloor = 0;
+        private static int previousSelectedFloor = 0;
 
         private int currentNumFloor = 0;
 
-        private Button nextButton;
+        private Button mNextButton;
+
+        private Button mBeforeButton;
 
         private String floor[] = {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th"  };
 
@@ -449,7 +477,6 @@ public class RegisterActivity extends AppCompatActivity {
                             newRootView.removeView(linearView);
                         }
                     }
-
                     /* new previous selected floor
                     *  this variable will be used when the user changed num of floor*/
                     previousSelectedFloor = ++currentNumFloor;
@@ -461,6 +488,24 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             });
 
+            mBeforeButton = (Button) rootView.findViewById(R.id.property_before);
+            mBeforeButton.setOnClickListener( new Button.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(LOG_TAG, "onButtonPressed Before");
+                    RegisterActivity ra = (RegisterActivity) getActivity();
+                    ra.setSectionPagerAdapter(2);
+                }
+            });
+
+            mNextButton = (Button) rootView.findViewById(R.id.property_save);
+            mNextButton.setOnClickListener( new Button.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(LOG_TAG, "onButtonPressed Next");
+
+                }
+            });
             return rootView;
         }
 

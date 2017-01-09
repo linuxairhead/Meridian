@@ -7,7 +7,7 @@
     tools:ignore="UselessParent"
     android:paddingLeft="20dp"
     android:paddingRight="20dp"
-    android:paddingBottom="40dp"
+    android:paddingBottom="80dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -68,34 +68,40 @@
     <TextView
         android:text="How many units do each floor has it?"
         style="@style/RegisterDescriptionStyle"  />
-    <ScrollView
-        android:paddingBottom="10dp"
+
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <LinearLayout
-            android:id="@+id/parentProperty"
-            android:orientation="vertical"
+        android:layout_height="wrap_content">
+
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+            <LinearLayout
+                android:id="@+id/parentProperty"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </LinearLayout>
+        </ScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/property_before"
+                android:text="Before"
+                android:layout_marginRight="10dp"
+                style="@style/RegisterFragmentButtonStyle"/>
+
+            <Button
+                android:id="@+id/property_save"
+                android:text="Save"
+                android:layout_marginRight="10dp"
+                style="@style/RegisterFragmentButtonStyle"/>
         </LinearLayout>
-    </ScrollView>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/info_before"
-            android:text="Before"
-            android:layout_marginRight="10dp"
-            style="@style/RegisterFragmentButtonStyle"/>
-
-        <Button
-            android:id="@+id/info_next"
-            android:text="Next"
-            android:layout_marginRight="10dp"
-            style="@style/RegisterFragmentButtonStyle"/>
     </LinearLayout>
 </LinearLayout>
 
