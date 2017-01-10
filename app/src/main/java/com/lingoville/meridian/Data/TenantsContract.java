@@ -26,6 +26,10 @@ public final class TenantsContract {
     /**
      * Possible path will appended to base content URI for possible URI's as the ContentProvider
      */
+    public static final String PATH_User = "User";
+
+    public static final String PATH_BuildingInfo = "BuildingInfo";
+
     public static final String PATH_RoomInfo = "RoomInfo";
 
     public static final String PATH_Tenant = "Tenants";
@@ -38,11 +42,21 @@ public final class TenantsContract {
      */
     public static final class TenantEntry implements BaseColumns{
 
+        public static final Uri  USER_CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_User);
+
+        public static final Uri  BUILDING_CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_BuildingInfo);
+
         public static final Uri  ROOM_CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_RoomInfo);
 
         public static final Uri  TENANT_CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_Tenant);
 
         public static final Uri  FINANCE_CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_Finance);
+
+        /** Name of database table for User login & basic setting information*/
+        public final static String USER_TABLE_NAME = "UserInfoTable";
+
+        /** Name of database table for Building Floor & Unit information*/
+        public final static String BUILDING_TABLE_NAME = "BuildingInfoTable";
 
         /** Name of database table for room information */
         public final static String ROOM_TABLE_NAME = "RoomTable";
@@ -52,6 +66,79 @@ public final class TenantsContract {
 
         /** Name of database table for finance statement */
         public final static String Finance_TABLE_NAME = "FinanceTable";
+
+        /*
+          For User Login Table
+         */
+                /*
+                 * User ID
+                 */
+                public final static String COLUMN_USERID = "User_ID";
+
+                /*
+                 * User Password
+                 */
+                public final static String COLUMN_USERPASSWORD = "User_Password";
+
+                /*
+                 * User Email Address
+                 */
+                public final static String COLUMN_USEREMAIL = "User_UserEmail";
+
+                /*
+                * User First Name
+                */
+                public final static String COLUMN_USERFIRSTNAME = "User_FirstName";
+
+                /*
+                * User Last Name
+                */
+                public final static String COLUMN_USERLASTNAME = "User_LastName";
+
+                /*
+                * User Phone Number
+                */
+                public final static String COLUMN_USERPHONE = "User_UserPhone";
+
+                /*
+                 * User Image
+                 */
+                public final static String COLUMN_USERIMAGE = "User_Image";
+
+                /*
+                * Define User Information Projection that specifies the columns from the User Table about.
+                */
+                public final static String[] UserInformationProjection = {
+                        COLUMN_USERID,
+                        COLUMN_USERPASSWORD,
+                        COLUMN_USEREMAIL,
+                        COLUMN_USERFIRSTNAME,
+                        COLUMN_USERLASTNAME,
+                        COLUMN_USERPHONE,
+                        COLUMN_USERIMAGE  };
+
+        /*
+          For Building Info Table
+         */
+                /*
+                * Number of Property Floor
+                */
+                public final static String COLUMN_NUMFLOOR = "Num_Floor";
+
+                /*
+                 * Number of Unit for Each Floor
+                 */
+                public final static String COLUMN_NUMUNIT = "Num_Unit";
+
+                /*
+                * Define Building Information Projection that specifies the columns from the Building Table about.
+                */
+                public final static String[] BuildingInformationProjection = {
+                        COLUMN_NUMFLOOR,
+                        COLUMN_NUMUNIT
+                };
+
+
         /*
           For Room Info Table
          */
@@ -78,6 +165,7 @@ public final class TenantsContract {
                         COLUMN_ROOMNUMBER,
                         COLUMN_Vacancy
                 };
+
 
         /*
           For Tenant Table

@@ -1,5 +1,22 @@
 Bug Report
 
+1/10/2017 TenantsContract, TenantsDbHelper, TenantsProvider
+		Update TenantsContract to handle User Info and Building Info
+		
+1/9/2017 RegisterActivity
+		Nevigation Button Fixed
+		
+1/9/2017 RegisterActivity 
+		Implemented property register fragment
+		
+1/8/2017 RegisterActivity
+		Implemented retrieve email
+		
+1/8/2017 RegisterActivity
+		implemented retrievePhoneNumber AsyncTask with bug
+1/7/2017 RegisterActivity
+		UI improvement
+
 1/6/2017 RegisterActivity
 		First Fragment implemented
 

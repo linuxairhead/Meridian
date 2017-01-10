@@ -25,18 +25,26 @@ public class TenantsProvider extends ContentProvider {
     public static final String LOG_TAG = TenantsProvider.class.getSimpleName();
 
     private TenantsDbHelper mDbHelper;
-    private static final int Tenants = 100;
-    private static final int Tenants_ID = 101;
+    private static final int UserInfo = 100;
 
-    private static final int Finance = 200;
-    private static final int Finance_ID = 201;
+    private static final int BuildingInfo = 200;
 
-    private static final int RoomInfo = 300;
-    private static final int RoomInfo_Vacant = 301;
+    private static final int Tenants = 300;
+    private static final int Tenants_ID = 301;
+
+    private static final int Finance = 400;
+    private static final int Finance_ID = 401;
+
+    private static final int RoomInfo = 500;
+    private static final int RoomInfo_Vacant = 501;
 
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
+        sUriMatcher.addURI(TenantsContract.CONTENT_AUTHORITY, TenantsContract.PATH_User, UserInfo );
+
+        sUriMatcher.addURI(TenantsContract.CONTENT_AUTHORITY, TenantsContract.PATH_BuildingInfo, BuildingInfo );
+
         sUriMatcher.addURI(TenantsContract.CONTENT_AUTHORITY, TenantsContract.PATH_Tenant, Tenants );
         sUriMatcher.addURI(TenantsContract.CONTENT_AUTHORITY, TenantsContract.PATH_Tenant+"/#", Tenants_ID );
 
@@ -76,6 +84,26 @@ public class TenantsProvider extends ContentProvider {
         Log.d(LOG_TAG, " query :" + uri +" match is " + match);
 
         switch (match) {
+            /*
+            * This will perform a query on the User Info Table
+            */
+            case UserInfo:
+                cursor = db.query(TenantsContract.TenantEntry.USER_TABLE_NAME, projection, selection, selectionArgs,
+                        null,   null,   sortOrder);
+                if (cursor == null)
+                    Log.d(LOG_TAG, " query >" + uri+"cursor is null");
+                break;
+
+            /*
+            * This will perform a query on the User Info Table
+            */
+            case BuildingInfo:
+                cursor = db.query(TenantsContract.TenantEntry.BUILDING_TABLE_NAME, projection, selection, selectionArgs,
+                        null,   null,   sortOrder);
+                if (cursor == null)
+                    Log.d(LOG_TAG, " query >" + uri+"cursor is null");
+                break;
+
             /*
             * This will perform a query on the Tenants table
             */
@@ -152,15 +180,116 @@ public class TenantsProvider extends ContentProvider {
         Log.d(LOG_TAG, " insert >" + uri+"<");
         final int match = sUriMatcher.match(uri);
         switch (match) {
+
+            case UserInfo:
+                return insertUser(uri, contentValues);
+
+            case BuildingInfo:
+                return insertBuilding(uri, contentValues);
+
             case Tenants:
                 return insertTenant(uri, contentValues);
+
             case Finance:
                 return insertFinance(uri, contentValues);
+
             case RoomInfo:
                 return insertRoom(uri, contentValues);
+
             default:
                 throw new IllegalArgumentException("Insertion is not supported for " + uri);
         }
+    }
+
+    public Uri insertUser(Uri uri, ContentValues values){
+
+        Log.d(LOG_TAG, " userTableInit");
+
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+        int userID = values.getAsInteger(TenantsContract.TenantEntry.COLUMN_USERID);
+        if(userID == 0) {
+            throw new IllegalArgumentException("Room need proper User ID");
+        }
+
+        int userPass = values.getAsInteger(TenantsContract.TenantEntry.COLUMN_USERPASSWORD);
+        if(userPass == 0) {
+            throw new IllegalArgumentException("Room need proper User Password");
+        }
+
+        int userEmail = values.getAsInteger(TenantsContract.TenantEntry.COLUMN_USEREMAIL);
+        if(userEmail == 0) {
+            throw new IllegalArgumentException("Room need proper User Email");
+        }
+
+        int userFName = values.getAsInteger(TenantsContract.TenantEntry.COLUMN_USERFIRSTNAME);
+        if(userFName == 0) {
+            throw new IllegalArgumentException("Room need proper User First Name");
+        }
+
+        int userLName = values.getAsInteger(TenantsContract.TenantEntry.COLUMN_LASTNAME);
+        if(userLName == 0) {
+            throw new IllegalArgumentException("Room need proper User Last Name");
+        }
+
+        int userPhone = values.getAsInteger(TenantsContract.TenantEntry.COLUMN_USERPHONE);
+        if(userPhone == 0) {
+            throw new IllegalArgumentException("Room need proper User Phone Number");
+        }
+
+        int userImage = values.getAsInteger(TenantsContract.TenantEntry.COLUMN_USERIMAGE);
+        if(userImage == 0) {
+            throw new IllegalArgumentException("Room need proper User Phone Number");
+        }
+
+        // insert the content value to the database
+        long id = db.insert(TenantsContract.TenantEntry.USER_TABLE_NAME, null, values);
+        // If the ID is -1, then the insertion failed. Log an error and return null.
+        if (id == -1) {
+            Log.e(LOG_TAG, "Failed to insert row for " + uri);
+            return null;
+        }
+
+         /*
+         *  Notify all listener that the data has changed for the pet content URI
+         */
+        getContext().getContentResolver().notifyChange(uri, null);
+
+        // Return the new URI with the ID (of the newly inserted row) appended at the end
+        return ContentUris.withAppendedId(uri, id);
+    }
+
+    public Uri insertBuilding(Uri uri, ContentValues values){
+
+        Log.d(LOG_TAG, " userTableInit");
+
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+        int numFloor = values.getAsInteger(TenantsContract.TenantEntry.COLUMN_NUMFLOOR);
+        if(numFloor == 0) {
+            throw new IllegalArgumentException("Room need proper User Phone Number");
+        }
+
+        int numUnit = values.getAsInteger(TenantsContract.TenantEntry.COLUMN_NUMUNIT);
+        if(numUnit == 0) {
+            throw new IllegalArgumentException("Room need proper User Phone Number");
+        }
+
+        // insert the content value to the database
+        long id = db.insert(TenantsContract.TenantEntry.BUILDING_TABLE_NAME, null, values);
+        // If the ID is -1, then the insertion failed. Log an error and return null.
+        if (id == -1) {
+            Log.e(LOG_TAG, "Failed to insert row for " + uri);
+            return null;
+        }
+
+         /*
+         *  Notify all listener that the data has changed for the pet content URI
+         */
+        getContext().getContentResolver().notifyChange(uri, null);
+
+        // Return the new URI with the ID (of the newly inserted row) appended at the end
+        return ContentUris.withAppendedId(uri, id);
     }
 
     public Uri insertRoom(Uri uri, ContentValues values){
@@ -302,14 +431,17 @@ public class TenantsProvider extends ContentProvider {
 
         final int match = sUriMatcher.match(uri);
         switch (match) {
+
             case RoomInfo:
                 return updateRoomStatusToOccupied(uri, contentValues, selection, selectionArgs);
+
             case Tenants:
                 try {
                     return updateTenant(uri, contentValues, selection, selectionArgs);
                 } catch ( Exception e) {
                     Log.d(LOG_TAG, " Exception " );
                 }
+
             case Tenants_ID:
                 selection = TenantsContract.TenantEntry._ID + "=?";
                 selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri))};
@@ -318,12 +450,15 @@ public class TenantsProvider extends ContentProvider {
                 } catch ( Exception e) {
                     Log.d(LOG_TAG, " Exception " );
                 }
+
             case Finance:
                 return updateFinance(uri, contentValues, selection, selectionArgs);
+
             case Finance_ID:
                 selection = TenantsContract.TenantEntry._ID + "=?";
                 selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri))};
                 return updateFinance(uri, contentValues, selection, selectionArgs);
+
             default:
                 throw new IllegalArgumentException("Update is not supported for " + uri);
         }
@@ -357,7 +492,6 @@ public class TenantsProvider extends ContentProvider {
 
                 return returnVal;
             }
-
 
             /*
              *  private method for update tenant infomation

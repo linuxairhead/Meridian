@@ -3,20 +3,24 @@ package com.lingoville.meridian;
 import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.AsyncTask;
+import android.content.ContentValues;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -31,17 +35,17 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.lingoville.meridian.Data.TenantsContract;
 
-import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
+import java.util.ArrayList;
 
-import static com.lingoville.meridian.RegisterActivity.RegisterPropertyFragment.*;
 
 
 public class RegisterActivity extends AppCompatActivity {
@@ -63,10 +67,6 @@ public class RegisterActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
-
-    private Button mBeforeButton;
-
-    private Button mNextButton;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -196,9 +196,13 @@ public class RegisterActivity extends AppCompatActivity {
 
         private View rootView;
 
-        private EditText firstName;
+        private EditText mFirstName;
 
-        private EditText lastName;
+        private static String firstNameString;
+
+        private EditText mLastName;
+
+        private static String lastNameString;
 
         private Button mBeforeButton;
 
@@ -224,14 +228,19 @@ public class RegisterActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             Log.d(LOG_TAG, "onCreateView");
             rootView = inflater.inflate(R.layout.fragment_name_register, container, false);
-            firstName = (EditText) rootView.findViewById(R.id.register_firstName);
-            lastName = (EditText) rootView.findViewById(R.id.register_lastName);
+            mFirstName = (EditText) rootView.findViewById(R.id.register_firstName);
+            mLastName = (EditText) rootView.findViewById(R.id.register_lastName);
 
             mBeforeButton = (Button) rootView.findViewById(R.id.name_before);
             mBeforeButton.setOnClickListener( new Button.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Log.d(LOG_TAG, "onButtonPressed Before");
+
+                    /* set the first & last name */
+                    setUserName();
+
+                    /* move to previous fragment */
                     RegisterActivity ra = (RegisterActivity) getActivity();
                     ra.setSectionPagerAdapter(0);
                 }
@@ -242,12 +251,31 @@ public class RegisterActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Log.d(LOG_TAG, "onButtonPressed Next");
+
+                    /* set the first & last name */
+                    setUserName();
+
+                    /* move to next fragment */
                     RegisterActivity ra = (RegisterActivity) getActivity();
                     ra.setSectionPagerAdapter(2);
                 }
             });
             return rootView;
         }
+
+        public String getFirstName() {
+            return firstNameString;
+        }
+
+        public String getLastName() {
+            return lastNameString;
+        }
+
+        public void setUserName() {
+            firstNameString = mFirstName.getText().toString().trim();
+            lastNameString = mLastName.getText().toString().trim();
+        }
+
     }
 
     /**
@@ -263,7 +291,11 @@ public class RegisterActivity extends AppCompatActivity {
 
         private EditText mPhoneNumber;
 
+        private static Integer phoneNumber;
+
         private EditText mEmailAddress;
+
+        private static String emailAddress;
 
         private Button mBeforeButton;
 
@@ -298,6 +330,9 @@ public class RegisterActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Log.d(LOG_TAG, "onButtonPressed Before");
+
+                    phoneNumber = Integer.getInteger(mPhoneNumber.getText().toString());
+
                     RegisterActivity ra = (RegisterActivity) getActivity();
                     ra.setSectionPagerAdapter(1);
                 }
@@ -308,6 +343,9 @@ public class RegisterActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Log.d(LOG_TAG, "onButtonPressed Next");
+
+                    phoneNumber = Integer.getInteger(mPhoneNumber.getText().toString());
+
                     RegisterActivity ra = (RegisterActivity) getActivity();
                     ra.setSectionPagerAdapter(3);
                 }
@@ -324,6 +362,7 @@ public class RegisterActivity extends AppCompatActivity {
                 if (emailPattern.matcher(account.name).matches()) {
                     String possibleEmail = account.name;
                     mEmailAddress.setText(possibleEmail);
+                    emailAddress = mEmailAddress.getText().toString().trim();
                     Log.d(LOG_TAG, "onCreate " + possibleEmail);
                 }
             }
@@ -358,12 +397,20 @@ public class RegisterActivity extends AppCompatActivity {
                 mPhoneNumber.setText(tMgr.getLine1Number());
             }
         }
+
+        public Integer getPhoneNumber() {
+            return phoneNumber;
+        }
+
+        public String getEmailAddress() {
+            return emailAddress;
+        }
     }
 
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class RegisterPropertyFragment extends Fragment implements View.OnClickListener {
+    public static class RegisterPropertyFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
         public static final String LOG_TAG = RegisterPropertyFragment.class.getSimpleName();
 
@@ -488,6 +535,8 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             });
 
+            getLoaderManager().initLoader(0, null, this);
+
             mBeforeButton = (Button) rootView.findViewById(R.id.property_before);
             mBeforeButton.setOnClickListener( new Button.OnClickListener() {
                 @Override
@@ -502,20 +551,135 @@ public class RegisterActivity extends AppCompatActivity {
             mNextButton.setOnClickListener( new Button.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(LOG_TAG, "onButtonPressed Next");
+                    Log.d(LOG_TAG, "onButtonPressed Save");
+                    try {
+                        insertUserInfo();
+                        ((RegisterActivity) getActivity()).setSectionPagerAdapter(4);
+
+                    } catch(NullPointerException e) {
+                        Toast.makeText(getActivity(), "Please double check all the User Information.", Toast.LENGTH_SHORT).show();
+
+                        ((RegisterActivity) getActivity()).setSectionPagerAdapter(3);
+                    }
 
                 }
             });
             return rootView;
         }
 
+        /*
+* Get the user input from editor and save new user into database.
+*/
+        void insertUserInfo() {
+
+            Log.d(LOG_TAG, " insertUserInfo ");
+
+            // Create the content value class by reading from user input editor
+            ContentValues values = new ContentValues();
+
+            values.put(TenantsContract.TenantEntry.COLUMN_USERID, "XXXXXX");
+            values.put(TenantsContract.TenantEntry.COLUMN_USERPASSWORD, "AAAAAA");
+            values.put(TenantsContract.TenantEntry.COLUMN_USEREMAIL, (new RegisterUserInfoFragment()).getEmailAddress());
+            values.put(TenantsContract.TenantEntry.COLUMN_USERFIRSTNAME, (new RegisterUserNameFragment()).getFirstName());
+            values.put(TenantsContract.TenantEntry.COLUMN_USERLASTNAME,  (new RegisterUserNameFragment()).getLastName());
+            values.put(TenantsContract.TenantEntry.COLUMN_USERPHONE, (new RegisterUserInfoFragment()).getPhoneNumber());
+            //values.put(TenantsContract.TenantEntry.COLUMN_USERIMAGE, mFirstName.getText().toString().trim());
+
+             /*
+             * This is new Tenant, so insert a new Tenant into the provider,
+             * And it will return the content URI for the new Tenant
+             */
+            Uri newUri = getActivity().getContentResolver().insert(TenantsContract.TenantEntry.USER_CONTENT_URI, values);
+        }
+
+        /*
+        * Get the user input from editor and save new building into database.
+        */
+        private void insertBuildingInfo() {
+
+            Log.d(LOG_TAG, " insertBuildingInfo ");
+
+            // Create the content value class by reading from user input editor
+            ContentValues values = new ContentValues();
+
+            //values.put(TenantsContract.TenantEntry.COLUMN_NUMFLOOR, mCurrentRoomNumber);
+            //values.put(TenantsContract.TenantEntry.COLUMN_NUMUNIT, mFirstName.getText().toString().trim());
+
+             /*
+             * This is new Tenant, so insert a new Tenant into the provider,
+             * And it will return the content URI for the new Tenant
+             */
+            Uri newUri = getActivity().getContentResolver().insert(TenantsContract.TenantEntry.BUILDING_CONTENT_URI, values);
+        }
+
         @Override
-        public void onClick(View v) {
-            Log.d(LOG_TAG, "onButtonPressed");
-            RegisterActivity ra = (RegisterActivity) getActivity();
-            ra.setSectionPagerAdapter(0);
+        public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
+            Log.d(LOG_TAG, "onCreateLoader");
+
+            return new CursorLoader(getActivity(),                                            // Parent activity context
+                    TenantsContract.TenantEntry.USER_CONTENT_URI,        // Provider content URI to query
+                    TenantsContract.TenantEntry.UserInformationProjection,   // Columns to include in the resulting Cursor
+                    null,                                                                                           // Select only email addresses.
+                    null,                                                                                           // Selection arguments
+                    null);                                                                                          // Default sort order
+
+        }
+
+        @Override
+        public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+            Log.d(LOG_TAG, "onLoadFinished");
+
+        }
+
+        @Override
+        public void onLoaderReset(Loader<Cursor> loader) {
+
+            Log.d(LOG_TAG, "onLoaderReset");
+
         }
     }
+
+    /**
+     * A placeholder fragment containing a simple view.
+     */
+    public static class RegisterFragment extends Fragment {
+
+        public static final String LOG_TAG = RegisterFragment.class.getSimpleName();
+
+        private static final String ARG_SECTION_NUMBER = "section_number";
+
+        private View rootView;
+
+        public RegisterFragment() {   }
+
+        /**
+         * Returns a new instance of this fragment for the given section
+         * number.
+         */
+        public static RegisterFragment newInstance(int sectionNumber) {
+            RegisterFragment fragment = new RegisterFragment();
+            Bundle args = new Bundle();
+            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            fragment.setArguments(args);
+
+            return fragment;
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+
+            Log.d(LOG_TAG, "onCreateView");
+
+            /*  initialize rootView by inflate the fragment_property_register layout*/
+            rootView = inflater.inflate(R.layout.fragment_register, container, false);
+
+            return rootView;
+        }
+    }
+
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -536,15 +700,16 @@ public class RegisterActivity extends AppCompatActivity {
                     return RegisterUserNameFragment.newInstance(position + 1);
                 case 2:
                     return RegisterUserInfoFragment.newInstance(position + 1);
-                default:
+                case 3:
                     return RegisterPropertyFragment.newInstance(position + 1);
+                default:
+                    return RegisterFragment.newInstance(position+1);
             }
         }
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
-            return 4;
+            return 5;
         }
 
         @Override
@@ -556,8 +721,10 @@ public class RegisterActivity extends AppCompatActivity {
                     return "Name";
                 case 2:
                     return "Contact Info";
-                default:
+                case 3:
                     return "Property";
+                default:
+                    return "Generate";
             }
         }
     }

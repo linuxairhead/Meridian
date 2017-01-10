@@ -40,6 +40,29 @@ public class TenantsDbHelper extends SQLiteOpenHelper {
 
         Log.d(LOG_TAG, "onCreate - create all the table for Meridian ");
 
+        // Create a String that contains the SQL statement to create the user table
+        String SQL_CREATE_USER_TABLE =
+                "CREATE TABLE " + TenantsContract.TenantEntry.USER_TABLE_NAME + " ("
+                + TenantsContract.TenantEntry.COLUMN_USERID + " TEXT NOT NULL, "
+                + TenantsContract.TenantEntry.COLUMN_USERPASSWORD + " TEXT NOT NULL, "
+                + TenantsContract.TenantEntry.COLUMN_USEREMAIL + " TEXT NOT NULL, "
+                + TenantsContract.TenantEntry.COLUMN_USERFIRSTNAME + " TEXT NOT NULL, "
+                + TenantsContract.TenantEntry.COLUMN_USERLASTNAME + " TEXT NOT NULL, "
+                + TenantsContract.TenantEntry.COLUMN_USERPHONE + " TEXT NOT NULL, "
+                + TenantsContract.TenantEntry.COLUMN_USERIMAGE + " TEXT NOT NULL );";
+
+        // Execute the SQL statement
+        db.execSQL(SQL_CREATE_USER_TABLE);
+
+        // Create a String that contains the SQL statement to create the building table
+        String SQL_CREATE_BUILDING_TABLE =
+                "CREATE TABLE " + TenantsContract.TenantEntry.BUILDING_TABLE_NAME + " ("
+                + TenantsContract.TenantEntry.COLUMN_NUMFLOOR + " INTEGER NOT NULL, "
+                + TenantsContract.TenantEntry.COLUMN_NUMUNIT + " INTEGER NOT NULL );";
+
+        // Execute the SQL statement
+        db.execSQL(SQL_CREATE_BUILDING_TABLE);
+
         // Create a String that contains the SQL statement to create the tenants table
         String SQL_CREATE_TENANT_TABLE =
                 "CREATE TABLE " + TenantsContract.TenantEntry.Tenants_TABLE_NAME + " ("
