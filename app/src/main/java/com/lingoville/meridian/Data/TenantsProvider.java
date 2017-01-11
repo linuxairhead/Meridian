@@ -207,38 +207,38 @@ public class TenantsProvider extends ContentProvider {
 
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
-        int userID = values.getAsInteger(TenantsContract.TenantEntry.COLUMN_USERID);
-        if(userID == 0) {
+        String userID = values.getAsString(TenantsContract.TenantEntry.COLUMN_USERID);
+        if(userID == null) {
             throw new IllegalArgumentException("Room need proper User ID");
         }
 
-        int userPass = values.getAsInteger(TenantsContract.TenantEntry.COLUMN_USERPASSWORD);
-        if(userPass == 0) {
+        String userPass = values.getAsString(TenantsContract.TenantEntry.COLUMN_USERPASSWORD);
+        if(userPass == null) {
             throw new IllegalArgumentException("Room need proper User Password");
         }
 
-        int userEmail = values.getAsInteger(TenantsContract.TenantEntry.COLUMN_USEREMAIL);
-        if(userEmail == 0) {
+        String userEmail = values.getAsString(TenantsContract.TenantEntry.COLUMN_USEREMAIL);
+        if(userEmail == null) {
             throw new IllegalArgumentException("Room need proper User Email");
         }
 
-        int userFName = values.getAsInteger(TenantsContract.TenantEntry.COLUMN_USERFIRSTNAME);
-        if(userFName == 0) {
+        String userFName = values.getAsString(TenantsContract.TenantEntry.COLUMN_USERFIRSTNAME);
+        if(userFName == null) {
             throw new IllegalArgumentException("Room need proper User First Name");
         }
 
-        int userLName = values.getAsInteger(TenantsContract.TenantEntry.COLUMN_LASTNAME);
-        if(userLName == 0) {
+        String userLName = values.getAsString(TenantsContract.TenantEntry.COLUMN_USERLASTNAME);
+        if(userLName == null) {
             throw new IllegalArgumentException("Room need proper User Last Name");
         }
 
-        int userPhone = values.getAsInteger(TenantsContract.TenantEntry.COLUMN_USERPHONE);
-        if(userPhone == 0) {
+        String userPhone = values.getAsString(TenantsContract.TenantEntry.COLUMN_USERPHONE);
+        if(userPhone == null) {
             throw new IllegalArgumentException("Room need proper User Phone Number");
         }
 
-        int userImage = values.getAsInteger(TenantsContract.TenantEntry.COLUMN_USERIMAGE);
-        if(userImage == 0) {
+        String userImage = values.getAsString(TenantsContract.TenantEntry.COLUMN_USERIMAGE);
+        if(userImage == null) {
             throw new IllegalArgumentException("Room need proper User Phone Number");
         }
 

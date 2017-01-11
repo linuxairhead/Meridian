@@ -176,8 +176,9 @@ public class RegisterActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Log.d(LOG_TAG, "onButtonPressed Next");
-                    RegisterActivity ra = (RegisterActivity) getActivity();
-                    ra.setSectionPagerAdapter(1);
+
+                     /* move to next fragment */
+                    ((RegisterActivity) getActivity()).setSectionPagerAdapter(1);
                 }
             });
 
@@ -241,8 +242,7 @@ public class RegisterActivity extends AppCompatActivity {
                     setUserName();
 
                     /* move to previous fragment */
-                    RegisterActivity ra = (RegisterActivity) getActivity();
-                    ra.setSectionPagerAdapter(0);
+                    ((RegisterActivity) getActivity()).setSectionPagerAdapter(0);
                 }
             });
 
@@ -256,8 +256,7 @@ public class RegisterActivity extends AppCompatActivity {
                     setUserName();
 
                     /* move to next fragment */
-                    RegisterActivity ra = (RegisterActivity) getActivity();
-                    ra.setSectionPagerAdapter(2);
+                    ((RegisterActivity) getActivity()).setSectionPagerAdapter(2);
                 }
             });
             return rootView;
@@ -291,7 +290,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         private EditText mPhoneNumber;
 
-        private static Integer phoneNumber;
+        private static String phoneNumber;
 
         private EditText mEmailAddress;
 
@@ -330,11 +329,8 @@ public class RegisterActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Log.d(LOG_TAG, "onButtonPressed Before");
-
-                    phoneNumber = Integer.getInteger(mPhoneNumber.getText().toString());
-
-                    RegisterActivity ra = (RegisterActivity) getActivity();
-                    ra.setSectionPagerAdapter(1);
+                    retrieveEmail();
+                    ((RegisterActivity) getActivity()).setSectionPagerAdapter(1);
                 }
             });
 
@@ -343,33 +339,33 @@ public class RegisterActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Log.d(LOG_TAG, "onButtonPressed Next");
-
-                    phoneNumber = Integer.getInteger(mPhoneNumber.getText().toString());
-
-                    RegisterActivity ra = (RegisterActivity) getActivity();
-                    ra.setSectionPagerAdapter(3);
+                    retrieveEmail();
+                    ((RegisterActivity) getActivity()).setSectionPagerAdapter(3);
                 }
             });
 
             retrievePhoneNumber backGround = new retrievePhoneNumber();
             backGround.execute();
 
-            Log.d(LOG_TAG, "onCreate Email is --->");
+            return rootView;
+        }
 
+        private void retrieveEmail() {
+            Log.d(LOG_TAG, "onCreate Email is --->");
+            String possibleEmail = "";
             Pattern emailPattern = Patterns.EMAIL_ADDRESS; // API level 8+
             Account[] accounts = AccountManager.get(getActivity()).getAccounts();
             for (Account account : accounts) {
                 if (emailPattern.matcher(account.name).matches()) {
-                    String possibleEmail = account.name;
+                    possibleEmail = account.name;
                     mEmailAddress.setText(possibleEmail);
-                    emailAddress = mEmailAddress.getText().toString().trim();
-                    Log.d(LOG_TAG, "onCreate " + possibleEmail);
+                    emailAddress = possibleEmail;
+                    Log.d(LOG_TAG, "onCreate possible Email is" + possibleEmail);
                 }
             }
-
-            return rootView;
+            if (possibleEmail == "")
+                emailAddress = mEmailAddress.getText().toString().trim();
         }
-
         private class retrievePhoneNumber extends AsyncTask<Void, Void, String> {
 
             @Override
@@ -394,11 +390,13 @@ public class RegisterActivity extends AppCompatActivity {
                 while (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_SMS)
                         != PackageManager.PERMISSION_GRANTED) {  }
                 TelephonyManager tMgr = (TelephonyManager) getActivity().getSystemService(getActivity().TELEPHONY_SERVICE);
-                mPhoneNumber.setText(tMgr.getLine1Number());
+
+                    phoneNumber  = tMgr.getLine1Number();
+                    mPhoneNumber.setText(tMgr.getLine1Number());
             }
         }
 
-        public Integer getPhoneNumber() {
+        public String getPhoneNumber() {
             return phoneNumber;
         }
 
@@ -558,10 +556,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                     } catch(NullPointerException e) {
                         Toast.makeText(getActivity(), "Please double check all the User Information.", Toast.LENGTH_SHORT).show();
-
-                        ((RegisterActivity) getActivity()).setSectionPagerAdapter(3);
                     }
-
                 }
             });
             return rootView;
@@ -583,7 +578,7 @@ public class RegisterActivity extends AppCompatActivity {
             values.put(TenantsContract.TenantEntry.COLUMN_USERFIRSTNAME, (new RegisterUserNameFragment()).getFirstName());
             values.put(TenantsContract.TenantEntry.COLUMN_USERLASTNAME,  (new RegisterUserNameFragment()).getLastName());
             values.put(TenantsContract.TenantEntry.COLUMN_USERPHONE, (new RegisterUserInfoFragment()).getPhoneNumber());
-            //values.put(TenantsContract.TenantEntry.COLUMN_USERIMAGE, mFirstName.getText().toString().trim());
+            values.put(TenantsContract.TenantEntry.COLUMN_USERIMAGE, "FFFFFF");
 
              /*
              * This is new Tenant, so insert a new Tenant into the provider,
