@@ -424,7 +424,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         private ArrayList<LinearLayout> linearLayoutArray;
 
-        private static int previousSelectedFloor = 0;
+        private int previousSelectedFloor = 0;
 
         private int currentNumFloor = 0;
 
@@ -472,7 +472,6 @@ public class RegisterActivity extends AppCompatActivity {
             spinnerFloorArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); // The drop down view
             mNumFloor.setAdapter(spinnerFloorArrayAdapter);
             linearLayoutArray = new ArrayList<LinearLayout>();
-            mNumFloor.setSelection(0);
             mNumFloor.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
                 /*
@@ -480,6 +479,8 @@ public class RegisterActivity extends AppCompatActivity {
                  */
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                    Log.d(LOG_TAG, "onCreateView -- onItemSelected");
 
                     /* Get the number of floor user selected */
                     currentNumFloor = mNumFloor.getSelectedItemPosition();
@@ -522,8 +523,6 @@ public class RegisterActivity extends AppCompatActivity {
                             newRootView.removeView(linearView);
                         }
                     }
-                    /* new previous selected floor
-                    *  this variable will be used when the user changed num of floor*/
                     previousSelectedFloor = ++currentNumFloor;
                 }
 
@@ -533,6 +532,7 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             });
 
+            /* initialize the Tenants Loader */
             getLoaderManager().initLoader(0, null, this);
 
             mBeforeButton = (Button) rootView.findViewById(R.id.property_before);
@@ -540,8 +540,8 @@ public class RegisterActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Log.d(LOG_TAG, "onButtonPressed Before");
-                    RegisterActivity ra = (RegisterActivity) getActivity();
-                    ra.setSectionPagerAdapter(2);
+                    previousSelectedFloor = 0;
+                    ((RegisterActivity) getActivity()).setSectionPagerAdapter(2);
                 }
             });
 
@@ -562,9 +562,27 @@ public class RegisterActivity extends AppCompatActivity {
             return rootView;
         }
 
+        @Override
+        public void onSaveInstanceState(Bundle outState) {
+            super.onSaveInstanceState(outState);
+
+            Log.d(LOG_TAG, "onSaveInstanceState");
+            outState.putInt("curChoice", currentNumFloor);
+        }
+
+        @Override
+        public void onActivityCreated(Bundle savedInstanceState) {
+            super.onActivityCreated(savedInstanceState);
+
+            Log.d(LOG_TAG, "onActivityCreated");
+            if (savedInstanceState != null) {
+                // Restore last state for checked position.
+                currentNumFloor = savedInstanceState.getInt("curChoice", 0);
+            }
+        }
         /*
-* Get the user input from editor and save new user into database.
-*/
+        * Get the user input from editor and save new user into database.
+        */
         void insertUserInfo() {
 
             Log.d(LOG_TAG, " insertUserInfo ");
@@ -690,15 +708,15 @@ public class RegisterActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return RegisterUserFragment.newInstance(position + 1);
+                    return RegisterUserFragment.newInstance(position);
                 case 1:
-                    return RegisterUserNameFragment.newInstance(position + 1);
+                    return RegisterUserNameFragment.newInstance(position);
                 case 2:
-                    return RegisterUserInfoFragment.newInstance(position + 1);
+                    return RegisterUserInfoFragment.newInstance(position);
                 case 3:
-                    return RegisterPropertyFragment.newInstance(position + 1);
+                    return RegisterPropertyFragment.newInstance(position);
                 default:
-                    return RegisterFragment.newInstance(position+1);
+                    return RegisterFragment.newInstance(position);
             }
         }
 
