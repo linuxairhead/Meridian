@@ -3,6 +3,7 @@ package com.lingoville.meridian;
 import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.Activity;
 import android.content.ContentValues;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -28,6 +29,7 @@ import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -238,6 +240,10 @@ public class RegisterActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     Log.d(LOG_TAG, "onButtonPressed Before");
 
+                    // disable soft keyboard for register user fragment
+                    InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
+                    inputMethodManager.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
+
                     /* set the first & last name */
                     setUserName();
 
@@ -339,6 +345,11 @@ public class RegisterActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Log.d(LOG_TAG, "onButtonPressed Next");
+
+                    // disable soft keyboard for register property fragment
+                    InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
+                    inputMethodManager.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
+
                     retrieveEmail();
                     ((RegisterActivity) getActivity()).setSectionPagerAdapter(3);
                 }
@@ -559,6 +570,7 @@ public class RegisterActivity extends AppCompatActivity {
                     }
                 }
             });
+
             return rootView;
         }
 
