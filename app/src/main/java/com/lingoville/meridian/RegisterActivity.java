@@ -86,18 +86,21 @@ public class RegisterActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_register);
 
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE);
-        }
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
+        mToolbar = (Toolbar) findViewById(R.id.register_title);
+        setSupportActionBar(mToolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE);
+            getSupportActionBar().setTitle(mSectionsPagerAdapter.getPageTitle(0));
+        }
+
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -105,7 +108,10 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void setSectionPagerAdapter(int position) {
+        Log.d(LOG_TAG, "setSectionPagerAdapter Position " + position);
         mViewPager.setCurrentItem(position);
+
+        getSupportActionBar().setTitle(mSectionsPagerAdapter.getPageTitle(position));
     }
 
     /**
@@ -122,10 +128,6 @@ public class RegisterActivity extends AppCompatActivity {
                 .setObject(object)
                 .setActionStatus(Action.STATUS_TYPE_COMPLETED)
                 .build();
-    }
-
-    public void setActionBarTitle(String title){
-        mToolbar.setTitle(title);
     }
 
     @Override
@@ -159,6 +161,8 @@ public class RegisterActivity extends AppCompatActivity {
 
         private View rootView;
 
+        private String title;
+
         private Button mNextButton;
 
         public RegisterUserFragment() {
@@ -168,12 +172,20 @@ public class RegisterActivity extends AppCompatActivity {
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static RegisterUserFragment newInstance(int sectionNumber) {
+        public static RegisterUserFragment newInstance(int sectionNumber, String title) {
             RegisterUserFragment fragment = new RegisterUserFragment();
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            args.putString("Register", title);
             fragment.setArguments(args);
             return fragment;
+        }
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            Log.d(LOG_TAG, "onCreate");
+            title = getArguments().getString("title test");
         }
 
         @Override
@@ -186,8 +198,6 @@ public class RegisterActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Log.d(LOG_TAG, "onButtonPressed Next");
-
-                    getActivity().setTitle("Register User Name");
 
                      /* move to next fragment */
                     ((RegisterActivity) getActivity()).setSectionPagerAdapter(1);
@@ -209,6 +219,8 @@ public class RegisterActivity extends AppCompatActivity {
 
         private View rootView;
 
+        private String title;
+
         private EditText mFirstName;
 
         private static String firstNameString;
@@ -228,12 +240,20 @@ public class RegisterActivity extends AppCompatActivity {
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static RegisterUserNameFragment newInstance(int sectionNumber) {
+        public static RegisterUserNameFragment newInstance(int sectionNumber, String title) {
             RegisterUserNameFragment fragment = new RegisterUserNameFragment();
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            args.putString("Register", title);
             fragment.setArguments(args);
             return fragment;
+        }
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            Log.d(LOG_TAG, "onCreate");
+            title = getArguments().getString("title test");
         }
 
         @Override
@@ -258,8 +278,6 @@ public class RegisterActivity extends AppCompatActivity {
                     /* set the first & last name */
                     setUserName();
 
-                    getActivity().setTitle("Register User Photo");
-
                     /* move to previous fragment */
                     ((RegisterActivity) getActivity()).setSectionPagerAdapter(0);
                 }
@@ -273,8 +291,6 @@ public class RegisterActivity extends AppCompatActivity {
 
                     /* set the first & last name */
                     setUserName();
-
-                    getActivity().setTitle("Register User Information");
 
                     /* move to next fragment */
                     ((RegisterActivity) getActivity()).setSectionPagerAdapter(2);
@@ -309,6 +325,8 @@ public class RegisterActivity extends AppCompatActivity {
 
         private View rootView;
 
+        private String title;
+
         private EditText mPhoneNumber;
 
         private static String phoneNumber;
@@ -328,12 +346,20 @@ public class RegisterActivity extends AppCompatActivity {
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static RegisterUserInfoFragment newInstance(int sectionNumber) {
+        public static RegisterUserInfoFragment newInstance(int sectionNumber, String title) {
             RegisterUserInfoFragment fragment = new RegisterUserInfoFragment();
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            args.putString("Register", title);
             fragment.setArguments(args);
             return fragment;
+        }
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            Log.d(LOG_TAG, "onCreate");
+            title = getArguments().getString("title test");
         }
 
         @Override
@@ -352,7 +378,6 @@ public class RegisterActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     Log.d(LOG_TAG, "onButtonPressed Before");
                     retrieveEmail();
-                    getActivity().setTitle("Register User Name");
                     ((RegisterActivity) getActivity()).setSectionPagerAdapter(1);
                 }
             });
@@ -368,7 +393,6 @@ public class RegisterActivity extends AppCompatActivity {
                     inputMethodManager.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
 
                     retrieveEmail();
-                    getActivity().setTitle("Register Property Information");
                     ((RegisterActivity) getActivity()).setSectionPagerAdapter(3);
                 }
             });
@@ -449,6 +473,8 @@ public class RegisterActivity extends AppCompatActivity {
 
         private View rootView;
 
+        private String title;
+
         private LinearLayout newRootView;
 
         private Spinner mNumFloor;
@@ -471,13 +497,21 @@ public class RegisterActivity extends AppCompatActivity {
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static RegisterPropertyFragment newInstance(int sectionNumber) {
+        public static RegisterPropertyFragment newInstance(int sectionNumber, String title) {
             RegisterPropertyFragment fragment = new RegisterPropertyFragment();
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            args.putString("Register", title);
             fragment.setArguments(args);
 
             return fragment;
+        }
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            Log.d(LOG_TAG, "onCreate");
+            title = getArguments().getString("title test");
         }
 
         @Override
@@ -599,8 +633,6 @@ public class RegisterActivity extends AppCompatActivity {
                     Log.d(LOG_TAG, "onButtonPressed Before");
                     previousSelectedFloor = 0;
 
-                    getActivity().setTitle("Register User Information");
-
                     ((RegisterActivity) getActivity()).setSectionPagerAdapter(2);
                 }
             });
@@ -611,14 +643,11 @@ public class RegisterActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     Log.d(LOG_TAG, "onButtonPressed Save");
                     try {
-
                         /* Initializing User DB*/
                         insertUserInfo();
 
                         /* Initializing APT DB*/
                         insertAPTInfo();
-
-                        getActivity().setTitle("Register");
 
                         ((RegisterActivity) getActivity()).setSectionPagerAdapter(4);
 
@@ -740,19 +769,29 @@ public class RegisterActivity extends AppCompatActivity {
 
         private View rootView;
 
+        private String title;
+
         public RegisterFragment() {   }
 
         /**
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static RegisterFragment newInstance(int sectionNumber) {
+        public static RegisterFragment newInstance(int sectionNumber, String title) {
             RegisterFragment fragment = new RegisterFragment();
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            args.putString("Register", title);
             fragment.setArguments(args);
 
             return fragment;
+        }
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            Log.d(LOG_TAG, "onCreate");
+            title = getArguments().getString("title test");
         }
 
         @Override
@@ -785,15 +824,15 @@ public class RegisterActivity extends AppCompatActivity {
             Log.d(LOG_TAG, "getItem" + position);
             switch (position) {
                 case 0:
-                    return RegisterUserFragment.newInstance(position);
+                    return RegisterUserFragment.newInstance(position, "User Photo");
                 case 1:
-                    return RegisterUserNameFragment.newInstance(position);
+                    return RegisterUserNameFragment.newInstance(position, "User Name");
                 case 2:
-                    return RegisterUserInfoFragment.newInstance(position);
+                    return RegisterUserInfoFragment.newInstance(position, "User Info");
                 case 3:
-                    return RegisterPropertyFragment.newInstance(position);
+                    return RegisterPropertyFragment.newInstance(position, "Property Info");
                 default:
-                    return RegisterFragment.newInstance(position);
+                    return RegisterFragment.newInstance(position, "ing");
             }
         }
 
@@ -804,17 +843,20 @@ public class RegisterActivity extends AppCompatActivity {
 
         @Override
         public CharSequence getPageTitle(int position) {
+
+            Log.d(LOG_TAG, "getPageTitle" + position);
+
             switch (position) {
                 case 0:
-                    return "Picture";
+                    return "Register User Photo";
                 case 1:
-                    return "Name";
+                    return "Register User Name";
                 case 2:
-                    return "Contact Info";
+                    return "Register User Info";
                 case 3:
-                    return "Property";
+                    return "Register Property Info";
                 default:
-                    return "Generate";
+                    return "Registering";
             }
         }
     }
