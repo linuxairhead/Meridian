@@ -15,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.content.pm.PackageManager;
@@ -75,6 +76,7 @@ public class RegisterActivity extends AppCompatActivity {
      */
     private GoogleApiClient client;
 
+    private Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,8 +86,11 @@ public class RegisterActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_register);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE);
+        }
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -117,6 +122,10 @@ public class RegisterActivity extends AppCompatActivity {
                 .setObject(object)
                 .setActionStatus(Action.STATUS_TYPE_COMPLETED)
                 .build();
+    }
+
+    public void setActionBarTitle(String title){
+        mToolbar.setTitle(title);
     }
 
     @Override
@@ -178,6 +187,8 @@ public class RegisterActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     Log.d(LOG_TAG, "onButtonPressed Next");
 
+                    getActivity().setTitle("Register User Name");
+
                      /* move to next fragment */
                     ((RegisterActivity) getActivity()).setSectionPagerAdapter(1);
                 }
@@ -230,6 +241,7 @@ public class RegisterActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             Log.d(LOG_TAG, "onCreateView");
             rootView = inflater.inflate(R.layout.fragment_name_register, container, false);
+
             mFirstName = (EditText) rootView.findViewById(R.id.register_firstName);
             mLastName = (EditText) rootView.findViewById(R.id.register_lastName);
 
@@ -246,6 +258,8 @@ public class RegisterActivity extends AppCompatActivity {
                     /* set the first & last name */
                     setUserName();
 
+                    getActivity().setTitle("Register User Photo");
+
                     /* move to previous fragment */
                     ((RegisterActivity) getActivity()).setSectionPagerAdapter(0);
                 }
@@ -259,6 +273,8 @@ public class RegisterActivity extends AppCompatActivity {
 
                     /* set the first & last name */
                     setUserName();
+
+                    getActivity().setTitle("Register User Information");
 
                     /* move to next fragment */
                     ((RegisterActivity) getActivity()).setSectionPagerAdapter(2);
@@ -326,6 +342,7 @@ public class RegisterActivity extends AppCompatActivity {
             Log.d(LOG_TAG, "onCreateView");
 
             rootView = inflater.inflate(R.layout.fragment_info_register, container, false);
+
             mPhoneNumber = (EditText) rootView.findViewById(R.id.register_phoneNumber);
             mEmailAddress = (EditText) rootView.findViewById(R.id.register_emailAddress);
 
@@ -335,6 +352,7 @@ public class RegisterActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     Log.d(LOG_TAG, "onButtonPressed Before");
                     retrieveEmail();
+                    getActivity().setTitle("Register User Name");
                     ((RegisterActivity) getActivity()).setSectionPagerAdapter(1);
                 }
             });
@@ -350,6 +368,7 @@ public class RegisterActivity extends AppCompatActivity {
                     inputMethodManager.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
 
                     retrieveEmail();
+                    getActivity().setTitle("Register Property Information");
                     ((RegisterActivity) getActivity()).setSectionPagerAdapter(3);
                 }
             });
@@ -579,6 +598,9 @@ public class RegisterActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     Log.d(LOG_TAG, "onButtonPressed Before");
                     previousSelectedFloor = 0;
+
+                    getActivity().setTitle("Register User Information");
+
                     ((RegisterActivity) getActivity()).setSectionPagerAdapter(2);
                 }
             });
@@ -589,8 +611,15 @@ public class RegisterActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     Log.d(LOG_TAG, "onButtonPressed Save");
                     try {
+
+                        /* Initializing User DB*/
                         insertUserInfo();
+
+                        /* Initializing APT DB*/
                         insertAPTInfo();
+
+                        getActivity().setTitle("Register");
+
                         ((RegisterActivity) getActivity()).setSectionPagerAdapter(4);
 
                     } catch(NullPointerException e) {
@@ -752,6 +781,8 @@ public class RegisterActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
+
+            Log.d(LOG_TAG, "getItem" + position);
             switch (position) {
                 case 0:
                     return RegisterUserFragment.newInstance(position);
