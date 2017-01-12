@@ -78,7 +78,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         Log.d(LOG_TAG, "onCreate");
 
-        populateAutoComplete();
+        //populateAutoComplete();
 
         // Set up the login form.
         mImage = (ImageView) findViewById(R.id.imageView);

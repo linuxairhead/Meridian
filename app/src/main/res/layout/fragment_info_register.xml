@@ -21,10 +21,10 @@
             android:layout_marginTop="10dp"
             android:orientation="vertical">
             <TextView
-                android:text="Phone Number &amp; Email Address"
+                android:text=" Email Address &amp; Password"
                 style="@style/RegisterTitleStyle"  />
             <TextView
-                android:text="Imported information from device. It will be use for communicate with tenant. Please update if you would like to use other phone number or email address"
+                android:text="Please select the Email Address and password"
                 style="@style/RegisterDescriptionStyle"  />
         </LinearLayout>
 
@@ -64,6 +64,23 @@
                 android:imeActionLabel="@string/action_sign_in"
                 style="@style/RegisterEditorFieldStyle" />
         </android.support.design.widget.TextInputLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <CheckBox
+                android:id="@+id/checkBoxShowPwd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:layout_alignLeft="@+id/etPassword"
+                android:layout_below="@+id/etPassword"
+                android:text="@string/show_pwd" />
+            <TextView
+                android:text="Password must be at least 8 charactor, contain lower and upper case, and contain at least one number "
+                style="@style/RegisterDescriptionStyle"  />
+        </LinearLayout>
 
         <LinearLayout
             android:orientation="vertical"

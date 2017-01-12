@@ -3,7 +3,11 @@ package com.lingoville.meridian;
 import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.annotation.TargetApi;
 import android.content.ContentValues;
+import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -24,8 +28,13 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.util.Patterns;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +42,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -48,6 +59,7 @@ import com.lingoville.meridian.Data.TenantsContract;
 import java.util.regex.Pattern;
 import java.util.ArrayList;
 
+import static android.Manifest.permission.READ_CONTACTS;
 
 
 public class RegisterActivity extends AppCompatActivity {
@@ -159,19 +171,30 @@ public class RegisterActivity extends AppCompatActivity {
 
         private static final String ARG_SECTION_NUMBER = "section_number";
 
+        /**
+         * Id to identity READ_CONTACTS permission request.
+         */
+        private static final int REQUEST_READ_CONTACTS = 0;
+
         private View rootView;
 
         private String title;
+
+        private EditText mEmailAddress;
+
+        private static String emailAddress;
 
         private EditText mPassword;
 
         private EditText mPassword2;
 
-        private static String password;
+        private static String passwordString;
 
-        private EditText mEmailAddress;
+        private static String passwordString2;
 
-        private static String emailAddress;
+        private CheckBox mCBShowPwd;
+
+        private static boolean checkbox = true;
 
         private Button mBeforeButton;
 
@@ -207,8 +230,69 @@ public class RegisterActivity extends AppCompatActivity {
 
             rootView = inflater.inflate(R.layout.fragment_info_register, container, false);
 
+            // get the email address EditText
             mEmailAddress = (EditText) rootView.findViewById(R.id.register_emailAddress);
 
+            populateEmail();
+
+            // get the password EditText
+            mPassword = (EditText) rootView.findViewById(R.id.register_password);
+            mPassword.addTextChangedListener( new TextWatcher() {
+
+                public void afterTextChanged(Editable s) { }
+
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    if (checkbox) {
+                        // show password
+                        mPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    } else {
+                        // hide password
+                        mPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                    }
+                }
+                public void onTextChanged(CharSequence s, int start, int before, int count) {  }
+            } );
+
+            mPassword2 = (EditText) rootView.findViewById(R.id.register_password2);
+            mPassword2.addTextChangedListener( new TextWatcher() {
+
+                public void afterTextChanged(Editable s) {}
+
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    if (checkbox) {
+                        // show password
+                        mPassword2.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    } else {
+                        // hide password
+                        mPassword2.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                    }
+                }
+
+                public void onTextChanged(CharSequence s, int start, int before, int count) { }
+            } );
+
+            // get the show/hide password Checkbox
+            mCBShowPwd = (CheckBox) rootView.findViewById(R.id.checkBoxShowPwd);
+            // add onCheckedListener on checkbox
+            // when user clicks on this checkbox, this is the handler.
+            mCBShowPwd.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                    checkbox = isChecked;
+
+                    // checkbox status is changed from uncheck to checked.
+                    if (isChecked) {
+                        // show password
+                        mPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                        mPassword2.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    } else {
+                        // hide password
+                        mPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                        mPassword2.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                    }
+                }
+            });
             mNextButton = (Button) rootView.findViewById(R.id.info_next);
             mNextButton.setOnClickListener( new Button.OnClickListener() {
                 @Override
@@ -219,34 +303,143 @@ public class RegisterActivity extends AppCompatActivity {
                     InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
                     inputMethodManager.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
 
-                    retrieveEmail();
-                    ((RegisterActivity) getActivity()).setSectionPagerAdapter(1);
+                    if (qualifyPassword())
+                        ((RegisterActivity) getActivity()).setSectionPagerAdapter(1);
                 }
             });
 
             return rootView;
         }
 
-        private void retrieveEmail() {
-            Log.d(LOG_TAG, "onCreate Email is --->");
-            String possibleEmail = "";
+        private void populateEmail() {
+            if( mayRequestContacts() )
+                readEmail();
+        }
+
+        private boolean mayRequestContacts() {
+
+            Log.d(LOG_TAG, "mayRequestContacts");
+
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                return true;
+            }
+            if (getActivity().checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+                return true;
+            }
+            if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
+                Snackbar.make(mEmailAddress, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
+                        .setAction(android.R.string.ok, new View.OnClickListener() {
+                            @Override
+                            @TargetApi(Build.VERSION_CODES.M)
+                            public void onClick(View v) {
+                                requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
+                            }
+                        });
+            } else {
+                requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
+            }
+
+            return false;
+        }
+
+        public void readEmail(){
             Pattern emailPattern = Patterns.EMAIL_ADDRESS; // API level 8+
+
             Account[] accounts = AccountManager.get(getActivity()).getAccounts();
             for (Account account : accounts) {
                 if (emailPattern.matcher(account.name).matches()) {
-                    possibleEmail = account.name;
-                    mEmailAddress.setText(possibleEmail);
-                    emailAddress = possibleEmail;
-                    Log.d(LOG_TAG, "onCreate possible Email is" + possibleEmail);
+                    emailAddress = account.name;
+                    mEmailAddress.setText(emailAddress);
                 }
             }
-            if (possibleEmail == "")
-                emailAddress = mEmailAddress.getText().toString().trim();
         }
-
 
         public String getEmailAddress() {
             return emailAddress;
+        }
+
+
+        private boolean qualifyPassword() {
+
+            View focusView = null;
+
+            passwordString = mPassword.getText().toString().trim();
+            passwordString2 = mPassword2.getText().toString().trim();
+
+            mPassword.setError(null);
+            mPassword2.setError(null);
+
+            if(!passwordString.equals(passwordString2)) {
+                mPassword2.setError("Password does not match");
+                focusView = mPassword;
+                return false;
+            }
+            if( getRating(passwordString) < 3)  {
+                Log.d(LOG_TAG, "onCreateView need stronnger password");
+                mPassword.setError("Password does not qualify");
+                focusView = mPassword;
+                return false;
+            }
+            return true;
+        }
+
+
+        //ASSERT password not null
+        private int getRating(String password) throws IllegalArgumentException {
+
+            if (password == null)  // must enter password
+            {
+                throw new IllegalArgumentException();
+            }
+            int passwordStrength = 0;
+
+            // minimal pw length of 8 check
+            if (password.length() > 7)
+            {
+                passwordStrength++;
+            }
+
+            // password contain lower and upper case
+            if (password.toLowerCase()!= password)
+            {
+                passwordStrength++;
+            }
+
+            // good pw length of 12+
+            if (password.length() > 11)
+            {
+                passwordStrength++;
+            }
+
+            // password contains digits and non-digits
+            int numDigits= getNumberDigits(password);
+            if (numDigits > 0 && numDigits != password.length())
+            {
+                passwordStrength++;
+            }
+            return passwordStrength;
+        }
+
+        private int getNumberDigits(String inString){
+            if (isEmpty(inString)) {
+                return 0;
+            }
+            int numDigits= 0;
+            int length= inString.length();
+            for (int i = 0; i < length; i++) {
+                if (Character.isDigit(inString.charAt(i))) {
+                    numDigits++;
+                }
+            }
+            return numDigits;
+        }
+
+        private static boolean isEmpty(String inString) {
+            return inString == null || inString.length() == 0;
+        }
+
+        public String getPasswordString() {
+            return passwordString;
         }
     }
 
@@ -397,7 +590,7 @@ public class RegisterActivity extends AppCompatActivity {
                     setUserName();
 
                     /* move to previous fragment */
-                    ((RegisterActivity) getActivity()).setSectionPagerAdapter(0);
+                    ((RegisterActivity) getActivity()).setSectionPagerAdapter(1);
                 }
             });
 
@@ -411,7 +604,7 @@ public class RegisterActivity extends AppCompatActivity {
                     setUserName();
 
                     /* move to next fragment */
-                    ((RegisterActivity) getActivity()).setSectionPagerAdapter(2);
+                    ((RegisterActivity) getActivity()).setSectionPagerAdapter(3);
                 }
             });
 
@@ -859,7 +1052,7 @@ public class RegisterActivity extends AppCompatActivity {
 
             switch (position) {
                 case 0:
-                    return "Password & Email Address";
+                    return "Register Information";
                 case 1:
                     return "User Photo";
                 case 2:

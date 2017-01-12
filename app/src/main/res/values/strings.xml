@@ -7,8 +7,9 @@
     <string name="section_format">Hello World from section: %1$d</string>
 
     <!-- Strings related with user name -->
-    <string name="register_password">Enter the Password</string>
-    <string name="register_password2">Enter the Password again</string>
+    <string name="register_password">Password</string>
+    <string name="register_password2">Password</string>
+    <string name="show_pwd">Show Password</string>
     <string name="register_emailAddress">Email Address</string>
     <string name="register_firstName">First Name</string>
     <string name="register_lastName">Last Name</string>
