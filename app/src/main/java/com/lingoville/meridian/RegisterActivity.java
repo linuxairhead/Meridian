@@ -153,6 +153,106 @@ public class RegisterActivity extends AppCompatActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
+    public static class RegisterUserInfoFragment extends Fragment {
+
+        public static final String LOG_TAG = RegisterUserInfoFragment.class.getSimpleName();
+
+        private static final String ARG_SECTION_NUMBER = "section_number";
+
+        private View rootView;
+
+        private String title;
+
+        private EditText mPassword;
+
+        private EditText mPassword2;
+
+        private static String password;
+
+        private EditText mEmailAddress;
+
+        private static String emailAddress;
+
+        private Button mBeforeButton;
+
+        private Button mNextButton;
+
+        public RegisterUserInfoFragment() {
+        }
+
+        /**
+         * Returns a new instance of this fragment for the given section
+         * number.
+         */
+        public static RegisterUserInfoFragment newInstance(int sectionNumber, String title) {
+            RegisterUserInfoFragment fragment = new RegisterUserInfoFragment();
+            Bundle args = new Bundle();
+            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            args.putString("Register", title);
+            fragment.setArguments(args);
+            return fragment;
+        }
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            Log.d(LOG_TAG, "onCreate");
+            title = getArguments().getString("title test");
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            Log.d(LOG_TAG, "onCreateView");
+
+            rootView = inflater.inflate(R.layout.fragment_info_register, container, false);
+
+            mEmailAddress = (EditText) rootView.findViewById(R.id.register_emailAddress);
+
+            mNextButton = (Button) rootView.findViewById(R.id.info_next);
+            mNextButton.setOnClickListener( new Button.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(LOG_TAG, "onButtonPressed Next");
+
+                    // disable soft keyboard for register property fragment
+                    InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
+                    inputMethodManager.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
+
+                    retrieveEmail();
+                    ((RegisterActivity) getActivity()).setSectionPagerAdapter(1);
+                }
+            });
+
+            return rootView;
+        }
+
+        private void retrieveEmail() {
+            Log.d(LOG_TAG, "onCreate Email is --->");
+            String possibleEmail = "";
+            Pattern emailPattern = Patterns.EMAIL_ADDRESS; // API level 8+
+            Account[] accounts = AccountManager.get(getActivity()).getAccounts();
+            for (Account account : accounts) {
+                if (emailPattern.matcher(account.name).matches()) {
+                    possibleEmail = account.name;
+                    mEmailAddress.setText(possibleEmail);
+                    emailAddress = possibleEmail;
+                    Log.d(LOG_TAG, "onCreate possible Email is" + possibleEmail);
+                }
+            }
+            if (possibleEmail == "")
+                emailAddress = mEmailAddress.getText().toString().trim();
+        }
+
+
+        public String getEmailAddress() {
+            return emailAddress;
+        }
+    }
+
+    /**
+     * A placeholder fragment containing a simple view.
+     */
     public static class RegisterUserFragment extends Fragment {
 
         public static final String LOG_TAG = RegisterUserFragment.class.getSimpleName();
@@ -162,6 +262,8 @@ public class RegisterActivity extends AppCompatActivity {
         private View rootView;
 
         private String title;
+
+        private Button mBeforeButton;
 
         private Button mNextButton;
 
@@ -193,6 +295,17 @@ public class RegisterActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             rootView = inflater.inflate(R.layout.fragment_image_register, container, false);
 
+            mBeforeButton = (Button) rootView.findViewById(R.id.register_before);
+            mBeforeButton.setOnClickListener( new Button.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(LOG_TAG, "onButtonPressed Before");
+
+                     /* move to next fragment */
+                    ((RegisterActivity) getActivity()).setSectionPagerAdapter(0);
+                }
+            });
+
             mNextButton = (Button) rootView.findViewById(R.id.register_next);
             mNextButton.setOnClickListener( new Button.OnClickListener() {
                 @Override
@@ -200,7 +313,7 @@ public class RegisterActivity extends AppCompatActivity {
                     Log.d(LOG_TAG, "onButtonPressed Next");
 
                      /* move to next fragment */
-                    ((RegisterActivity) getActivity()).setSectionPagerAdapter(1);
+                    ((RegisterActivity) getActivity()).setSectionPagerAdapter(2);
                 }
             });
 
@@ -220,6 +333,10 @@ public class RegisterActivity extends AppCompatActivity {
         private View rootView;
 
         private String title;
+
+        private EditText mPhoneNumber;
+
+        private static String phoneNumber;
 
         private EditText mFirstName;
 
@@ -262,6 +379,7 @@ public class RegisterActivity extends AppCompatActivity {
             Log.d(LOG_TAG, "onCreateView");
             rootView = inflater.inflate(R.layout.fragment_name_register, container, false);
 
+            mPhoneNumber = (EditText) rootView.findViewById(R.id.register_phoneNumber);
             mFirstName = (EditText) rootView.findViewById(R.id.register_firstName);
             mLastName = (EditText) rootView.findViewById(R.id.register_lastName);
 
@@ -296,6 +414,10 @@ public class RegisterActivity extends AppCompatActivity {
                     ((RegisterActivity) getActivity()).setSectionPagerAdapter(2);
                 }
             });
+
+            retrievePhoneNumber backGround = new retrievePhoneNumber();
+            backGround.execute();
+
             return rootView;
         }
 
@@ -307,118 +429,15 @@ public class RegisterActivity extends AppCompatActivity {
             return lastNameString;
         }
 
+        public String getPhoneNumber() {
+            return phoneNumber;
+        }
+
         public void setUserName() {
             firstNameString = mFirstName.getText().toString().trim();
             lastNameString = mLastName.getText().toString().trim();
         }
 
-    }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class RegisterUserInfoFragment extends Fragment {
-
-        public static final String LOG_TAG = RegisterUserInfoFragment.class.getSimpleName();
-
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        private View rootView;
-
-        private String title;
-
-        private EditText mPhoneNumber;
-
-        private static String phoneNumber;
-
-        private EditText mEmailAddress;
-
-        private static String emailAddress;
-
-        private Button mBeforeButton;
-
-        private Button mNextButton;
-
-        public RegisterUserInfoFragment() {
-        }
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static RegisterUserInfoFragment newInstance(int sectionNumber, String title) {
-            RegisterUserInfoFragment fragment = new RegisterUserInfoFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            args.putString("Register", title);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            Log.d(LOG_TAG, "onCreate");
-            title = getArguments().getString("title test");
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            Log.d(LOG_TAG, "onCreateView");
-
-            rootView = inflater.inflate(R.layout.fragment_info_register, container, false);
-
-            mPhoneNumber = (EditText) rootView.findViewById(R.id.register_phoneNumber);
-            mEmailAddress = (EditText) rootView.findViewById(R.id.register_emailAddress);
-
-            mBeforeButton = (Button) rootView.findViewById(R.id.info_before);
-            mBeforeButton.setOnClickListener( new Button.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.d(LOG_TAG, "onButtonPressed Before");
-                    retrieveEmail();
-                    ((RegisterActivity) getActivity()).setSectionPagerAdapter(1);
-                }
-            });
-
-            mNextButton = (Button) rootView.findViewById(R.id.info_next);
-            mNextButton.setOnClickListener( new Button.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.d(LOG_TAG, "onButtonPressed Next");
-
-                    // disable soft keyboard for register property fragment
-                    InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
-                    inputMethodManager.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
-
-                    retrieveEmail();
-                    ((RegisterActivity) getActivity()).setSectionPagerAdapter(3);
-                }
-            });
-
-            retrievePhoneNumber backGround = new retrievePhoneNumber();
-            backGround.execute();
-
-            return rootView;
-        }
-
-        private void retrieveEmail() {
-            Log.d(LOG_TAG, "onCreate Email is --->");
-            String possibleEmail = "";
-            Pattern emailPattern = Patterns.EMAIL_ADDRESS; // API level 8+
-            Account[] accounts = AccountManager.get(getActivity()).getAccounts();
-            for (Account account : accounts) {
-                if (emailPattern.matcher(account.name).matches()) {
-                    possibleEmail = account.name;
-                    mEmailAddress.setText(possibleEmail);
-                    emailAddress = possibleEmail;
-                    Log.d(LOG_TAG, "onCreate possible Email is" + possibleEmail);
-                }
-            }
-            if (possibleEmail == "")
-                emailAddress = mEmailAddress.getText().toString().trim();
-        }
         private class retrievePhoneNumber extends AsyncTask<Void, Void, String> {
 
             @Override
@@ -432,7 +451,7 @@ public class RegisterActivity extends AppCompatActivity {
                         Log.d(LOG_TAG, "onCreate Phone Number Permission is reqiured");
                     }
                     ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_SMS}, PERMISSION_REQUEST_CODE);
-                 }
+                }
                 return "PERMISSION_REQUESTED";
             }
 
@@ -444,17 +463,9 @@ public class RegisterActivity extends AppCompatActivity {
                         != PackageManager.PERMISSION_GRANTED) {  }
                 TelephonyManager tMgr = (TelephonyManager) getActivity().getSystemService(getActivity().TELEPHONY_SERVICE);
 
-                    phoneNumber  = tMgr.getLine1Number();
-                    mPhoneNumber.setText(tMgr.getLine1Number());
+                phoneNumber  = tMgr.getLine1Number();
+                mPhoneNumber.setText(tMgr.getLine1Number());
             }
-        }
-
-        public String getPhoneNumber() {
-            return phoneNumber;
-        }
-
-        public String getEmailAddress() {
-            return emailAddress;
         }
     }
 
@@ -694,7 +705,7 @@ public class RegisterActivity extends AppCompatActivity {
             values.put(TenantsContract.TenantEntry.COLUMN_USEREMAIL, (new RegisterUserInfoFragment()).getEmailAddress());
             values.put(TenantsContract.TenantEntry.COLUMN_USERFIRSTNAME, (new RegisterUserNameFragment()).getFirstName());
             values.put(TenantsContract.TenantEntry.COLUMN_USERLASTNAME,  (new RegisterUserNameFragment()).getLastName());
-            values.put(TenantsContract.TenantEntry.COLUMN_USERPHONE, (new RegisterUserInfoFragment()).getPhoneNumber());
+            values.put(TenantsContract.TenantEntry.COLUMN_USERPHONE, (new RegisterUserNameFragment()).getPhoneNumber());
             values.put(TenantsContract.TenantEntry.COLUMN_USERIMAGE, "FFFFFF");
 
              /*
@@ -824,11 +835,11 @@ public class RegisterActivity extends AppCompatActivity {
             Log.d(LOG_TAG, "getItem" + position);
             switch (position) {
                 case 0:
-                    return RegisterUserFragment.newInstance(position, "User Photo");
-                case 1:
-                    return RegisterUserNameFragment.newInstance(position, "User Name");
-                case 2:
                     return RegisterUserInfoFragment.newInstance(position, "User Info");
+                case 1:
+                    return RegisterUserFragment.newInstance(position, "User Photo");
+                case 2:
+                    return RegisterUserNameFragment.newInstance(position, "User Name");
                 case 3:
                     return RegisterPropertyFragment.newInstance(position, "Property Info");
                 default:
@@ -848,13 +859,13 @@ public class RegisterActivity extends AppCompatActivity {
 
             switch (position) {
                 case 0:
-                    return "Register User Photo";
+                    return "Password & Email Address";
                 case 1:
-                    return "Register User Name";
+                    return "User Photo";
                 case 2:
-                    return "Register User Info";
+                    return "Phone Number & Name";
                 case 3:
-                    return "Register Property Info";
+                    return "Property Information";
                 default:
                     return "Registering";
             }

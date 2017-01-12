@@ -14,6 +14,7 @@
     <FrameLayout
         android:orientation="vertical"
         android:elevation="10dp"
+        android:layout_marginBottom="15dp"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:background="@drawable/rounded_image"
@@ -46,10 +47,21 @@
             app:srcCompat="@android:drawable/ic_input_add" />
     </FrameLayout>
 
-    <Button
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:id="@+id/register_next"
-        android:text="Next"
-        style="@style/RegisterFragmentLongButtonStyle"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/register_before"
+            android:text="Before"
+            android:layout_marginRight="10dp"
+            style="@style/RegisterFragmentButtonStyle"/>
+        <Button
+            android:id="@+id/register_next"
+            android:text="Next"
+            android:layout_marginRight="10dp"
+            style="@style/RegisterFragmentButtonStyle"/>
+    </LinearLayout>
+
 </LinearLayout>

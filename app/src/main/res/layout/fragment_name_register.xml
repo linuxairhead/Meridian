@@ -28,6 +28,19 @@
                     style="@style/RegisterDescriptionStyle"  />
             </LinearLayout>
 
+            <!-- Phone Number field -->
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp">
+                <EditText
+                    android:id="@+id/register_phoneNumber"
+                    android:hint="@string/register_phoneNumber"
+                    android:imeActionId="@+id/login"
+                    android:imeActionLabel="@string/action_sign_in"
+                    style="@style/RegisterEditorFieldStyle" />
+            </android.support.design.widget.TextInputLayout>
+
             <!-- First Name field -->
             <android.support.design.widget.TextInputLayout
                 android:layout_width="wrap_content"
