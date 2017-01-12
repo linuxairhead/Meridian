@@ -3,7 +3,6 @@ package com.lingoville.meridian;
 import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.app.Activity;
 import android.content.ContentValues;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -425,27 +424,27 @@ public class RegisterActivity extends AppCompatActivity {
 
         private static final String ARG_SECTION_NUMBER = "section_number";
 
+        private static final String floor[] = {"1st", "2nd", "3rd", "4th", "5th"};
+
+        private static final Integer unit[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
         private View rootView;
 
         private LinearLayout newRootView;
 
         private Spinner mNumFloor;
 
-        private TextView mUnitQ;
-
-        private ArrayList<LinearLayout> linearLayoutArray;
-
         private int previousSelectedFloor = 0;
 
         private int currentNumFloor = 0;
 
+        private ArrayList<LinearLayout> linearLayoutArray;
+
+        private ArrayList<Integer> unitNumFloor = new ArrayList<Integer>(1);
+
         private Button mNextButton;
 
         private Button mBeforeButton;
-
-        private String floor[] = {"1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th"  };
-
-        private Integer unit[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
 
         public RegisterPropertyFragment() {   }
 
@@ -494,7 +493,17 @@ public class RegisterActivity extends AppCompatActivity {
                     Log.d(LOG_TAG, "onCreateView -- onItemSelected");
 
                     /* Get the number of floor user selected */
-                    currentNumFloor = mNumFloor.getSelectedItemPosition();
+                    currentNumFloor = position;
+
+                    if( unitNumFloor.size() != 0)
+                        unitNumFloor.clear();
+
+                    unitNumFloor = new ArrayList<Integer>(currentNumFloor+1);
+
+                    for(int size = 0; size < currentNumFloor+1; size++)
+                        unitNumFloor.add(1);
+
+                    Log.d(LOG_TAG, "onCreateView -- onItemSelected size " + unitNumFloor.size());
 
                     /* If the user changed the number of floor need to resize the view
                      *  Case (previousSelectedFloor < currentNumFloor)
@@ -508,6 +517,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                         for (int index = previousSelectedFloor; index <= currentNumFloor ; index++) {
                             Log.d(LOG_TAG, "onCreateView index " + index  + " floor " + floor[index]);
+
                             //use linearlayout inflater to create new property_units on the fly
                             LinearLayout newFloor = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.property_units, null);
 
@@ -516,15 +526,32 @@ public class RegisterActivity extends AppCompatActivity {
                             newFloorText.setText("Unit for " + floor[index] + " Floor");
 
                             /*initialize newFloorspinner from newFloor inflater*/
-                            Spinner newFloorSpinner = (Spinner) newFloor.findViewById(R.id.register_numberOfUnit);
+                            final Spinner mFloorSpinner = (Spinner) newFloor.findViewById(R.id.register_numberOfUnit);
+                            mFloorSpinner.setId(index);
+
                             // Application of the Array to the Spinner
                             ArrayAdapter<Integer> spinnerUnitArrayAdapter = new ArrayAdapter<Integer>(getActivity(), android.R.layout.simple_spinner_item, unit);
                             spinnerUnitArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); // The drop down view
-                            newFloorSpinner.setAdapter(spinnerUnitArrayAdapter);
+                            mFloorSpinner.setAdapter(spinnerUnitArrayAdapter);
+
+                            mFloorSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                @Override
+                                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                                    /* for each floor spinner, set the unit number */
+                                    unitNumFloor.set(mFloorSpinner.getId(), position+1);
+                                }
+
+                                @Override
+                                public void onNothingSelected(AdapterView<?> parent) {
+
+                                }
+                            });
 
                             /* add newFloor to rootView */
                             newRootView.addView(newFloor);
                             linearLayoutArray.add(newFloor);
+
                         }
                     } else {
                         int index = linearLayoutArray.size()-1;
@@ -563,6 +590,7 @@ public class RegisterActivity extends AppCompatActivity {
                     Log.d(LOG_TAG, "onButtonPressed Save");
                     try {
                         insertUserInfo();
+                        insertAPTInfo();
                         ((RegisterActivity) getActivity()).setSectionPagerAdapter(4);
 
                     } catch(NullPointerException e) {
@@ -592,6 +620,7 @@ public class RegisterActivity extends AppCompatActivity {
                 currentNumFloor = savedInstanceState.getInt("curChoice", 0);
             }
         }
+
         /*
         * Get the user input from editor and save new user into database.
         */
@@ -614,27 +643,32 @@ public class RegisterActivity extends AppCompatActivity {
              * This is new Tenant, so insert a new Tenant into the provider,
              * And it will return the content URI for the new Tenant
              */
-            Uri newUri = getActivity().getContentResolver().insert(TenantsContract.TenantEntry.USER_CONTENT_URI, values);
+            getActivity().getContentResolver().insert(TenantsContract.TenantEntry.USER_CONTENT_URI, values);
         }
 
         /*
-        * Get the user input from editor and save new building into database.
+        * Get the user input from editor and save new APT into database.
         */
-        private void insertBuildingInfo() {
+        private void insertAPTInfo() {
 
-            Log.d(LOG_TAG, " insertBuildingInfo ");
+            Log.d(LOG_TAG, " insertAPTInfo ");
 
             // Create the content value class by reading from user input editor
             ContentValues values = new ContentValues();
 
-            //values.put(TenantsContract.TenantEntry.COLUMN_NUMFLOOR, mCurrentRoomNumber);
-            //values.put(TenantsContract.TenantEntry.COLUMN_NUMUNIT, mFirstName.getText().toString().trim());
+            int size = unitNumFloor.size();
+
+            for( int floor = 0; floor < size ; floor++) {
+                Log.d(LOG_TAG, "insertAPTInfo floor " + floor + " has " + unitNumFloor.get(floor) + " units" );
+                values.put(TenantsContract.TenantEntry.COLUMN_NUMFLOOR, floor+1);
+                values.put(TenantsContract.TenantEntry.COLUMN_NUMUNIT, unitNumFloor.get(floor));
+            }
 
              /*
              * This is new Tenant, so insert a new Tenant into the provider,
              * And it will return the content URI for the new Tenant
              */
-            Uri newUri = getActivity().getContentResolver().insert(TenantsContract.TenantEntry.BUILDING_CONTENT_URI, values);
+            getActivity().getContentResolver().insert(TenantsContract.TenantEntry.BUILDING_CONTENT_URI, values);
         }
 
         @Override
