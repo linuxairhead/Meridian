@@ -6,8 +6,6 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.icu.text.DateFormat;
-import android.icu.text.SimpleDateFormat;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -23,8 +21,9 @@ import android.widget.Toast;
 
 import com.lingoville.meridian.Data.TenantsContract;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -169,7 +168,7 @@ public class TransactionEditActivity extends AppCompatActivity implements Loader
 
         Log.d(LOG_TAG, "setDatePickerAsToday");
 
-        Date curDate = (Date) java.util.Calendar.getInstance().getTime();
+        Date curDate = java.util.Calendar.getInstance().getTime();
         DateFormat formatter = new SimpleDateFormat("yyyy / MM / dd");
         String today = formatter.format(curDate);
 

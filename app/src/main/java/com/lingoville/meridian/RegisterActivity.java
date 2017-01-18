@@ -894,7 +894,7 @@ public class RegisterActivity extends AppCompatActivity {
             ContentValues values = new ContentValues();
 
             values.put(TenantsContract.TenantEntry.COLUMN_USERID, "XXXXXX");
-            values.put(TenantsContract.TenantEntry.COLUMN_USERPASSWORD, "AAAAAA");
+            values.put(TenantsContract.TenantEntry.COLUMN_USERPASSWORD,  (new RegisterUserInfoFragment()).getPasswordString());
             values.put(TenantsContract.TenantEntry.COLUMN_USEREMAIL, (new RegisterUserInfoFragment()).getEmailAddress());
             values.put(TenantsContract.TenantEntry.COLUMN_USERFIRSTNAME, (new RegisterUserNameFragment()).getFirstName());
             values.put(TenantsContract.TenantEntry.COLUMN_USERLASTNAME,  (new RegisterUserNameFragment()).getLastName());

@@ -75,6 +75,23 @@
     </style>
 
     <!-- Style for an Register Button field -->
+    <style name="RegisterFragmentLeftButtonStyle">
+        <item name="android:layout_height">45dp</item>
+        <item name="android:layout_width">15dp</item>
+        <item name="android:layout_gravity">center_vertical|left</item>
+        <item name="android:gravity">center</item>
+        <item name="android:src">@drawable/left_arrow</item>
+    </style>
+
+    <!-- Style for an Register Button field -->
+    <style name="RegisterFragmentRightButtonStyle">
+        <item name="android:layout_height">45dp</item>
+        <item name="android:layout_width">15dp</item>
+        <item name="android:layout_gravity">center_vertical|right</item>
+        <item name="android:gravity">center</item>
+        <item name="android:src">@drawable/right_arrow</item>
+    </style>
+    <!-- Style for an Register Button field -->
     <style name="RegisterFragmentButtonStyle">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">150dp</item>
