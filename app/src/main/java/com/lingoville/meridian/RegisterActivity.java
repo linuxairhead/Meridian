@@ -54,6 +54,7 @@ import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.lingoville.meridian.Data.TenantsContract;
 
+import java.util.List;
 import java.util.regex.Pattern;
 import java.util.ArrayList;
 
@@ -351,6 +352,9 @@ public class RegisterActivity extends AppCompatActivity {
                     mEmailAddress.setText(emailAddress);
                 }
             }
+
+            if( emailAddress == null || emailAddress.equals("") )
+                emailAddress = mEmailAddress.getText().toString().trim();
         }
 
         public String getEmailAddress() {
@@ -940,16 +944,20 @@ public class RegisterActivity extends AppCompatActivity {
             int size = unitNumFloor.size();
 
             for( int floor = 0; floor < size ; floor++) {
-                Log.d(LOG_TAG, "insertAPTInfo floor " + floor + " has " + unitNumFloor.get(floor) + " units" );
-                values.put(TenantsContract.TenantEntry.COLUMN_NUMFLOOR, floor+1);
+                Log.d(LOG_TAG, "insertAPTInfo floor " + floor + " has " + unitNumFloor.get(floor) + " units");
+                values.put(TenantsContract.TenantEntry.COLUMN_NUMFLOOR, floor + 1);
                 values.put(TenantsContract.TenantEntry.COLUMN_NUMUNIT, unitNumFloor.get(floor));
-            }
 
-             /*
-             * This is new Tenant, so insert a new Tenant into the provider,
-             * And it will return the content URI for the new Tenant
-             */
-            getActivity().getContentResolver().insert(TenantsContract.TenantEntry.BUILDING_CONTENT_URI, values);
+                 /*
+                * This is new Tenant, so insert a new Tenant into the provider,
+                * And it will return the content URI for the new Tenant
+                */
+                getActivity().getContentResolver().insert(TenantsContract.TenantEntry.BUILDING_CONTENT_URI, values);
+            }
+        }
+
+        public int getCurrentNumFloor(){
+            return previousSelectedFloor;
         }
 
         @Override
@@ -984,11 +992,20 @@ public class RegisterActivity extends AppCompatActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class RegisterFragment extends Fragment {
+    public static class RegisterFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
         public static final String LOG_TAG = RegisterFragment.class.getSimpleName();
 
         private static final String ARG_SECTION_NUMBER = "section_number";
+
+        /* Tenant Data Loader */
+        private static final int CURRENT_TENANT_LOADER = 0;
+
+        private static boolean mRoomInit = false;
+
+        private List<Integer> roomNumber;
+
+        private int mNumberOfRoom;
 
         private View rootView;
 
@@ -1026,7 +1043,88 @@ public class RegisterActivity extends AppCompatActivity {
             /*  initialize rootView by inflate the fragment_property_register layout*/
             rootView = inflater.inflate(R.layout.fragment_register, container, false);
 
+            getLoaderManager().initLoader(CURRENT_TENANT_LOADER, null, this);
+
+            initRoom();
+
+            initRoomTable();
+
             return rootView;
+        }
+
+        private void initRoom() {
+
+            int floor = (new RegisterPropertyFragment()).getCurrentNumFloor();
+
+//            for (int index = 1; index < floor ; index ++) {
+
+                //numRoom =
+                //for (int indexB = 1 ; indexB < numRoom ; indexB++) {
+
+
+                    roomNumber = new ArrayList<>();
+                    roomNumber.add(101);
+                roomNumber.add(102);
+//                }
+//            }
+        }
+
+        /*
+        *  This should be initialized only once for entire program, even if the program restarted
+        */
+        private void initRoomTable() {
+
+            Log.d(LOG_TAG, "initRoomTable");
+
+        /* verify the room table has been initilized or not */
+            String selection = TenantsContract.TenantEntry.COLUMN_ROOMNUMBER + " = ?";
+            String [] selectionArgs = new String[] { Integer.toString(roomNumber.get(1))};
+            Cursor cursor = getActivity().getContentResolver().
+                    query(TenantsContract.TenantEntry.ROOM_CONTENT_URI,
+                            TenantsContract.TenantEntry.RoomTableProjection,
+                            selection,
+                            selectionArgs,
+                            null );
+
+            // if cursor return counter more then zero, the table was already initialized */
+            if(cursor.getCount() != 0) {
+                mRoomInit = true;
+                return;
+            }
+
+        /*
+         * If this program is using for the first time and db doesn't contain RoomTable,
+         * following will be initialied all the room with false as COLUMN_Vancant
+         */
+            if( !mRoomInit ) {
+                // Create the content value class by reading from user input editor
+                ContentValues values = new ContentValues();
+
+                for (int counter = 0; counter < mNumberOfRoom; counter++) {
+
+                    values.put(TenantsContract.TenantEntry.COLUMN_ROOMNUMBER, roomNumber.get(counter));
+
+                    values.put(TenantsContract.TenantEntry.COLUMN_Vacancy, "false");
+
+                    getActivity().getContentResolver().insert(TenantsContract.TenantEntry.ROOM_CONTENT_URI, values);
+                }
+                mRoomInit = true;
+            }
+        }
+
+        @Override
+        public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+            return null;
+        }
+
+        @Override
+        public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+        }
+
+        @Override
+        public void onLoaderReset(Loader<Cursor> loader) {
+
         }
     }
 
