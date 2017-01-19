@@ -362,6 +362,18 @@ public class RegisterActivity extends AppCompatActivity {
 
             View focusView = null;
 
+            if( mPassword.getText().toString().equals("") ) {
+                mPassword.setError("Password required");
+                focusView = mPassword;
+                return false;
+            }
+
+            if( mPassword2.getText().toString().equals("") ) {
+                mPassword2.setError("Password required");
+                focusView = mPassword2;
+                return false;
+            }
+
             passwordString = mPassword.getText().toString().trim();
             passwordString2 = mPassword2.getText().toString().trim();
 
@@ -602,6 +614,9 @@ public class RegisterActivity extends AppCompatActivity {
                     /* set the first & last name */
                     setUserName();
 
+                    /* set phone number */
+                    setPhoneNumber();
+
                     /* move to next fragment */
                     ((RegisterActivity) getActivity()).setSectionPagerAdapter(3);
                 }
@@ -628,6 +643,11 @@ public class RegisterActivity extends AppCompatActivity {
         public void setUserName() {
             firstNameString = mFirstName.getText().toString().trim();
             lastNameString = mLastName.getText().toString().trim();
+        }
+
+        public void setPhoneNumber() {
+            if( phoneNumber == null)
+                phoneNumber = mPhoneNumber.getText().toString().trim();
         }
 
         private class retrievePhoneNumber extends AsyncTask<Void, Void, String> {
