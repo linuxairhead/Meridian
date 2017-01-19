@@ -6,7 +6,6 @@ import android.accounts.AccountManager;
 import android.annotation.TargetApi;
 import android.content.ContentValues;
 import android.os.Build;
-import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -34,7 +33,6 @@ import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.util.Patterns;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,7 +78,7 @@ public class RegisterActivity extends AppCompatActivity {
     /**
      * The {@link ViewPager} that will host the section contents.
      */
-    private ViewPager mViewPager;
+    private CustomViewPager mViewPager;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -110,9 +108,9 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager = (CustomViewPager) findViewById(R.id.CustomViewPager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-
+        mViewPager.setPagingEnabled(false);
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -161,6 +159,7 @@ public class RegisterActivity extends AppCompatActivity {
         AppIndex.AppIndexApi.end(client, getIndexApiAction());
         client.disconnect();
     }
+
 
     /**
      * A placeholder fragment containing a simple view.
