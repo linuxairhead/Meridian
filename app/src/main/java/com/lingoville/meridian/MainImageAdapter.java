@@ -29,7 +29,7 @@ public class MainImageAdapter extends BaseAdapter {
     }
 
     public int getCount() {
-        return roomNumber.length;
+        return mCursor.getCount();
     }
 
     public Object getItem(int position) {
@@ -38,10 +38,6 @@ public class MainImageAdapter extends BaseAdapter {
 
     public long getItemId(int position) {
         return 0;
-    }
-
-    public int getRoomNumber(int position) {
-        return roomNumber[position];
     }
 
     // create a new ImageView for each item referenced by the Adapter
@@ -70,11 +66,15 @@ public class MainImageAdapter extends BaseAdapter {
              *  mCursor which was initialized at MainActivity by query RoomVacant Table.
              *  move along the position, fetch the data, if the Vacant was set as occupied (1), set the image.
              */
-            if (position >= 0 && mCursor != null) {
+            if (position >= 0 && mCursor != null && (position <= getCount())) {
 
                 mCursor.moveToPosition(position);
 
                 String occupied = mCursor.getString(mCursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_Vacancy));
+
+                int roomNumber = mCursor.getInt(mCursor.getColumnIndex(TenantsContract.TenantEntry.COLUMN_ROOMNUMBER));
+
+                int floorNumber = roomNumber/100 - 1;
 
                 if (occupied.matches("true")) {
                     // draw rectangular object
@@ -84,7 +84,7 @@ public class MainImageAdapter extends BaseAdapter {
                     */
                     imageView.setBackgroundResource(R.mipmap.student2);
 
-                    imageView.setImageDrawable(drawable.build("" + getRoomNumber(position), mContext.getResources().getColor(mFloorColor[position])));
+                    imageView.setImageDrawable(drawable.build("" + roomNumber, mContext.getResources().getColor(mFloorColor[position])));
                 } else {
                     // draw rectangular object
                     drawable = TextDrawable.builder().beginConfig().withBorder(20).textLocation(1).endConfig().roundRect(100);
@@ -93,7 +93,7 @@ public class MainImageAdapter extends BaseAdapter {
                     */
                     imageView.setBackgroundResource(android.R.color.transparent);
 
-                    imageView.setImageDrawable(drawable.build("" + getRoomNumber(position), mContext.getResources().getColor(mFloorColor[position])));
+                    imageView.setImageDrawable(drawable.build("" + roomNumber, mContext.getResources().getColor(mFloorColor[floorNumber])));
                 }
             }
 
@@ -102,22 +102,6 @@ public class MainImageAdapter extends BaseAdapter {
 
     // references to our images
     private  int[] mFloorColor = {
-            R.color.firstFloor, R.color.firstFloor, R.color.firstFloor, R.color.firstFloor, R.color.firstFloor,
-            R.color.secondFloor, R.color.secondFloor, R.color.secondFloor, R.color.secondFloor, R.color.secondFloor,
-            R.color.secondFloor, R.color.secondFloor, R.color.secondFloor, R.color.secondFloor, R.color.secondFloor,
-            R.color.secondFloor, R.color.thirdFloor, R.color.thirdFloor, R.color.thirdFloor, R.color.thirdFloor,
-            R.color.thirdFloor, R.color.thirdFloor, R.color.thirdFloor, R.color.thirdFloor, R.color.thirdFloor,
-            R.color.thirdFloor, R.color.thirdFloor, R.color.fourthFloor, R.color.fourthFloor, R.color.fourthFloor,
-            R.color.fourthFloor, R.color.fourthFloor, R.color.fourthFloor, R.color.fourthFloor, R.color.fourthFloor,
-            R.color.fourthFloor, R.color.fourthFloor, R.color.fourthFloor, R.color.fifFloor, R.color.fifFloor,
-            R.color.fifFloor, R.color.fifFloor
-    };
-
-    private int[] roomNumber = {
-            101, 102, 103, 104, 105,
-            201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211,
-            301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311,
-            401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411,
-            501, 502, 503, 504
+            R.color.firstFloor, R.color.secondFloor, R.color.thirdFloor, R.color.fourthFloor, R.color.fifFloor
     };
 }

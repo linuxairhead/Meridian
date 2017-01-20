@@ -150,8 +150,20 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                Toast.makeText(getActivity(), "" + mImageAdapter.getRoomNumber(position), Toast.LENGTH_SHORT).show();
-                mCurrentRoomNumber = roomNumber[position];
+
+                Cursor data = getActivity().getContentResolver().
+                        query(TenantsContract.TenantEntry.ROOM_CONTENT_URI,
+                                TenantsContract.TenantEntry.RoomTableProjection,
+                                null,
+                                null,
+                                null );
+
+                data.moveToFirst();
+
+                mCurrentRoomNumber = data.getInt(position);
+
+                Toast.makeText(getActivity(), "" + mCurrentRoomNumber, Toast.LENGTH_SHORT).show();
+
                 /*
                  * check for whether the current room has occupied or not.
                  * if occupied, call transactionInfoActivity to view transaction history
@@ -189,14 +201,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
-
-    private int[] roomNumber = {
-            101, 102, 103, 104, 105,
-            201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211,
-            301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311,
-            401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411,
-            501, 502, 503, 504
-    };
 
     private String occupiedRoom() {
 
