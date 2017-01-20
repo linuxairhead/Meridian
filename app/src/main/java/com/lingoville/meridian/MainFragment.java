@@ -1,6 +1,5 @@
 package com.lingoville.meridian;
 
-import android.content.ContentValues;
 import android.support.v4.app.LoaderManager;
 import android.content.Context;
 import android.content.Intent;
@@ -42,10 +41,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
     private int mCurrentRoomNumber;
 
-    private int mNumberOfRoom;
-
-    private static boolean mRoomInit = false;
-
     private OnFragmentInteractionListener mListener;
 
     public MainFragment() {
@@ -77,11 +72,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         Log.d(LOG_TAG, "onCreate");
 
         getLoaderManager().initLoader(CURRENT_TENANT_LOADER, null, this);
-
-        mNumberOfRoom = roomNumber.length;
-
-         /* initRoom will only initilized once */
-        if(!mRoomInit) initRoomTable();
 
     }
 
@@ -207,49 +197,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411,
             501, 502, 503, 504
     };
-
-    /*
-    *  This should be initialized only once for entire program, even if the program restarted
-    */
-    private void initRoomTable() {
-
-        Log.d(LOG_TAG, "initRoomTable");
-
-        /* verify the room table has been initilized or not */
-        String selection = TenantsContract.TenantEntry.COLUMN_ROOMNUMBER + " = ?";
-        String [] selectionArgs = new String[] { Integer.toString(roomNumber[0])};
-        Cursor cursor = getActivity().getContentResolver().
-                query(TenantsContract.TenantEntry.ROOM_CONTENT_URI,
-                            TenantsContract.TenantEntry.RoomTableProjection,
-                            selection,
-                            selectionArgs,
-                            null );
-
-        // if cursor return counter more then zero, the table was already initialized */
-        if(cursor.getCount() != 0) {
-            mRoomInit = true;
-            return;
-        }
-
-        /*
-         * If this program is using for the first time and db doesn't contain RoomTable,
-         * following will be initialied all the room with false as COLUMN_Vancant
-         */
-        if( !mRoomInit ) {
-            // Create the content value class by reading from user input editor
-            ContentValues values = new ContentValues();
-
-            for (int counter = 0; counter < mNumberOfRoom; counter++) {
-
-                values.put(TenantsContract.TenantEntry.COLUMN_ROOMNUMBER, roomNumber[counter]);
-
-                values.put(TenantsContract.TenantEntry.COLUMN_Vacancy, "false");
-
-                getActivity().getContentResolver().insert(TenantsContract.TenantEntry.ROOM_CONTENT_URI, values);
-            }
-            mRoomInit = true;
-        }
-    }
 
     private String occupiedRoom() {
 
