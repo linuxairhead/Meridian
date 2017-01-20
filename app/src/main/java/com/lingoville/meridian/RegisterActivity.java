@@ -5,6 +5,7 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.TargetApi;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.os.Build;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
@@ -876,7 +877,10 @@ public class RegisterActivity extends AppCompatActivity {
                         /* Initializing APT DB*/
                         insertAPTInfo();
 
-                        ((RegisterActivity) getActivity()).setSectionPagerAdapter(4);
+                        //((RegisterActivity) getActivity()).setSectionPagerAdapter(4);
+
+                        Intent mainIntent = new Intent(getActivity(), MainActivity.class);
+                        startActivity(mainIntent);
 
                     } catch(NullPointerException e) {
                         Toast.makeText(getActivity(), "Please double check all the User Information.", Toast.LENGTH_SHORT).show();
@@ -944,15 +948,34 @@ public class RegisterActivity extends AppCompatActivity {
             int size = unitNumFloor.size();
 
             for( int floor = 0; floor < size ; floor++) {
-                Log.d(LOG_TAG, "insertAPTInfo floor " + floor + " has " + unitNumFloor.get(floor) + " units");
+
+                int numRoom = unitNumFloor.get(floor);
+
+                Log.d(LOG_TAG, "insertAPTInfo floor " + floor + " has " + numRoom + " units");
+
                 values.put(TenantsContract.TenantEntry.COLUMN_NUMFLOOR, floor + 1);
-                values.put(TenantsContract.TenantEntry.COLUMN_NUMUNIT, unitNumFloor.get(floor));
+                values.put(TenantsContract.TenantEntry.COLUMN_NUMUNIT, numRoom);
 
                  /*
-                * This is new Tenant, so insert a new Tenant into the provider,
-                * And it will return the content URI for the new Tenant
+                * This will initialized the APT building infomation.
+                * It will store the floor number and the number of the unit for each floor.
                 */
                 getActivity().getContentResolver().insert(TenantsContract.TenantEntry.BUILDING_CONTENT_URI, values);
+
+                ContentValues roomValues = new ContentValues();
+
+                for (int indexB = 1; indexB <= numRoom; indexB++) {
+
+                    int roomNumber = (floor+1) * 100 + indexB;
+
+                    Log.d(LOG_TAG, "insertAPTInfo room created unit # " + roomNumber );
+
+                    roomValues.put(TenantsContract.TenantEntry.COLUMN_ROOMNUMBER, roomNumber);
+
+                    roomValues.put(TenantsContract.TenantEntry.COLUMN_Vacancy, "false");
+
+                    getActivity().getContentResolver().insert(TenantsContract.TenantEntry.ROOM_CONTENT_URI, roomValues);
+                }
             }
         }
 
@@ -1045,76 +1068,23 @@ public class RegisterActivity extends AppCompatActivity {
 
             getLoaderManager().initLoader(CURRENT_TENANT_LOADER, null, this);
 
-            initRoom();
-
-            initRoomTable();
-
             return rootView;
-        }
-
-        private void initRoom() {
-
-            int floor = (new RegisterPropertyFragment()).getCurrentNumFloor();
-
-//            for (int index = 1; index < floor ; index ++) {
-
-                //numRoom =
-                //for (int indexB = 1 ; indexB < numRoom ; indexB++) {
-
-
-                    roomNumber = new ArrayList<>();
-                    roomNumber.add(101);
-                roomNumber.add(102);
-//                }
-//            }
-        }
-
-        /*
-        *  This should be initialized only once for entire program, even if the program restarted
-        */
-        private void initRoomTable() {
-
-            Log.d(LOG_TAG, "initRoomTable");
-
-        /* verify the room table has been initilized or not */
-            String selection = TenantsContract.TenantEntry.COLUMN_ROOMNUMBER + " = ?";
-            String [] selectionArgs = new String[] { Integer.toString(roomNumber.get(1))};
-            Cursor cursor = getActivity().getContentResolver().
-                    query(TenantsContract.TenantEntry.ROOM_CONTENT_URI,
-                            TenantsContract.TenantEntry.RoomTableProjection,
-                            selection,
-                            selectionArgs,
-                            null );
-
-            // if cursor return counter more then zero, the table was already initialized */
-            if(cursor.getCount() != 0) {
-                mRoomInit = true;
-                return;
-            }
-
-        /*
-         * If this program is using for the first time and db doesn't contain RoomTable,
-         * following will be initialied all the room with false as COLUMN_Vancant
-         */
-            if( !mRoomInit ) {
-                // Create the content value class by reading from user input editor
-                ContentValues values = new ContentValues();
-
-                for (int counter = 0; counter < mNumberOfRoom; counter++) {
-
-                    values.put(TenantsContract.TenantEntry.COLUMN_ROOMNUMBER, roomNumber.get(counter));
-
-                    values.put(TenantsContract.TenantEntry.COLUMN_Vacancy, "false");
-
-                    getActivity().getContentResolver().insert(TenantsContract.TenantEntry.ROOM_CONTENT_URI, values);
-                }
-                mRoomInit = true;
-            }
         }
 
         @Override
         public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-            return null;
+
+            Log.d(LOG_TAG, "onCreateLoader");
+
+        /*
+         * This loader will execute the ContentProvider's query method on a background thread
+         */
+            return new CursorLoader(getActivity(),                          // Parent activity context
+                    TenantsContract.TenantEntry.BUILDING_CONTENT_URI, // Provider content URI to query
+                    TenantsContract.TenantEntry.BuildingInformationProjection,  // Columns to include in the resulting Cursor
+                    null,                                                                          // No selection clause
+                    null,                                                                          // No selection arguments
+                    null );                                                                        // Default sort order
         }
 
         @Override
@@ -1153,7 +1123,8 @@ public class RegisterActivity extends AppCompatActivity {
                 case 3:
                     return RegisterPropertyFragment.newInstance(position, "Property Info");
                 default:
-                    return RegisterFragment.newInstance(position, "ing");
+                    RegisterFragment registerFragment = RegisterFragment.newInstance(position, "ing");
+                    return registerFragment;
             }
         }
 
